@@ -1,102 +1,227 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
+"use client";
 
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
+import NextLink from "next/link";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  HStack,
+  Input,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
+const auctions = [
+  {
+    id: "1",
+    title: "MacBook Pro M4",
+    currentBid: "₹120,000",
+    bids: 32,
+    status: "Active",
+  },
+  {
+    id: "2",
+    title: "iPhone 17 Pro",
+    currentBid: "₹95,000",
+    bids: 21,
+    status: "Active",
+  },
+  {
+    id: "3",
+    title: "PlayStation 6",
+    currentBid: "₹65,000",
+    bids: 14,
+    status: "Ending Soon",
+  },
+  {
+    id: "4",
+    title: "Royal Enfield Classic",
+    currentBid: "₹240,000",
+    bids: 18,
+    status: "Active",
+  },
+  {
+    id: "5",
+    title: "Sony A7 IV",
+    currentBid: "₹110,000",
+    bids: 12,
+    status: "Active",
+  },
+  {
+    id: "6",
+    title: "Gaming PC RTX 5090",
+    currentBid: "₹320,000",
+    bids: 28,
+    status: "Ending Soon",
+  },
+];
 
+export default function MarketplacePage() {
   return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
+    <Box bg="bg" minH="100vh">
+      <Container maxW="7xl" py={8}>
+        <Flex
+          justify="space-between"
+          align="center"
+          mb={10}
+          gap={4}
+          flexWrap="wrap"
+        >
+          <Box>
+            <Heading size="lg" color="text">
+              AuctionFlow
+            </Heading>
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+            <Text color="muted">
+              Real-time auction marketplace
+            </Text>
+          </Box>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+          <HStack gap={4}>
+            <Input
+              placeholder="Search auctions..."
+              w="320px"
             />
-            Deploy now
-          </a>
-          <a
-            href="https://turborepo.dev/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+            <Button
+              asChild
+              colorPalette="brand"
+            >
+              <NextLink href="/create">
+                Create Auction
+              </NextLink>
+            </Button>
+
+            <Avatar.Root>
+              <Avatar.Fallback name="Guest" />
+            </Avatar.Root>
+          </HStack>
+        </Flex>
+
+        <Card.Root
+          mb={8}
+          bg="surface"
+          borderColor="border"
+          borderWidth="1px"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turborepo.dev?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
+          <Card.Body>
+            <Flex
+              justify="space-between"
+              align="center"
+              flexWrap="wrap"
+              gap={4}
+            >
+              <Box>
+                <Heading size="md" color="text">
+                  Active Auctions
+                </Heading>
+
+                <Text color="muted">
+                  Browse live auctions and place bids
+                </Text>
+              </Box>
+
+              <Badge
+                colorPalette="purple"
+                px={3}
+                py={1}
+              >
+                {auctions.length} Auctions Live
+              </Badge>
+            </Flex>
+          </Card.Body>
+        </Card.Root>
+
+        <Grid
+          templateColumns={{
+            base: "1fr",
+            md: "repeat(2,1fr)",
+            xl: "repeat(3,1fr)",
+          }}
+          gap={6}
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turborepo.dev →
-        </a>
-      </footer>
-    </div>
+          {auctions.map((auction) => (
+            <Card.Root
+              key={auction.id}
+              bg="surface"
+              borderColor="border"
+              borderWidth="1px"
+              transition="all .2s ease"
+              _hover={{
+                transform: "translateY(-4px)",
+                borderColor: "primary",
+              }}
+            >
+              <Card.Body>
+                <VStack
+                  align="stretch"
+                  gap={4}
+                >
+                  <Flex
+                    justify="space-between"
+                    align="center"
+                  >
+                    <Heading
+                      size="sm"
+                      color="text"
+                    >
+                      {auction.title}
+                    </Heading>
+
+                    <Badge
+                      colorPalette={
+                        auction.status === "Active"
+                          ? "green"
+                          : "orange"
+                      }
+                    >
+                      {auction.status}
+                    </Badge>
+                  </Flex>
+
+                  <Box>
+                    <Text
+                      color="muted"
+                      fontSize="sm"
+                    >
+                      Current Bid
+                    </Text>
+
+                    <Heading
+                      size="lg"
+                      color="primary"
+                    >
+                      {auction.currentBid}
+                    </Heading>
+                  </Box>
+
+                  <Text color="muted">
+                    {auction.bids} bids placed
+                  </Text>
+
+                  <Button
+                    asChild
+                    colorPalette="brand"
+                    variant="subtle"
+                  >
+                    <NextLink
+                      href={`/auctions/${auction.id}`}
+                    >
+                      View Auction
+                    </NextLink>
+                  </Button>
+                </VStack>
+              </Card.Body>
+            </Card.Root>
+          ))}
+        </Grid>
+      </Container>
+    </Box>
   );
 }
