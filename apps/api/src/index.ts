@@ -1,18 +1,29 @@
 import Fastify from "fastify";
-import type { Auction } from "@repo/types";
-
-const auction: Auction = {
-  id: "1",
-  title: "iPhone 17",
-  currentPrice: 1000,
-};
+import { db } from "./db";
 
 const app = Fastify();
 
-app.get("/", async () => {
-  return { message: "Auction API Running" };
+app.get("/health", async (_, reply) => {
+  try {
+    await db.query("SELECT 1");
+
+    return {
+      status: "healthy",
+    };
+  } catch {
+    reply.code(503);
+
+    return {
+      status: "unhealthy",
+    };
+  }
 });
 
-app.listen({
-  port: 3001,
+app.listen({ port: 3001 }, (err) => {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+
+  console.log("Server running on port 3001");
 });
