@@ -1,6 +1,9 @@
 "use client";
 
 import NextLink from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Box,
   Button,
@@ -14,7 +17,34 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
+import { PasswordInput } from "../components/ui/password-input";
+
+import {
+  loginSchema,
+  type LoginDto,
+} from "@repo/shared";
+
+
+
 export default function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginDto>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: LoginDto) => {
+    console.log(data);
+
+    // await loginMutation.mutateAsync(data);
+  };
+
   return (
     <Flex minH="100vh" bg="bg">
       {/* Branding Section */}
@@ -128,91 +158,122 @@ export default function LoginPage() {
           maxW="420px"
         >
           <Card.Body p={8}>
-            <VStack gap={6}>
-              <Box textAlign="center">
-                <Heading
-                  color="text"
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <VStack gap={6}>
+                <Box textAlign="center">
+                  <Heading
+                    color="text"
+                    size="lg"
+                  >
+                    Welcome Back
+                  </Heading>
+
+                  <Text
+                    color="muted"
+                    mt={2}
+                  >
+                    Sign in to continue
+                  </Text>
+                </Box>
+
+                <Box w="full">
+                  <Input
+                    size="lg"
+                    placeholder="Email address"
+                    {...register("email")}
+                  />
+
+                  {errors.email && (
+                    <Text
+                      mt={1}
+                      fontSize="sm"
+                      color="red.500"
+                    >
+                      {errors.email.message}
+                    </Text>
+                  )}
+                </Box>
+
+                <Box w="full">
+                  <PasswordInput
+                    size="lg"
+                    placeholder="Password"
+                    {...register("password")}
+                  />
+
+                  {errors.password && (
+                    <Text
+                      mt={1}
+                      fontSize="sm"
+                      color="red.500"
+                    >
+                      {errors.password.message}
+                    </Text>
+                  )}
+                </Box>
+
+                <Button
+                  type="submit"
+                  w="full"
                   size="lg"
+                  colorPalette="brand"
+                  loading={isSubmitting}
                 >
-                  Welcome Back
-                </Heading>
+                  Sign In
+                </Button>
 
                 <Text
-                  color="muted"
-                  mt={2}
+                  color="primary"
+                  fontSize="sm"
+                  alignSelf="end"
+                  cursor="pointer"
                 >
-                  Sign in to continue
+                  Forgot Password?
                 </Text>
-              </Box>
 
-              <Input
-                size="lg"
-                placeholder="Email address"
-              />
+                <Flex
+                  w="full"
+                  align="center"
+                  gap={4}
+                >
+                  <Separator flex={1} />
+                  <Text
+                    color="muted"
+                    fontSize="sm"
+                  >
+                    OR
+                  </Text>
+                  <Separator flex={1} />
+                </Flex>
 
-              <Input
-                size="lg"
-                type="password"
-                placeholder="Password"
-              />
+                <Button
+                  asChild
+                  variant="outline"
+                  w="full"
+                  size="lg"
+                >
+                  <NextLink href="/">
+                    Continue as Guest
+                  </NextLink>
+                </Button>
 
-              <Button
-                w="full"
-                size="lg"
-                colorPalette="brand"
-              >
-                Sign In
-              </Button>
-
-              <Text
-                color="primary"
-                fontSize="sm"
-                alignSelf="end"
-                cursor="pointer"
-              >
-                Forgot Password?
-              </Text>
-
-              <Flex
-                w="full"
-                align="center"
-                gap={4}
-              >
-                <Separator flex={1} />
                 <Text
                   color="muted"
                   fontSize="sm"
                 >
-                  OR
+                  Don't have an account?{" "}
+                  <NextLink href="/signup">
+                    <Text
+                      as="span"
+                      color="primary"
+                      fontWeight="medium"
+                    >
+                      Create account
+                    </Text>
+                  </NextLink>
                 </Text>
-                <Separator flex={1} />
-              </Flex>
-
-              <Button
-                asChild
-                variant="outline"
-                w="full"
-                size="lg"
-              >
-                <NextLink href="/">
-                  Continue as Guest
-                </NextLink>
-              </Button>
-
-              <Text
-                color="muted"
-                fontSize="sm"
-              >
-                Don't have an account?{" "}
-                <Text
-                  as="span"
-                  color="primary"
-                  cursor="pointer"
-                >
-                  Create account
-                </Text>
-              </Text>
-            </VStack>
+              </VStack>
+            </form>
           </Card.Body>
         </Card.Root>
       </Flex>
