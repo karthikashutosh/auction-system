@@ -1,7 +1,5 @@
 "use client";
 
-import { PasswordInput } from "../components/ui/password-input";
-import NextLink from "next/link";
 import {
   Box,
   Button,
@@ -13,23 +11,30 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import NextLink from "next/link";
+import { PasswordInput } from "../components/ui/password-input";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 import {
-  signupSchema,
-  type SignupDto,
+  SignupExtendedDto,
+  signupExtendedSchema,
+  type SignupDto
 } from "@repo/shared";
+import { useSignup } from "../../hooks/useSignup";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
+
+  const router =useRouter()
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<SignupDto>({
-    resolver: zodResolver(signupSchema),
+    formState: { errors },
+  } = useForm<SignupExtendedDto>({
+    resolver: zodResolver(signupExtendedSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -37,13 +42,14 @@ export default function SignupPage() {
       confirmPassword: "",
     },
   });
-  
-  const onSubmit = async (data: SignupDto) => {
-    console.log(data);
-  
-    // await signupMutation.mutateAsync(data);
-  };
 
+  const { mutateAsync,isPending} = useSignup();
+
+  
+  const onSubmit = async (data: SignupDto) =>   mutateAsync(data,{ onSuccess:()=> {
+    router.push("/login")
+  }});
+  
 
   return (
     <Flex minH="100vh" bg="bg">
@@ -254,7 +260,7 @@ export default function SignupPage() {
         w="full"
         size="lg"
         colorPalette="brand"
-        loading={isSubmitting}
+        loading={isPending}
       >
         Create Account
       </Button>

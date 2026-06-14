@@ -25,19 +25,24 @@ export const signupSchema = z
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
         "Password must contain uppercase, lowercase, number and special character"
       ),
-
-    confirmPassword: z
-      .string()
-      .min(1, "Please confirm your password"),
   })
-  .refine(
-    (data) => data.password === data.confirmPassword,
-    {
-      path: ["confirmPassword"],
-      message: "Passwords do not match",
-    }
-  );
 
 
+
+export const signupExtendedSchema = signupSchema.extend({
+  confirmPassword: z
+    .string()
+    .min(1, "Please confirm your password"),
+}).refine(
+  (data) => data.password === data.confirmPassword,
+  {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  }
+);
+
+
+
+export type SignupExtendedDto = z.infer<typeof signupExtendedSchema>;
 export type LoginDto = z.infer<typeof loginSchema>;
 export type SignupDto = z.infer<typeof signupSchema>;

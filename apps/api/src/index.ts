@@ -1,7 +1,27 @@
+import "dotenv/config";
 import Fastify from "fastify";
 import { db } from "./db";
+import { authRoutes } from "./auth/auth.routes";
+import cors from "@fastify/cors";
+import fastifyJwt from "@fastify/jwt";
+import fastifyCookie from "@fastify/cookie"
 
 const app = Fastify();
+
+app.register(fastifyCookie);
+
+app.register(cors, {
+  origin: "http://localhost:3000",
+  credentials: true,
+});
+
+ app.register(fastifyJwt, {
+  secret: process.env.JWT_SECRET!,
+});
+
+app.register(authRoutes, {
+  prefix: "api/auth",
+});
 
 app.get("/health", async (_, reply) => {
   try {
