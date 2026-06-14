@@ -78,24 +78,14 @@ export default function MarketplacePage() {
               AuctionFlow
             </Heading>
 
-            <Text color="muted">
-              Real-time auction marketplace
-            </Text>
+            <Text color="muted">Real-time auction marketplace</Text>
           </Box>
 
           <HStack gap={4}>
-            <Input
-              placeholder="Search auctions..."
-              w="320px"
-            />
+            <Input placeholder="Search auctions..." w="320px" />
 
-            <Button
-              asChild
-              colorPalette="brand"
-            >
-              <NextLink href="/create">
-                Create Auction
-              </NextLink>
+            <Button asChild colorPalette="brand">
+              <NextLink href="/create">Create Auction</NextLink>
             </Button>
 
             <Avatar.Root>
@@ -104,12 +94,7 @@ export default function MarketplacePage() {
           </HStack>
         </Flex>
 
-        <Card.Root
-          mb={8}
-          bg="surface"
-          borderColor="border"
-          borderWidth="1px"
-        >
+        <Card.Root mb={8} bg="surface" borderColor="border" borderWidth="1px">
           <Card.Body>
             <Flex
               justify="space-between"
@@ -122,16 +107,10 @@ export default function MarketplacePage() {
                   Active Auctions
                 </Heading>
 
-                <Text color="muted">
-                  Browse live auctions and place bids
-                </Text>
+                <Text color="muted">Browse live auctions and place bids</Text>
               </Box>
 
-              <Badge
-                colorPalette="purple"
-                px={3}
-                py={1}
-              >
+              <Badge colorPalette="purple" px={3} py={1}>
                 {auctions.length} Auctions Live
               </Badge>
             </Flex>
@@ -159,26 +138,15 @@ export default function MarketplacePage() {
               }}
             >
               <Card.Body>
-                <VStack
-                  align="stretch"
-                  gap={4}
-                >
-                  <Flex
-                    justify="space-between"
-                    align="center"
-                  >
-                    <Heading
-                      size="sm"
-                      color="text"
-                    >
+                <VStack align="stretch" gap={4}>
+                  <Flex justify="space-between" align="center">
+                    <Heading size="sm" color="text">
                       {auction.title}
                     </Heading>
 
                     <Badge
                       colorPalette={
-                        auction.status === "Active"
-                          ? "green"
-                          : "orange"
+                        auction.status === "Active" ? "green" : "orange"
                       }
                     >
                       {auction.status}
@@ -186,33 +154,19 @@ export default function MarketplacePage() {
                   </Flex>
 
                   <Box>
-                    <Text
-                      color="muted"
-                      fontSize="sm"
-                    >
+                    <Text color="muted" fontSize="sm">
                       Current Bid
                     </Text>
 
-                    <Heading
-                      size="lg"
-                      color="primary"
-                    >
+                    <Heading size="lg" color="primary">
                       {auction.currentBid}
                     </Heading>
                   </Box>
 
-                  <Text color="muted">
-                    {auction.bids} bids placed
-                  </Text>
+                  <Text color="muted">{auction.bids} bids placed</Text>
 
-                  <Button
-                    asChild
-                    colorPalette="brand"
-                    variant="subtle"
-                  >
-                    <NextLink
-                      href={`/auctions/${auction.id}`}
-                    >
+                  <Button asChild colorPalette="brand" variant="subtle">
+                    <NextLink href={`/auctions/${auction.id}`}>
                       View Auction
                     </NextLink>
                   </Button>

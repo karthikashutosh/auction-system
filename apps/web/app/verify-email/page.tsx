@@ -13,13 +13,7 @@ import {
 
 export default function VerifyEmailPage() {
   return (
-    <Flex
-      minH="100vh"
-      bg="bg"
-      justify="center"
-      align="center"
-      p={6}
-    >
+    <Flex minH="100vh" bg="bg" justify="center" align="center" p={6}>
       <Card.Root
         bg="surface"
         borderColor="border"
@@ -32,42 +26,25 @@ export default function VerifyEmailPage() {
           <VStack gap={6} textAlign="center">
             <Box fontSize="5xl">📧</Box>
 
-            <Heading
-              size="lg"
-              color="text"
-            >
+            <Heading size="lg" color="text">
               Verify Your Email
             </Heading>
 
             <Text color="muted">
-              We've sent a verification link to your
-              email address.
+              We've sent a verification link to your email address.
             </Text>
 
-            <Text
-              color="muted"
-              fontSize="sm"
-            >
-              Please check your inbox and click the
-              verification link to activate your
-              account.
+            <Text color="muted" fontSize="sm">
+              Please check your inbox and click the verification link to
+              activate your account.
             </Text>
 
-            <Button
-              variant="outline"
-              w="full"
-            >
+            <Button variant="outline" w="full">
               Resend Verification Email
             </Button>
 
-            <Button
-              asChild
-              colorPalette="brand"
-              w="full"
-            >
-              <NextLink href="/login">
-                Back to Login
-              </NextLink>
+            <Button asChild colorPalette="brand" w="full">
+              <NextLink href="/login">Back to Login</NextLink>
             </Button>
           </VStack>
         </Card.Body>

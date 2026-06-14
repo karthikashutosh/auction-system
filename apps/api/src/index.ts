@@ -4,7 +4,7 @@ import { db } from "./db";
 import { authRoutes } from "./auth/auth.routes";
 import cors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
-import fastifyCookie from "@fastify/cookie"
+import fastifyCookie from "@fastify/cookie";
 
 const app = Fastify();
 
@@ -15,7 +15,7 @@ app.register(cors, {
   credentials: true,
 });
 
- app.register(fastifyJwt, {
+app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET!,
 });
 

@@ -20,28 +20,15 @@ export default function CreateAuctionPage() {
   return (
     <Box bg="bg" minH="100vh">
       <Container maxW="5xl" py={8}>
-        <Flex
-          justify="space-between"
-          align="center"
-          mb={8}
-        >
+        <Flex justify="space-between" align="center" mb={8}>
           <Box>
-            <Heading color="text">
-              Create Auction
-            </Heading>
+            <Heading color="text">Create Auction</Heading>
 
-            <Text color="muted">
-              Publish a new auction to the marketplace
-            </Text>
+            <Text color="muted">Publish a new auction to the marketplace</Text>
           </Box>
 
-          <Button
-            asChild
-            variant="outline"
-          >
-            <NextLink href="/">
-              Back to Marketplace
-            </NextLink>
+          <Button asChild variant="outline">
+            <NextLink href="/">Back to Marketplace</NextLink>
           </Button>
         </Flex>
 
@@ -60,100 +47,56 @@ export default function CreateAuctionPage() {
             borderWidth="1px"
           >
             <Card.Body>
-              <VStack
-                align="stretch"
-                gap={5}
-              >
+              <VStack align="stretch" gap={5}>
                 <Box>
-                  <Text
-                    mb={2}
-                    color="text"
-                  >
+                  <Text mb={2} color="text">
                     Auction Title
                   </Text>
 
-                  <Input
-                    placeholder="MacBook Pro M4"
-                    size="lg"
-                  />
+                  <Input placeholder="MacBook Pro M4" size="lg" />
                 </Box>
 
                 <Box>
-                  <Text
-                    mb={2}
-                    color="text"
-                  >
+                  <Text mb={2} color="text">
                     Description
                   </Text>
 
-                  <Textarea
-                    minH="140px"
-                    placeholder="Describe your item..."
-                  />
+                  <Textarea minH="140px" placeholder="Describe your item..." />
                 </Box>
 
                 <Box>
-                  <Text
-                    mb={2}
-                    color="text"
-                  >
+                  <Text mb={2} color="text">
                     Starting Price
                   </Text>
 
-                  <Input
-                    placeholder="100000"
-                    type="number"
-                    size="lg"
-                  />
+                  <Input placeholder="100000" type="number" size="lg" />
                 </Box>
 
                 <Box>
-                  <Text
-                    mb={2}
-                    color="text"
-                  >
+                  <Text mb={2} color="text">
                     Reserve Price
                   </Text>
 
-                  <Input
-                    placeholder="150000"
-                    type="number"
-                    size="lg"
-                  />
+                  <Input placeholder="150000" type="number" size="lg" />
                 </Box>
 
                 <Box>
-                  <Text
-                    mb={2}
-                    color="text"
-                  >
+                  <Text mb={2} color="text">
                     Auction End Date
                   </Text>
 
-                  <Input
-                    type="datetime-local"
-                    size="lg"
-                  />
+                  <Input type="datetime-local" size="lg" />
                 </Box>
 
                 <Box>
-                  <Text
-                    mb={2}
-                    color="text"
-                  >
+                  <Text mb={2} color="text">
                     Image URL
                   </Text>
 
-                  <Input
-                    placeholder="https://..."
-                    size="lg"
-                  />
+                  <Input placeholder="https://..." size="lg" />
                 </Box>
 
-                <Button
-                  size="lg"
-                  colorPalette="brand"
-                >
+                <Button size="lg" colorPalette="brand">
                   Create Auction
                 </Button>
               </VStack>
@@ -171,15 +114,8 @@ export default function CreateAuctionPage() {
             borderWidth="1px"
           >
             <Card.Body>
-              <VStack
-                align="stretch"
-                gap={4}
-              >
-                <Text
-                  color="muted"
-                  fontSize="sm"
-                  textTransform="uppercase"
-                >
+              <VStack align="stretch" gap={4}>
+                <Text color="muted" fontSize="sm" textTransform="uppercase">
                   Preview
                 </Text>
 
@@ -191,37 +127,22 @@ export default function CreateAuctionPage() {
                   borderColor="border"
                 />
 
-                <Heading
-                  size="md"
-                  color="text"
-                >
+                <Heading size="md" color="text">
                   MacBook Pro M4
                 </Heading>
 
-                <Text color="muted">
-                  Apple Silicon • 16GB RAM •
-                  512GB SSD
-                </Text>
+                <Text color="muted">Apple Silicon • 16GB RAM • 512GB SSD</Text>
 
                 <HStack>
-                  <Badge colorPalette="purple">
-                    New
-                  </Badge>
+                  <Badge colorPalette="purple">New</Badge>
 
-                  <Badge colorPalette="green">
-                    Active
-                  </Badge>
+                  <Badge colorPalette="green">Active</Badge>
                 </HStack>
 
                 <Box>
-                  <Text color="muted">
-                    Starting Price
-                  </Text>
+                  <Text color="muted">Starting Price</Text>
 
-                  <Heading
-                    size="lg"
-                    color="primary"
-                  >
+                  <Heading size="lg" color="primary">
                     ₹100,000
                   </Heading>
                 </Box>

@@ -19,18 +19,15 @@ import {
 
 import { PasswordInput } from "../components/ui/password-input";
 
-import {
-  loginSchema,
-  type LoginDto,
-} from "@repo/shared";
-
-
+import { loginSchema, type LoginDto } from "@repo/shared";
+import { useLogin } from "../../hooks/userLogin";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<LoginDto>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -39,11 +36,14 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = async (data: LoginDto) => {
-    console.log(data);
+  const router = useRouter();
 
-    // await loginMutation.mutateAsync(data);
-  };
+  const { mutateAsync: loginAsync, isPending } = useLogin();
+
+  const onSubmit = async (data: LoginDto) =>
+    loginAsync(data, {
+      onSuccess: () => router.push("/"),
+    });
 
   return (
     <Flex minH="100vh" bg="bg">
@@ -63,77 +63,38 @@ export default function LoginPage() {
           opacity={0.2}
         />
 
-        <VStack
-          align="start"
-          gap={6}
-          maxW="520px"
-          zIndex={1}
-          px={12}
-        >
-          <Text
-            color="primary"
-            fontWeight="bold"
-            letterSpacing="widest"
-          >
+        <VStack align="start" gap={6} maxW="520px" zIndex={1} px={12}>
+          <Text color="primary" fontWeight="bold" letterSpacing="widest">
             AUCTIONFLOW
           </Text>
 
-          <Heading
-            size="2xl"
-            color="text"
-            lineHeight="1.1"
-          >
+          <Heading size="2xl" color="text" lineHeight="1.1">
             Real-time auctions built for scale.
           </Heading>
 
-          <Text
-            color="muted"
-            fontSize="lg"
-            lineHeight="tall"
-          >
-            Experience live bidding, instant updates,
-            notifications, caching, and high-performance
-            auction workflows.
+          <Text color="muted" fontSize="lg" lineHeight="tall">
+            Experience live bidding, instant updates, notifications, caching,
+            and high-performance auction workflows.
           </Text>
 
           <HStack gap={4}>
-            <Card.Root
-              bg="surface"
-              borderColor="border"
-              borderWidth="1px"
-            >
+            <Card.Root bg="surface" borderColor="border" borderWidth="1px">
               <Card.Body>
-                <Text
-                  color="text"
-                  fontWeight="bold"
-                >
+                <Text color="text" fontWeight="bold">
                   10K+
                 </Text>
-                <Text
-                  color="muted"
-                  fontSize="sm"
-                >
+                <Text color="muted" fontSize="sm">
                   Active Users
                 </Text>
               </Card.Body>
             </Card.Root>
 
-            <Card.Root
-              bg="surface"
-              borderColor="border"
-              borderWidth="1px"
-            >
+            <Card.Root bg="surface" borderColor="border" borderWidth="1px">
               <Card.Body>
-                <Text
-                  color="text"
-                  fontWeight="bold"
-                >
+                <Text color="text" fontWeight="bold">
                   ₹12M+
                 </Text>
-                <Text
-                  color="muted"
-                  fontSize="sm"
-                >
+                <Text color="muted" fontSize="sm">
                   Total Bids
                 </Text>
               </Card.Body>
@@ -143,12 +104,7 @@ export default function LoginPage() {
       </Flex>
 
       {/* Login Form */}
-      <Flex
-        flex={1}
-        justify="center"
-        align="center"
-        p={6}
-      >
+      <Flex flex={1} justify="center" align="center" p={6}>
         <Card.Root
           bg="surface"
           borderColor="border"
@@ -161,17 +117,11 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit(onSubmit)}>
               <VStack gap={6}>
                 <Box textAlign="center">
-                  <Heading
-                    color="text"
-                    size="lg"
-                  >
+                  <Heading color="text" size="lg">
                     Welcome Back
                   </Heading>
 
-                  <Text
-                    color="muted"
-                    mt={2}
-                  >
+                  <Text color="muted" mt={2}>
                     Sign in to continue
                   </Text>
                 </Box>
@@ -184,11 +134,7 @@ export default function LoginPage() {
                   />
 
                   {errors.email && (
-                    <Text
-                      mt={1}
-                      fontSize="sm"
-                      color="red.500"
-                    >
+                    <Text mt={1} fontSize="sm" color="red.500">
                       {errors.email.message}
                     </Text>
                   )}
@@ -202,11 +148,7 @@ export default function LoginPage() {
                   />
 
                   {errors.password && (
-                    <Text
-                      mt={1}
-                      fontSize="sm"
-                      color="red.500"
-                    >
+                    <Text mt={1} fontSize="sm" color="red.500">
                       {errors.password.message}
                     </Text>
                   )}
@@ -217,7 +159,7 @@ export default function LoginPage() {
                   w="full"
                   size="lg"
                   colorPalette="brand"
-                  loading={isSubmitting}
+                  loading={isPending}
                 >
                   Sign In
                 </Button>
@@ -231,43 +173,22 @@ export default function LoginPage() {
                   Forgot Password?
                 </Text>
 
-                <Flex
-                  w="full"
-                  align="center"
-                  gap={4}
-                >
+                <Flex w="full" align="center" gap={4}>
                   <Separator flex={1} />
-                  <Text
-                    color="muted"
-                    fontSize="sm"
-                  >
+                  <Text color="muted" fontSize="sm">
                     OR
                   </Text>
                   <Separator flex={1} />
                 </Flex>
 
-                <Button
-                  asChild
-                  variant="outline"
-                  w="full"
-                  size="lg"
-                >
-                  <NextLink href="/">
-                    Continue as Guest
-                  </NextLink>
+                <Button asChild variant="outline" w="full" size="lg">
+                  <NextLink href="/">Continue as Guest</NextLink>
                 </Button>
 
-                <Text
-                  color="muted"
-                  fontSize="sm"
-                >
+                <Text color="muted" fontSize="sm">
                   Don't have an account?{" "}
                   <NextLink href="/signup">
-                    <Text
-                      as="span"
-                      color="primary"
-                      fontWeight="medium"
-                    >
+                    <Text as="span" color="primary" fontWeight="medium">
                       Create account
                     </Text>
                   </NextLink>

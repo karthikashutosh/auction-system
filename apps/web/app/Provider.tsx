@@ -6,20 +6,12 @@ import { useState } from "react";
 
 import { system } from "./theme";
 
-export function Providers({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [queryClient] = useState(
-    () => new QueryClient()
-  );
+export function Providers({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ChakraProvider value={system}>
-        {children}
-      </ChakraProvider>
+      <ChakraProvider value={system}>{children}</ChakraProvider>
     </QueryClientProvider>
   );
 }

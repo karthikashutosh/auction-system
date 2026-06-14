@@ -1,2 +1,1 @@
-export const formatCurrency = (value: number) =>
-    `₹${value}`;
+export const formatCurrency = (value: number) => `₹${value}`;
