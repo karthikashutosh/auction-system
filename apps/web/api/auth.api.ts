@@ -15,13 +15,13 @@ export const userLogin = async (data: LoginDto) => {
 };
 
 export const getUserProfile = async () => {
-  const response = await api.get("/api/auth/me");
+  const response = await api.get("/api/user/me");
 
   return response.data;
 };
 
 export const userlogout = async () => {
-  const response = await api.post("/api/auth/logout");
+  const response = await api.post("/api/user/logout");
 
   return response.data;
 };

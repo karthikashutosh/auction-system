@@ -5,6 +5,8 @@ import { authRoutes } from "./auth/auth.routes";
 import cors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
+import { authenticate } from "./auth/authenticate";
+import { userRoutes } from "./user/user.routes";
 
 const app = Fastify();
 
@@ -17,10 +19,24 @@ app.register(cors, {
 
 app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET!,
+  cookie: {
+    cookieName: "accessToken",
+    signed: false,
+  },
 });
+
+app.decorate("authenticate", authenticate);
 
 app.register(authRoutes, {
   prefix: "api/auth",
+});
+
+app.register(async (app) => {
+  app.addHook("preHandler", authenticate);
+
+  app.register(userRoutes, {
+    prefix: "api/user",
+  });
 });
 
 app.get("/health", async (_, reply) => {

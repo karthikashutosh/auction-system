@@ -6,7 +6,7 @@ export async function signupController(
   request: FastifyRequest<{
     Body: SignupDto;
   }>,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) {
   const user = await signupService(request.body);
 
@@ -15,7 +15,7 @@ export async function signupController(
 
 export async function loginController(
   request: FastifyRequest<{ Body: LoginDto }>,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) {
   const verifiedUser = await loginService(request.body);
 

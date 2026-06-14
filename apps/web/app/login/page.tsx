@@ -40,10 +40,11 @@ export default function LoginPage() {
 
   const { mutateAsync: loginAsync, isPending } = useLogin();
 
-  const onSubmit = async (data: LoginDto) =>
+  const onSubmit = async (data: LoginDto) => {
     loginAsync(data, {
       onSuccess: () => router.push("/"),
     });
+  };
 
   return (
     <Flex minH="100vh" bg="bg">

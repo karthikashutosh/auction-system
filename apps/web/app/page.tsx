@@ -13,9 +13,14 @@ import {
   Heading,
   HStack,
   Input,
+  Menu,
+  Portal,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useLogout } from "../hooks/userLogout";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "../store/auth.store";
 
 const auctions = [
   {
@@ -63,6 +68,22 @@ const auctions = [
 ];
 
 export default function MarketplacePage() {
+  const router = useRouter();
+  const { mutateAsync, isPending } = useLogout();
+
+  const user = useAuthStore((state) => state.user);
+
+  console.log("-------user", user);
+
+  const handleLogout = async () => {
+    try {
+      await mutateAsync();
+      router.push("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Box bg="bg" minH="100vh">
       <Container maxW="7xl" py={8}>
@@ -88,9 +109,37 @@ export default function MarketplacePage() {
               <NextLink href="/create">Create Auction</NextLink>
             </Button>
 
-            <Avatar.Root>
-              <Avatar.Fallback name="Guest" />
-            </Avatar.Root>
+            <Menu.Root positioning={{ placement: "bottom-end" }}>
+              <Menu.Trigger asChild>
+                <Button
+                  variant="ghost"
+                  p={0}
+                  minW="auto"
+                  h="auto"
+                  borderRadius="full"
+                >
+                  <Avatar.Root>
+                    <Avatar.Fallback name="Guest" />
+                  </Avatar.Root>
+                </Button>
+              </Menu.Trigger>
+
+              <Portal>
+                <Menu.Positioner>
+                  <Menu.Content p={2}>
+                    <Button
+                      colorPalette="red"
+                      size="sm"
+                      width="full"
+                      loading={isPending}
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </Button>
+                  </Menu.Content>
+                </Menu.Positioner>
+              </Portal>
+            </Menu.Root>
           </HStack>
         </Flex>
 
