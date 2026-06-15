@@ -1,22 +1,92 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import NextLink from "next/link";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
+import { FileUpload } from "../components/ui/file-upload";
+
 import {
+  Badge,
   Box,
   Button,
   Card,
   Container,
   Flex,
   Heading,
+  HStack,
   Input,
   Text,
   Textarea,
   VStack,
-  HStack,
-  Badge,
 } from "@chakra-ui/react";
+import { CreateAuctionFormData, createAuctionSchema } from "@repo/shared";
 
 export default function CreateAuctionPage() {
+  const [imagePreview, setImagePreview] = useState("");
+  const [previewUrl, setPreviewUrl] = useState("");
+
+  const {
+    control,
+    register,
+    watch,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<
+    z.input<typeof createAuctionSchema>,
+    unknown,
+    z.output<typeof createAuctionSchema>
+  >({
+    resolver: zodResolver(createAuctionSchema),
+  });
+
+  const title = watch("title");
+  const description = watch("description");
+  const startingPrice = watch("startingPrice");
+  const image = watch("image");
+
+  useEffect(() => {
+    if (!image) {
+      setPreviewUrl("");
+      return;
+    }
+
+    const url = URL.createObjectURL(image);
+
+    setPreviewUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [image]);
+
+  const handleFileChange = (file: File) => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setValue("image", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
+  const onSubmit = (data: CreateAuctionFormData) => {
+    console.log(data);
+  };
+
   return (
     <Box bg="bg" minH="100vh">
       <Container maxW="5xl" py={8}>
@@ -32,124 +102,186 @@ export default function CreateAuctionPage() {
           </Button>
         </Flex>
 
-        <Flex
-          direction={{
-            base: "column",
-            lg: "row",
-          }}
-          gap={6}
-        >
-          {/* FORM */}
-          <Card.Root
-            flex={1}
-            bg="surface"
-            borderColor="border"
-            borderWidth="1px"
-          >
-            <Card.Body>
-              <VStack align="stretch" gap={5}>
-                <Box>
-                  <Text mb={2} color="text">
-                    Auction Title
-                  </Text>
-
-                  <Input placeholder="MacBook Pro M4" size="lg" />
-                </Box>
-
-                <Box>
-                  <Text mb={2} color="text">
-                    Description
-                  </Text>
-
-                  <Textarea minH="140px" placeholder="Describe your item..." />
-                </Box>
-
-                <Box>
-                  <Text mb={2} color="text">
-                    Starting Price
-                  </Text>
-
-                  <Input placeholder="100000" type="number" size="lg" />
-                </Box>
-
-                <Box>
-                  <Text mb={2} color="text">
-                    Reserve Price
-                  </Text>
-
-                  <Input placeholder="150000" type="number" size="lg" />
-                </Box>
-
-                <Box>
-                  <Text mb={2} color="text">
-                    Auction End Date
-                  </Text>
-
-                  <Input type="datetime-local" size="lg" />
-                </Box>
-
-                <Box>
-                  <Text mb={2} color="text">
-                    Image URL
-                  </Text>
-
-                  <Input placeholder="https://..." size="lg" />
-                </Box>
-
-                <Button size="lg" colorPalette="brand">
-                  Create Auction
-                </Button>
-              </VStack>
-            </Card.Body>
-          </Card.Root>
-
-          {/* PREVIEW */}
-          <Card.Root
-            w={{
-              base: "100%",
-              lg: "380px",
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Flex
+            direction={{
+              base: "column",
+              lg: "row",
             }}
-            bg="surface"
-            borderColor="border"
-            borderWidth="1px"
+            gap={6}
           >
-            <Card.Body>
-              <VStack align="stretch" gap={4}>
-                <Text color="muted" fontSize="sm" textTransform="uppercase">
-                  Preview
-                </Text>
+            <Card.Root
+              flex={1}
+              bg="surface"
+              borderWidth="1px"
+              borderColor="border"
+            >
+              <Card.Body>
+                <VStack align="stretch" gap={5}>
+                  <Box>
+                    <Text mb={2}>Auction Title</Text>
 
-                <Box
-                  h="180px"
-                  borderRadius="xl"
-                  bg="blackAlpha.300"
-                  border="1px solid"
-                  borderColor="border"
-                />
+                    <Input
+                      placeholder="MacBook Pro M4"
+                      {...register("title")}
+                    />
 
-                <Heading size="md" color="text">
-                  MacBook Pro M4
-                </Heading>
+                    {errors.title && (
+                      <Text mt={1} color="red.500" fontSize="sm">
+                        {errors.title.message}
+                      </Text>
+                    )}
+                  </Box>
 
-                <Text color="muted">Apple Silicon • 16GB RAM • 512GB SSD</Text>
+                  <Box>
+                    <Text mb={2}>Description</Text>
 
-                <HStack>
-                  <Badge colorPalette="purple">New</Badge>
+                    <Textarea
+                      minH="140px"
+                      placeholder="Describe your item..."
+                      {...register("description")}
+                    />
 
-                  <Badge colorPalette="green">Active</Badge>
-                </HStack>
+                    {errors.description && (
+                      <Text mt={1} color="red.500" fontSize="sm">
+                        {errors.description.message}
+                      </Text>
+                    )}
+                  </Box>
 
-                <Box>
-                  <Text color="muted">Starting Price</Text>
+                  <Box>
+                    <Text mb={2}>Starting Price</Text>
 
-                  <Heading size="lg" color="primary">
-                    ₹100,000
-                  </Heading>
-                </Box>
-              </VStack>
-            </Card.Body>
-          </Card.Root>
-        </Flex>
+                    <Input
+                      type="number"
+                      placeholder="100000"
+                      {...register("startingPrice")}
+                    />
+
+                    {errors.startingPrice && (
+                      <Text mt={1} color="red.500" fontSize="sm">
+                        {errors.startingPrice.message}
+                      </Text>
+                    )}
+                  </Box>
+
+                  <Box>
+                    <Text mb={2}>Reserve Price</Text>
+
+                    <Input
+                      type="number"
+                      placeholder="150000"
+                      {...register("reservePrice")}
+                    />
+
+                    {errors.reservePrice && (
+                      <Text mt={1} color="red.500" fontSize="sm">
+                        {errors.reservePrice.message}
+                      </Text>
+                    )}
+                  </Box>
+
+                  <Box>
+                    <Text mb={2}>Auction End Date</Text>
+
+                    <Input type="datetime-local" {...register("endDate")} />
+
+                    {errors.endDate && (
+                      <Text mt={1} color="red.500" fontSize="sm">
+                        {errors.endDate.message}
+                      </Text>
+                    )}
+                  </Box>
+
+                  <Box>
+                    <Text mb={2}>Auction Image</Text>
+
+                    <Controller
+                      name="image"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <FileUpload
+                          file={field.value}
+                          error={fieldState.error?.message}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  <Button type="submit" size="lg" colorPalette="blue">
+                    Create Auction
+                  </Button>
+                </VStack>
+              </Card.Body>
+            </Card.Root>
+
+            <Card.Root
+              w={{
+                base: "100%",
+                lg: "380px",
+              }}
+              bg="surface"
+              borderWidth="1px"
+              borderColor="border"
+            >
+              <Card.Body>
+                <VStack align="stretch" gap={4}>
+                  <Text color="muted" fontSize="sm" textTransform="uppercase">
+                    Preview
+                  </Text>
+
+                  <Box
+                    h="250px"
+                    borderRadius="xl"
+                    overflow="hidden"
+                    border="1px solid"
+                    borderColor="border"
+                  >
+                    {previewUrl ? (
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          objectPosition: "center",
+                          display: "block",
+                        }}
+                      />
+                    ) : (
+                      <Box h="100%" bg="blackAlpha.300" />
+                    )}
+                  </Box>
+
+                  <Heading size="md">{title || "Auction Title"}</Heading>
+
+                  <Text color="muted">
+                    {description || "Auction description"}
+                  </Text>
+
+                  <HStack>
+                    <Badge colorPalette="purple">New</Badge>
+
+                    <Badge colorPalette="green">Active</Badge>
+                  </HStack>
+
+                  <Box>
+                    <Text color="muted">Starting Price</Text>
+
+                    <Heading size="lg" color="blue.500">
+                      ₹
+                      {startingPrice
+                        ? Number(startingPrice).toLocaleString()
+                        : "0"}
+                    </Heading>
+                  </Box>
+                </VStack>
+              </Card.Body>
+            </Card.Root>
+          </Flex>
+        </form>
       </Container>
     </Box>
   );
