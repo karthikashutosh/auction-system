@@ -30,3 +30,9 @@ export const getAuctionCount = async () => {
   const total = Number(response.rows[0].count);
   return total;
 };
+
+export const getAuctionById = async (id) => {
+  const query = `SELECT * FROM auctions WHERE id = $1 LIMIT 1`;
+  const response = await db.query(query, [id]);
+  return response.rows[0];
+};

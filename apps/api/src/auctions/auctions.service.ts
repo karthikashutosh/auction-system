@@ -1,9 +1,11 @@
 import { CreateAuctionApiInput } from "@repo/shared";
 import {
   addAuction,
+  getAuctionById,
   getAuctionCount,
   getAuctions,
 } from "./auctions.repository";
+import { getSignedImageUrl } from "../config";
 
 interface GetAuctionsInput {
   limit: number;
@@ -51,5 +53,14 @@ export const getAllAuctionsService = async (query: GetAuctionsInput) => {
     totalItems: count,
     limit,
     offset,
+  };
+};
+
+export const getAuctionByIdService = async (data) => {
+  const result = await getAuctionById(data);
+  const imageUrl = await getSignedImageUrl(result.image_key);
+  return {
+    ...result,
+    imageUrl,
   };
 };

@@ -23,51 +23,6 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/auth.store";
 import { useGetAuctions } from "../hooks/useGetAllAuctions";
 
-const auctions = [
-  {
-    id: "1",
-    title: "MacBook Pro M4",
-    currentBid: "₹120,000",
-    bids: 32,
-    status: "Active",
-  },
-  {
-    id: "2",
-    title: "iPhone 17 Pro",
-    currentBid: "₹95,000",
-    bids: 21,
-    status: "Active",
-  },
-  {
-    id: "3",
-    title: "PlayStation 6",
-    currentBid: "₹65,000",
-    bids: 14,
-    status: "Ending Soon",
-  },
-  {
-    id: "4",
-    title: "Royal Enfield Classic",
-    currentBid: "₹240,000",
-    bids: 18,
-    status: "Active",
-  },
-  {
-    id: "5",
-    title: "Sony A7 IV",
-    currentBid: "₹110,000",
-    bids: 12,
-    status: "Active",
-  },
-  {
-    id: "6",
-    title: "Gaming PC RTX 5090",
-    currentBid: "₹320,000",
-    bids: 28,
-    status: "Ending Soon",
-  },
-];
-
 export default function MarketplacePage() {
   const router = useRouter();
   const { mutateAsync, isPending } = useLogout();
@@ -161,7 +116,7 @@ export default function MarketplacePage() {
               </Box>
 
               <Badge colorPalette="purple" px={3} py={1}>
-                {auctions.length} Auctions Live
+                {data?.totalItems} Auctions Live
               </Badge>
             </Flex>
           </Card.Body>
@@ -175,7 +130,7 @@ export default function MarketplacePage() {
           }}
           gap={6}
         >
-          {auctions.map((auction) => (
+          {data?.items.map((auction) => (
             <Card.Root
               key={auction.id}
               bg="surface"

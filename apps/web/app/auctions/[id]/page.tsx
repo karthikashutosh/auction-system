@@ -1,22 +1,39 @@
 "use client";
 
-import NextLink from "next/link";
 import {
   Badge,
   Box,
   Button,
-  Card,
   Container,
   Flex,
   Grid,
-  Heading,
-  HStack,
-  Input,
-  Progress,
-  Separator,
-  Text,
   VStack,
 } from "@chakra-ui/react";
+import { useParams } from "next/navigation";
+import { useGetAuctionById } from "../../../hooks/useGetAuctionById";
+import { useAuthStore } from "../../../store/auth.store";
+import { AuctionDetails } from "../../components/Auction/auction-details";
+import { AuctionHero } from "../../components/Auction/auction-hero";
+import { AuctionMetrics } from "../../components/Auction/auction-metrics";
+import { AuctionStatusCard } from "../../components/Auction/auction-status-card";
+import { BidForm } from "../../components/Auction/bid-form";
+import { BidFeed } from "../../components/Auction/bit-feed";
+import NextLink from "next/link";
+
+const bids = [
+  {
+    id: "1",
+    bidderName: "John",
+    amount: 12000,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "2",
+    bidderName: "Alice",
+    amount: 11800,
+    createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+  },
+];
 
 const bidHistory = [
   {
@@ -42,143 +59,83 @@ const bidHistory = [
 ];
 
 export default function AuctionDetailPage() {
+  const router = useParams();
+
+  const user = useAuthStore((state) => state.user);
+
+  const { data } = useGetAuctionById(router.id as string);
+
+  const isAuctionOwner = user?.id === data?.owner_id;
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Box bg="bg" minH="100vh">
-      <Container maxW="7xl" py={8}>
+      <Container maxW="1400px" py={10}>
         <Flex justify="space-between" align="center" mb={8}>
-          <Button asChild variant="ghost">
-            <NextLink href="/">← Back</NextLink>
+          <Button asChild variant="subtle">
+            <NextLink href="/">← Back to Marketplace</NextLink>
           </Button>
 
-          <Badge colorPalette="green">ACTIVE</Badge>
+          <Badge colorPalette={data.status === "ACTIVE" ? "green" : "red"}>
+            {data.status}
+          </Badge>
         </Flex>
 
         <Grid
           templateColumns={{
             base: "1fr",
-            lg: "2fr 1fr",
+            xl: "minmax(0, 2fr) 420px",
           }}
-          gap={6}
+          gap={8}
         >
           {/* LEFT */}
-          <VStack align="stretch" gap={6}>
-            <Card.Root bg="surface" borderColor="border" borderWidth="1px">
-              <Card.Body>
-                <VStack align="stretch" gap={4}>
-                  <Heading color="text" size="lg">
-                    MacBook Pro M4
-                  </Heading>
+          <VStack align="stretch" gap={8}>
+            <AuctionHero auction={data} />
 
-                  <Text color="muted">
-                    Apple MacBook Pro M4, 16GB RAM, 512GB SSD, Space Black
-                  </Text>
+            <AuctionMetrics
+              startingPrice={data.starting_price}
+              currentPrice={data.current_price}
+              totalBids={32}
+              participants={18}
+            />
 
-                  <Separator />
-
-                  <Box>
-                    <Text color="muted">Current Highest Bid</Text>
-
-                    <Heading color="primary" size="2xl">
-                      ₹120,000
-                    </Heading>
-                  </Box>
-
-                  <Box>
-                    <Text color="muted">Auction Progress</Text>
-
-                    <Progress.Root value={72} size="sm">
-                      <Progress.Track>
-                        <Progress.Range />
-                      </Progress.Track>
-                    </Progress.Root>
-
-                    <Text mt={2} color="muted" fontSize="sm">
-                      72% Complete
-                    </Text>
-                  </Box>
-                </VStack>
-              </Card.Body>
-            </Card.Root>
-
-            <Card.Root bg="surface" borderColor="border" borderWidth="1px">
-              <Card.Body>
-                <Heading size="md" mb={5} color="text">
-                  Place Your Bid
-                </Heading>
-
-                <VStack align="stretch" gap={4}>
-                  <Input placeholder="Enter bid amount" size="lg" />
-
-                  <Button size="lg" colorPalette="brand">
-                    Place Bid
-                  </Button>
-
-                  <Text color="muted" fontSize="sm">
-                    Minimum next bid: ₹125,000
-                  </Text>
-                </VStack>
-              </Card.Body>
-            </Card.Root>
+            <AuctionDetails
+              description={data.description}
+              ownerId={data.owner_id}
+              reservePrice={data.reserve_price}
+              startTime={data.start_time}
+              endTime={data.end_time}
+            />
           </VStack>
 
           {/* RIGHT */}
-          <VStack align="stretch" gap={6}>
-            <Card.Root bg="surface" borderColor="border" borderWidth="1px">
-              <Card.Body>
-                <Heading size="sm" mb={4} color="text">
-                  Auction Stats
-                </Heading>
+          <VStack
+            align="stretch"
+            gap={6}
+            position={{
+              base: "static",
+              xl: "sticky",
+            }}
+            top="24px"
+            h="fit-content"
+          >
+            <AuctionStatusCard
+              currentPrice={data.current_price}
+              reservePrice={data.reserve_price}
+              startTime={data.start_time}
+              endTime={data.end_time}
+              status={data.status}
+            />
 
-                <VStack align="stretch" gap={4}>
-                  <Box>
-                    <Text color="muted">Total Bids</Text>
-                    <Text color="text" fontWeight="bold">
-                      32
-                    </Text>
-                  </Box>
+            <BidForm
+              currentPrice={data.current_price}
+              disabled={isAuctionOwner}
+            />
 
-                  <Box>
-                    <Text color="muted">Participants</Text>
-                    <Text color="text" fontWeight="bold">
-                      18
-                    </Text>
-                  </Box>
-
-                  <Box>
-                    <Text color="muted">Ends In</Text>
-                    <Text color="text" fontWeight="bold">
-                      02h 14m 22s
-                    </Text>
-                  </Box>
-                </VStack>
-              </Card.Body>
-            </Card.Root>
-
-            <Card.Root bg="surface" borderColor="border" borderWidth="1px">
-              <Card.Body>
-                <Heading size="sm" mb={4} color="text">
-                  Live Bid Feed
-                </Heading>
-
-                <VStack align="stretch" gap={4}>
-                  {bidHistory.map((bid, index) => (
-                    <Flex key={index} justify="space-between">
-                      <Box>
-                        <Text color="text">{bid.user}</Text>
-
-                        <Text color="muted" fontSize="sm">
-                          {bid.time}
-                        </Text>
-                      </Box>
-
-                      <Text color="primary" fontWeight="bold">
-                        {bid.amount}
-                      </Text>
-                    </Flex>
-                  ))}
-                </VStack>
-              </Card.Body>
-            </Card.Root>
+            <BidFeed bids={bids} />
           </VStack>
         </Grid>
       </Container>

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, QueryClient } from "@tanstack/react-query";
 import { api } from "../api/axios";
 
 export interface CreateAuctionPayload {
@@ -16,6 +16,7 @@ export interface CreateAuctionResponse {
 }
 
 export const useCreateAuction = () => {
+  const queryClient = new QueryClient();
   return useMutation({
     mutationFn: async (
       payload: CreateAuctionPayload
@@ -23,6 +24,11 @@ export const useCreateAuction = () => {
       const { data } = await api.post("/auctions", payload);
 
       return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["auctions"],
+      });
     },
   });
 };

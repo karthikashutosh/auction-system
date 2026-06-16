@@ -2,8 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { FileUpload } from "../components/ui/file-upload";
 
@@ -22,9 +23,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { CreateAuctionFormData, createAuctionSchema } from "@repo/shared";
+import { uploadFileToS3 } from "../../api/axios";
 import { useCreateAuction } from "../../hooks/useCreateAuction";
 import { useGetPresignedUrl } from "../../hooks/useGetPresignedUrl";
-import { uploadFileToS3 } from "../../api/axios";
 
 export default function CreateAuctionPage() {
   const [imagePreview, setImagePreview] = useState("");
@@ -33,6 +34,7 @@ export default function CreateAuctionPage() {
 
   const createAuctionMutation = useCreateAuction();
   const getPresignedUrlMutation = useGetPresignedUrl();
+  const router = useRouter();
 
   const {
     control,
@@ -118,6 +120,8 @@ export default function CreateAuctionPage() {
         endDate: data.endDate,
         imageKey: presigned.key,
       });
+
+      router.push("/");
     } catch (error) {
       console.error(error);
     } finally {

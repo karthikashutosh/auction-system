@@ -10,3 +10,9 @@ export const getAllAuctions = async (limit = 20, offset = 0) => {
 
   return data;
 };
+
+export const getAuctionById = async (id: string) => {
+  const response = await api.get(`/auctions/${id}`);
+
+  return response.data;
+};

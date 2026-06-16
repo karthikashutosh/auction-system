@@ -11,7 +11,7 @@ interface Auction {
 
 interface AuctionsResponse {
   items: Auction[];
-  total: number;
+  totalItems: number;
   limit: number;
   offset: number;
 }
