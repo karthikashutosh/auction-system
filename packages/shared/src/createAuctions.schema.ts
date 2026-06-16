@@ -60,7 +60,42 @@ export const createAuctionSchema = z
     }
   );
 
+export const createAuctionApiSchema = z
+  .object({
+    title: z.string().trim().min(1).min(3).max(100),
+
+    description: z.string().trim().min(1).min(20).max(2000),
+
+    startingPrice: z.number().gt(0),
+
+    reservePrice: z.number().gt(0),
+
+    endDate: z.string(),
+
+    imageKey: z.string().min(1),
+  })
+  .refine((data) => data.reservePrice >= data.startingPrice, {
+    path: ["reservePrice"],
+    message: "Reserve price must be greater than or equal to starting price",
+  })
+  .refine(
+    (data) => {
+      const selectedDate = new Date(data.endDate);
+      return selectedDate > new Date();
+    },
+    {
+      path: ["endDate"],
+      message: "Auction end date must be in the future",
+    }
+  );
+
+export const getAuctionsSchema = z.object({
+  limit: z.coerce.number().min(1).default(20),
+  offset: z.coerce.number().min(0).default(0),
+});
+
 export type CreateAuctionFormData = z.infer<typeof createAuctionSchema>;
 export type CreateAuctionFormInput = z.input<typeof createAuctionSchema>;
+export type CreateAuctionApiInput = z.infer<typeof createAuctionApiSchema>;
 
 export type CreateAuctionFormOutput = z.output<typeof createAuctionSchema>;

@@ -21,6 +21,7 @@ import {
 import { useLogout } from "../hooks/userLogout";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/auth.store";
+import { useGetAuctions } from "../hooks/useGetAllAuctions";
 
 const auctions = [
   {
@@ -73,7 +74,7 @@ export default function MarketplacePage() {
 
   const user = useAuthStore((state) => state.user);
 
-  console.log("-------user", user);
+  const { data } = useGetAuctions({ limit: 20, offset: 0 });
 
   const handleLogout = async () => {
     try {

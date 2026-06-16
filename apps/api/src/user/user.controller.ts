@@ -1,7 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { findById } from "./user.repository";
+import { getMe } from "./user.service";
 
-type AuthUser = {
+export type AuthUser = {
   id: string;
   email: string;
   name: string;
@@ -13,13 +14,9 @@ export async function getMeController(
 ) {
   const user = request.user as AuthUser;
 
-  const updatedUser = await findById(user.id);
+  const result = await getMe(user.id);
 
-  reply.code(200).send({
-    id: updatedUser.id,
-    email: updatedUser.email,
-    name: updatedUser.name,
-  });
+  reply.code(200).send(result);
 }
 
 export async function logoutController(_, reply: FastifyReply) {

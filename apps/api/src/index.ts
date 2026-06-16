@@ -7,6 +7,9 @@ import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
 import { authenticate } from "./auth/authenticate";
 import { userRoutes } from "./user/user.routes";
+import multipart from "@fastify/multipart";
+import { uploadRoutes } from "./uploads/uploads.routes";
+import { auctionsRoutes } from "./auctions/auctions.routes";
 
 const app = Fastify();
 
@@ -25,6 +28,8 @@ app.register(fastifyJwt, {
   },
 });
 
+app.register(multipart);
+
 app.decorate("authenticate", authenticate);
 
 app.register(authRoutes, {
@@ -36,6 +41,20 @@ app.register(async (app) => {
 
   app.register(userRoutes, {
     prefix: "api/user",
+  });
+});
+
+app.register(async (app) => {
+  app.addHook("preHandler", authenticate);
+  app.register(uploadRoutes, {
+    prefix: "api/uploads",
+  });
+});
+
+app.register(async (app) => {
+  app.addHook("preHandler", authenticate);
+  app.register(auctionsRoutes, {
+    prefix: "api/auctions",
   });
 });
 

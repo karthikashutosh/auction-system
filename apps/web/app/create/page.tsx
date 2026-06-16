@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import z from "zod";
 import { FileUpload } from "../components/ui/file-upload";
 
@@ -22,10 +22,17 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { CreateAuctionFormData, createAuctionSchema } from "@repo/shared";
+import { useCreateAuction } from "../../hooks/useCreateAuction";
+import { useGetPresignedUrl } from "../../hooks/useGetPresignedUrl";
+import { uploadFileToS3 } from "../../api/axios";
 
 export default function CreateAuctionPage() {
   const [imagePreview, setImagePreview] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const createAuctionMutation = useCreateAuction();
+  const getPresignedUrlMutation = useGetPresignedUrl();
 
   const {
     control,
@@ -83,8 +90,39 @@ export default function CreateAuctionPage() {
     };
   }, [imagePreview]);
 
-  const onSubmit = (data: CreateAuctionFormData) => {
-    console.log(data);
+  const onSubmit = async (data: CreateAuctionFormData) => {
+    try {
+      setIsSubmitting(true);
+
+      const file = data.image;
+
+      if (!file) {
+        throw new Error("Image is required");
+      }
+
+      // 1. Get Presigned URL
+      const presigned = await getPresignedUrlMutation.mutateAsync({
+        fileName: file.name,
+        contentType: file.type,
+      });
+
+      // // 2. Upload To S3
+      await uploadFileToS3(presigned.uploadUrl, file);
+
+      // 3. Create Auction
+      await createAuctionMutation.mutateAsync({
+        title: data.title,
+        description: data.description,
+        startingPrice: data.startingPrice,
+        reservePrice: data.reservePrice,
+        endDate: data.endDate,
+        imageKey: presigned.key,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -209,7 +247,12 @@ export default function CreateAuctionPage() {
                     />
                   </Box>
 
-                  <Button type="submit" size="lg" colorPalette="blue">
+                  <Button
+                    loading={isSubmitting}
+                    type="submit"
+                    size="lg"
+                    colorPalette="blue"
+                  >
                     Create Auction
                   </Button>
                 </VStack>
