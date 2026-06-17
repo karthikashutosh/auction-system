@@ -20,6 +20,7 @@ export function BidForm({ currentPrice, disabled = false }: Props) {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<BidFormValues>({
     resolver: zodResolver(bidSchema),
@@ -31,6 +32,11 @@ export function BidForm({ currentPrice, disabled = false }: Props) {
 
   const submit = async (values: BidFormValues) => {
     if (values.amount < minimumBid) {
+      setError("amount", {
+        type: "manual",
+        message: `Minimum bid amount is ₹${minimumBid}`,
+      });
+
       return;
     }
 
