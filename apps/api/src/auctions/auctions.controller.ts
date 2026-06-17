@@ -3,6 +3,7 @@ import {
   createAuctionService,
   getAllAuctionsService,
   getAuctionByIdService,
+  getBidsHistoryService,
   placeBidService,
 } from "./auctions.service";
 import { createAuctionApiSchema, getAuctionsSchema } from "@repo/shared";
@@ -55,4 +56,20 @@ export const placeBidController = async (
   });
 
   reply.code(201).send(bidResult);
+};
+
+export const getBidsHistoryController = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const user = request.user as AuthUser;
+
+  const { limit, page } = request.query as { page: number; limit: number };
+  const result = await getBidsHistoryService({
+    userId: user.id,
+    limit,
+    page,
+  });
+
+  reply.code(200).send(result);
 };

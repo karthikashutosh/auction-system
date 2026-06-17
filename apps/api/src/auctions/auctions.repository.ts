@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { db } from "../db";
-import { PlaceBidServiceRequest } from "./auctions.service";
+import { BidHistoryInput, PlaceBidServiceRequest } from "./auctions.service";
 
 export interface ValidAuction {
   client: PoolClient;
@@ -82,4 +82,30 @@ export const updateAuctionRepository = async (data: ValidAuction) => {
   const query = `UPDATE auctions SET current_price = $1, highest_bidder_id = $2 WHERE id = $3`;
   const result = await client.query(query, [bidAmount, userId, auctionId]);
   return result.rows[0];
+};
+
+export const getBidsHistoryRepository = async (
+  data: Omit<BidHistoryInput, "page"> & { offset: number }
+) => {
+  const { userId, limit, offset } = data;
+
+  const query = `SELECT a.id,
+  a.title,
+  a.image_key,
+  b.amount AS bid_amount,
+  a.current_price,
+  a.status,
+  a.end_time,
+  b.created_at AS bid_time FROM bids b INNER JOIN auctions a ON b.auction_id = a.id WHERE b.user_id = $1 ORDER BY b.created_at DESC LIMIT $2 OFFSET $3`;
+
+  const result = await db.query(query, [userId, limit, offset]);
+
+  return result.rows;
+};
+
+export const getCountBidsHistory = async ({ userId }: { userId: string }) => {
+  const query = `SELECT COUNT(*) FROM bids WHERE user_id = $1`;
+  const result = await db.query(query, [userId]);
+  const total = Number(result.rows[0].count);
+  return total;
 };

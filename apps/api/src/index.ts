@@ -10,6 +10,7 @@ import { userRoutes } from "./user/user.routes";
 import multipart from "@fastify/multipart";
 import { uploadRoutes } from "./uploads/uploads.routes";
 import { auctionsRoutes } from "./auctions/auctions.routes";
+import { AppError } from "./errors";
 
 const app = Fastify();
 
@@ -72,6 +73,20 @@ app.get("/health", async (_, reply) => {
       status: "unhealthy",
     };
   }
+});
+
+app.setErrorHandler((error, request, reply) => {
+  if (error instanceof AppError) {
+    return reply.status(error.statusCode).send({
+      message: error.message,
+    });
+  }
+
+  request.log.error(error);
+
+  return reply.status(500).send({
+    message: "Internal Server Error",
+  });
 });
 
 app.listen({ port: 3001 }, (err) => {

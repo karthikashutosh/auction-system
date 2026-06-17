@@ -1,21 +1,26 @@
 import { CreateAuctionApiInput } from "@repo/shared";
+import { getSignedImageUrl } from "../config";
+import { db } from "../db";
+import { BadRequestError, NotFoundError } from "../errors";
 import {
   addAuction,
   getAuctionById,
   getAuctionCount,
   getAuctions,
+  getBidsHistoryRepository,
+  getCountBidsHistory,
   getValidAuctionById,
   placeNewBid,
   updateAuctionRepository,
 } from "./auctions.repository";
-import { getSignedImageUrl } from "../config";
-import { Pool } from "pg";
-import { db } from "../db";
-import { error } from "console";
 
 interface GetAuctionsInput {
   limit: number;
   page: number;
+}
+
+export interface BidHistoryInput extends GetAuctionsInput {
+  userId: string;
 }
 
 export interface PlaceBidServiceRequest {
@@ -101,18 +106,20 @@ export const placeBidService = async (data: PlaceBidServiceRequest) => {
       },
     });
 
-    if (!validAuction) throw new Error("Auction is Not Exist");
-
     const minimumBid = validAuction.current_price + 100;
 
-    if (validAuction.status !== "ACTIVE") throw new Error("Auction Ended");
+    if (!validAuction) {
+      throw new NotFoundError("Auction not found");
+    }
 
-    if (validAuction.owner_id === userId) {
-      throw new Error("Auction owner cannot place Bid");
+    if (validAuction.status !== "ACTIVE") {
+      throw new BadRequestError("Auction ended");
     }
 
     if (bidAmount < minimumBid) {
-      throw new Error("Bid Amount Should Minimum 100rs more than Current bid");
+      throw new BadRequestError(
+        "Bid Amount Should Minimum 100rs more than Current bid"
+      );
     }
 
     const newBid = await placeNewBid({
@@ -144,4 +151,32 @@ export const placeBidService = async (data: PlaceBidServiceRequest) => {
   } finally {
     client.release();
   }
+};
+
+export const getBidsHistoryService = async (data: BidHistoryInput) => {
+  const { userId, page, limit } = data;
+  const offset = (page - 1) * limit;
+
+  const [count, items] = await Promise.all([
+    getCountBidsHistory({ userId }),
+    getBidsHistoryRepository({
+      userId,
+      limit,
+      offset,
+    }),
+  ]);
+
+  const totalPages = Math.ceil(count / limit);
+
+  return {
+    items,
+    pagination: {
+      page,
+      limit,
+      totalItems: count,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
 };

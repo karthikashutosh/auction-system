@@ -24,7 +24,7 @@ export const appNavItems = [
   },
   {
     label: "My Bids",
-    href: "/my-bids",
+    href: "/bids",
     icon: BadgeDollarSign,
   },
   {
