@@ -90,8 +90,8 @@ export const createAuctionApiSchema = z
   );
 
 export const getAuctionsSchema = z.object({
-  limit: z.coerce.number().min(1).default(20),
-  offset: z.coerce.number().min(0).default(0),
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(10),
 });
 
 export type CreateAuctionFormData = z.infer<typeof createAuctionSchema>;

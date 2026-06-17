@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { findById } from "./user.repository";
-import { getMe } from "./user.service";
+import { getAuctionsSchema } from "../../../../packages/shared/src/createAuctions.schema";
+import { getMe, getMyAuctionService } from "./user.service";
 
 export type AuthUser = {
   id: string;
@@ -24,3 +24,16 @@ export async function logoutController(_, reply: FastifyReply) {
     path: "/",
   });
 }
+
+export const getMyAuctionsController = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const user = request.user as AuthUser;
+  const query = getAuctionsSchema.parse(request.query);
+  const { limit, page } = query;
+
+  const response = await getMyAuctionService({ id: user.id, limit, page });
+
+  reply.code(200).send(response);
+};

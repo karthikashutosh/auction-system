@@ -10,14 +10,14 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import { useGetAuctionById } from "../../../hooks/useGetAuctionById";
-import { useAuthStore } from "../../../store/auth.store";
-import { AuctionDetails } from "../../components/Auction/auction-details";
-import { AuctionHero } from "../../components/Auction/auction-hero";
-import { AuctionMetrics } from "../../components/Auction/auction-metrics";
-import { AuctionStatusCard } from "../../components/Auction/auction-status-card";
-import { BidForm } from "../../components/Auction/bid-form";
-import { BidFeed } from "../../components/Auction/bit-feed";
+import { useGetAuctionById } from "../../../../hooks/useGetAuctionById";
+import { useAuthStore } from "../../../../store/auth.store";
+import { AuctionDetails } from "../../../components/Auction/auction-details";
+import { AuctionHero } from "../../../components/Auction/auction-hero";
+import { AuctionMetrics } from "../../../components/Auction/auction-metrics";
+import { AuctionStatusCard } from "../../../components/Auction/auction-status-card";
+import { BidForm } from "../../../components/Auction/bid-form";
+import { BidFeed } from "../../../components/Auction/bit-feed";
 import NextLink from "next/link";
 
 const bids = [

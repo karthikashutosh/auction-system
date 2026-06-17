@@ -6,3 +6,28 @@ export async function findById(id: string) {
   ]);
   return results.rows[0];
 }
+
+export const getMyAuctionRepository = async ({ id, limit, offset }) => {
+  const result = await db.query(
+    `SELECT *
+FROM auctions
+WHERE owner_id = $1
+ORDER BY start_time DESC
+LIMIT $2
+OFFSET $3`,
+    [id, limit, offset]
+  );
+
+  return result.rows;
+};
+
+export const getMyAuctionCount = async (id: string) => {
+  const result = await db.query(
+    `SELECT COUNT(*) FROM auctions WHERE owner_id = $1`,
+    [id]
+  );
+
+  const toatl = Number(result.rows[0].count);
+
+  return toatl;
+};

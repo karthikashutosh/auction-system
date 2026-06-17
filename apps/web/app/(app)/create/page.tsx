@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
-import { FileUpload } from "../components/ui/file-upload";
+import { FileUpload } from "../../components/ui/file-upload";
 
 import {
   Badge,
@@ -23,9 +23,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { CreateAuctionFormData, createAuctionSchema } from "@repo/shared";
-import { uploadFileToS3 } from "../../api/axios";
-import { useCreateAuction } from "../../hooks/useCreateAuction";
-import { useGetPresignedUrl } from "../../hooks/useGetPresignedUrl";
+import { uploadFileToS3 } from "../../../api/axios";
+import { useCreateAuction } from "../../../hooks/useCreateAuction";
+import { useGetPresignedUrl } from "../../../hooks/useGetPresignedUrl";
 
 export default function CreateAuctionPage() {
   const [imagePreview, setImagePreview] = useState("");

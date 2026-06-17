@@ -9,7 +9,7 @@ import { getSignedImageUrl } from "../config";
 
 interface GetAuctionsInput {
   limit: number;
-  offset: number;
+  page: number;
 }
 
 export const createAuctionService = async (
@@ -41,18 +41,27 @@ export const createAuctionService = async (
 };
 
 export const getAllAuctionsService = async (query: GetAuctionsInput) => {
-  const { limit, offset } = query;
+  const { limit, page } = query;
+
+  const offset = (page - 1) * limit;
 
   const [count, items] = await Promise.all([
     getAuctionCount(),
     getAuctions({ limit, offset }),
   ]);
 
+  const totalPages = Math.ceil(count / limit);
+
   return {
     items,
-    totalItems: count,
-    limit,
-    offset,
+    pagination: {
+      page,
+      limit,
+      totalItems: count,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
   };
 };
 

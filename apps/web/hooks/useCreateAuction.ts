@@ -1,4 +1,4 @@
-import { useMutation, QueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/axios";
 
 export interface CreateAuctionPayload {
@@ -16,7 +16,7 @@ export interface CreateAuctionResponse {
 }
 
 export const useCreateAuction = () => {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (
       payload: CreateAuctionPayload
