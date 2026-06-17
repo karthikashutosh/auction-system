@@ -1,4 +1,16 @@
+import { PoolClient } from "pg";
 import { db } from "../db";
+import { PlaceBidServiceRequest } from "./auctions.service";
+
+export interface ValidAuction {
+  client: PoolClient;
+  auctionInput: PlaceBidServiceRequest;
+}
+
+export interface ValidAuctionById {
+  client: PoolClient;
+  auctionInput: Pick<PlaceBidServiceRequest, "auctionId">;
+}
 
 export const addAuction = async (data) => {
   const query = `INSERT INTO auctions(owner_id, title, description, image_key, starting_price, current_price, reserve_price, start_time, end_time) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`;
@@ -35,4 +47,39 @@ export const getAuctionById = async (id) => {
   const query = `SELECT * FROM auctions WHERE id = $1 LIMIT 1`;
   const response = await db.query(query, [id]);
   return response.rows[0];
+};
+
+export const getValidAuctionById = async (data: ValidAuctionById) => {
+  const {
+    client,
+    auctionInput: { auctionId },
+  } = data;
+
+  const query = `SELECT * FROM auctions WHERE id =$1 FOR UPDATE`;
+
+  const result = await client.query(query, [auctionId]);
+
+  return result.rows[0];
+};
+
+export const placeNewBid = async (data: ValidAuction) => {
+  const {
+    client,
+    auctionInput: { auctionId, bidAmount, userId },
+  } = data;
+
+  const query = `INSERT INTO bids (user_id,auction_id,amount) VALUES($1, $2, $3) RETURNING *`;
+  const result = await client.query(query, [userId, auctionId, bidAmount]);
+  return result.rows[0];
+};
+
+export const updateAuctionRepository = async (data: ValidAuction) => {
+  const {
+    client,
+    auctionInput: { auctionId, bidAmount, userId },
+  } = data;
+
+  const query = `UPDATE auctions SET current_price = $1, highest_bidder_id = $2 WHERE id = $3`;
+  const result = await client.query(query, [bidAmount, userId, auctionId]);
+  return result.rows[0];
 };

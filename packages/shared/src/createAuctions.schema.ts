@@ -94,6 +94,12 @@ export const getAuctionsSchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(10),
 });
 
+export const bidSchema = z.object({
+  amount: z.number().positive(),
+});
+
+export type BidFormValues = z.input<typeof bidSchema>;
+
 export type CreateAuctionFormData = z.infer<typeof createAuctionSchema>;
 export type CreateAuctionFormInput = z.input<typeof createAuctionSchema>;
 export type CreateAuctionApiInput = z.infer<typeof createAuctionApiSchema>;

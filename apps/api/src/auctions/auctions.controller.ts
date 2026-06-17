@@ -3,6 +3,7 @@ import {
   createAuctionService,
   getAllAuctionsService,
   getAuctionByIdService,
+  placeBidService,
 } from "./auctions.service";
 import { createAuctionApiSchema, getAuctionsSchema } from "@repo/shared";
 import { AuthUser } from "../user/user.controller";
@@ -38,4 +39,20 @@ export const getAuctionByIdController = async (
 ) => {
   const response = await getAuctionByIdService(request.params.id);
   return reply.send(response);
+};
+
+export const placeBidController = async (
+  request: FastifyRequest<{ Body: { bidAmount: number } }>,
+  reply: FastifyReply
+) => {
+  const user = request.user as AuthUser;
+  const { id: auctionId } = request.params as { id: string };
+
+  const bidResult = await placeBidService({
+    auctionId,
+    userId: user.id,
+    bidAmount: request.body.bidAmount,
+  });
+
+  reply.code(201).send(bidResult);
 };
