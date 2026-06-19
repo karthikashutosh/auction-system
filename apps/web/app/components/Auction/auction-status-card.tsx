@@ -4,26 +4,26 @@ import {
   Badge,
   Card,
   Heading,
+  HStack,
   Separator,
   Text,
   VStack,
 } from "@chakra-ui/react";
 
 import { AuctionCountdown } from "./auction-countdown";
-import { AuctionProgress } from "./auction-progress";
 
 type Props = {
+  title: string;
   currentPrice: number;
   isReserveMet: boolean;
-  startTime: string;
   endTime: string;
   status: string;
 };
 
 export function AuctionStatusCard({
+  title,
   currentPrice,
   isReserveMet,
-  startTime,
   endTime,
   status,
 }: Props) {
@@ -31,44 +31,39 @@ export function AuctionStatusCard({
     <Card.Root>
       <Card.Body>
         <VStack align="stretch" gap={5}>
-          <Badge
-            alignSelf="flex-start"
-            colorPalette={status === "ACTIVE" ? "green" : "red"}
-          >
-            {status}
-          </Badge>
+          <HStack justify="space-between">
+            <Badge colorPalette={status === "ACTIVE" ? "green" : "red"}>
+              {status}
+            </Badge>
 
-          <div>
+            <Badge colorPalette={isReserveMet ? "green" : "orange"}>
+              {isReserveMet ? "Reserve Met" : "Reserve Not Met"}
+            </Badge>
+          </HStack>
+
+          <VStack align="start" gap={1}>
+            <Heading size="md" lineClamp={2}>
+              {title}
+            </Heading>
+
             <Text fontSize="sm" color="fg.muted">
               Current Highest Bid
             </Text>
 
-            <Heading mt={2} size="3xl" color="blue.500">
-              ₹{Number(currentPrice).toLocaleString()}
+            <Heading size="3xl" color="blue.500">
+              ₹{currentPrice.toLocaleString()}
             </Heading>
-          </div>
+          </VStack>
+
           <Separator />
 
-          <div>
-            <Text fontSize="sm" color="fg.muted" mb={2}>
+          <VStack align="start" gap={2}>
+            <Text fontSize="sm" color="fg.muted">
               Time Remaining
             </Text>
+
             <AuctionCountdown endTime={endTime} />
-          </div>
-
-          <Separator />
-          <AuctionProgress startTime={startTime} endTime={endTime} />
-          <Separator />
-
-          <div>
-            <Text fontSize="sm" color="fg.muted">
-              Reserve Price Stage
-            </Text>
-
-            <Badge mt={3} colorPalette={isReserveMet ? "green" : "orange"}>
-              {isReserveMet ? "Reserve Met" : "Reserve Not Met"}
-            </Badge>
-          </div>
+          </VStack>
         </VStack>
       </Card.Body>
     </Card.Root>

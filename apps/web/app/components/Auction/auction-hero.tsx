@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { AuctionDetail } from "../../../hooks/useGetAuctionById";
 import { formatAuctionDate } from "../../../utils";
+import Image from "next/image";
 
 type Props = {
   auction: AuctionDetail;
@@ -19,19 +20,13 @@ type Props = {
 export function AuctionHero({ auction }: Props) {
   return (
     <Card.Root overflow="hidden">
-      <Box
-        h={{
-          base: "320px",
-          md: "520px",
-        }}
-      >
+      <Box position="relative" w="100%" h="200px">
         <img
           src={auction.imageUrl}
           alt={auction.title}
           style={{
-            width: "100%",
-            height: "100%",
             objectFit: "cover",
+            borderRadius: "16px",
           }}
         />
       </Box>
@@ -39,7 +34,6 @@ export function AuctionHero({ auction }: Props) {
       <Card.Body>
         <VStack align="stretch" gap={4}>
           <Heading size="xl">{auction.title}</Heading>
-
           <HStack wrap="wrap" gap={3}>
             <Badge colorPalette={auction.status === "ACTIVE" ? "green" : "red"}>
               {auction.status}

@@ -47,27 +47,22 @@ export default function AuctionDetailPage() {
         <Grid
           templateColumns={{
             base: "1fr",
-            xl: "minmax(0, 2fr) 420px",
+            xl: "1.5fr 1fr",
           }}
           gap={8}
         >
           {/* LEFT */}
           <VStack align="stretch" gap={8}>
             <AuctionHero auction={data} />
-
-            <AuctionMetrics
-              startingPrice={data.starting_price}
-              currentPrice={data.current_price}
-              totalBids={data.total_bids}
-              participants={data.participated_users}
-            />
-
             <AuctionDetails
               description={data.description}
-              ownerId={data.owner_name}
-              isReserveMet={data.is_reserve_met}
+              ownerName={data.owner_name}
               startTime={data.start_time}
               endTime={data.end_time}
+            />
+            <BidFeed
+              bids={data.recent_bids_history}
+              totalBids={data.total_bids}
             />
           </VStack>
 
@@ -83,9 +78,9 @@ export default function AuctionDetailPage() {
             h="fit-content"
           >
             <AuctionStatusCard
+              title={data.title}
               currentPrice={data.current_price}
               isReserveMet={data.is_reserve_met}
-              startTime={data.start_time}
               endTime={data.end_time}
               status={data.status}
             />
@@ -95,9 +90,10 @@ export default function AuctionDetailPage() {
               disabled={data.is_owner}
             />
 
-            <BidFeed
-              bids={data.recent_bids_history}
+            <AuctionMetrics
+              startingPrice={data.starting_price}
               totalBids={data.total_bids}
+              participants={data.participated_users}
             />
           </VStack>
         </Grid>
