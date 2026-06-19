@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AuctionDetail } from "../../../hooks/useGetAuctionById";
+import { formatRelativeTime } from "../../../utils";
 
 const MotionBox = motion.create(Box);
 
@@ -20,30 +21,6 @@ type Props = {
   bids: AuctionDetail["recent_bids_history"];
   totalBids: number;
 };
-
-function formatRelativeTime(dateString: string) {
-  const diff = Date.now() - new Date(dateString).getTime();
-
-  const minutes = Math.floor(diff / (1000 * 60));
-
-  if (minutes < 1) {
-    return "just now";
-  }
-
-  if (minutes < 60) {
-    return `${minutes}m ago`;
-  }
-
-  const hours = Math.floor(minutes / 60);
-
-  if (hours < 24) {
-    return `${hours}h ago`;
-  }
-
-  const days = Math.floor(hours / 24);
-
-  return `${days}d ago`;
-}
 
 export function BidFeed({ bids, totalBids }: Props) {
   return (

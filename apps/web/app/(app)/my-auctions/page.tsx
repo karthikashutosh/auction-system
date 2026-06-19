@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import {
   Badge,
   Box,
@@ -13,15 +12,26 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+
+import { useState } from "react";
 import { useMyAuctions } from "../../../hooks/useGetMyAuctions";
+import { formatAuctionDate, formatTimeRemaining } from "../../../utils";
+import PaginationComponent from "../../components/Auction/pagination";
+
+const MotionBox = motion.create(Box);
 
 export default function MyAuctionsPage() {
   const router = useRouter();
+  const [page, setPage] = useState(1);
 
   const { data, isLoading } = useMyAuctions({
     page: 1,
-    limit: 12,
+    limit: 10,
   });
+
+  const pagination = data?.pagination;
 
   if (isLoading) {
     return (
@@ -39,11 +49,11 @@ export default function MyAuctionsPage() {
 
           <Heading size="lg">No auctions yet</Heading>
 
-          <Text color="gray.500">
+          <Text color="fg.muted">
             Create your first auction and start receiving bids.
           </Text>
 
-          <Button colorScheme="blue" onClick={() => router.push("/create")}>
+          <Button colorPalette="blue" onClick={() => router.push("/create")}>
             Create Auction
           </Button>
         </VStack>
@@ -52,22 +62,30 @@ export default function MyAuctionsPage() {
   }
 
   return (
-    <Box p={8}>
-      <Flex justify="space-between" align="center" mb={8}>
+    <Box
+      maxW="1400px"
+      mx="auto"
+      px={{
+        base: 4,
+        md: 6,
+      }}
+      py={8}
+    >
+      <Flex justify="space-between" align="center" mb={8} wrap="wrap" gap={4}>
         <Box>
           <Heading size="xl">My Auctions</Heading>
 
-          <Text color="gray.500" mt={2}>
+          <Text color="fg.muted" mt={2}>
             Manage and track your auctions
           </Text>
         </Box>
 
-        <Button colorScheme="blue" onClick={() => router.push("/create")}>
+        <Button colorPalette="blue" onClick={() => router.push("/create")}>
           Create Auction
         </Button>
       </Flex>
 
-      <Text color="gray.500" mb={6}>
+      <Text color="fg.muted" mb={6}>
         Total Auctions: {data.pagination.totalItems}
       </Text>
 
@@ -79,21 +97,40 @@ export default function MyAuctionsPage() {
         }}
         gap={6}
       >
-        {data.items.map((auction) => (
-          <Box
+        {data.items.map((auction, index) => (
+          <MotionBox
             key={auction.id}
             role="button"
             tabIndex={0}
-            bg="white"
+            bg="bg.panel"
             borderWidth="1px"
-            borderColor="gray.200"
+            borderColor="border"
             borderRadius="xl"
-            p={6}
+            p={2}
+            minH="220px"
+            maxH="220px"
             cursor="pointer"
-            transition="all .2s ease"
-            _hover={{
-              transform: "translateY(-4px)",
-              shadow: "lg",
+            overflow="hidden"
+            position="relative"
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              delay: index * 0.05,
+              duration: 0.2,
+            }}
+            whileHover={{
+              y: -6,
+              boxShadow:
+                "0 0 0 1px rgba(59,130,246,.4), 0 12px 32px rgba(59,130,246,.15)",
+            }}
+            whileTap={{
+              scale: 0.98,
             }}
             onClick={() => router.push(`/auctions/${auction.id}`)}
             onKeyDown={(e) => {
@@ -102,55 +139,83 @@ export default function MyAuctionsPage() {
               }
             }}
           >
-            <VStack align="stretch" gap={4}>
-              <Flex justify="space-between">
+            <VStack align="stretch" gap={3} h="100%">
+              {/* Header */}
+              <Flex justify="space-between" align="center">
                 <Badge
                   colorPalette={auction.status === "ACTIVE" ? "green" : "red"}
                   borderRadius="full"
-                  px={3}
-                  py={1}
+                  px={2}
+                  py={0.5}
                 >
                   {auction.status}
                 </Badge>
 
-                <Text fontSize="sm" color="gray.500">
-                  Ends {new Date(auction.end_time).toLocaleDateString()}
+                <Text fontSize="xs" color="fg.muted">
+                  {formatTimeRemaining(auction.end_time)}
                 </Text>
               </Flex>
 
+              {/* Title + Description */}
               <Box>
-                <Text fontSize="xl" fontWeight="bold" mb={2}>
+                <Heading size="sm" lineClamp={1} mb={1}>
                   {auction.title}
-                </Text>
+                </Heading>
 
-                <Text maxLines={2} color="gray.600">
+                <Text fontSize="sm" color="fg.muted" lineClamp={2}>
                   {auction.description}
                 </Text>
               </Box>
 
+              {/* Current Bid */}
               <Box>
-                <Text fontSize="sm" color="gray.500">
+                <Text
+                  fontSize="xs"
+                  color="fg.muted"
+                  textTransform="uppercase"
+                  letterSpacing="wide"
+                >
                   Current Bid
                 </Text>
 
-                <Text fontSize="2xl" fontWeight="bold">
+                <Heading size="lg" color="blue.500">
                   ₹{Number(auction.current_price).toLocaleString()}
-                </Text>
+                </Heading>
               </Box>
 
-              <Flex justify="space-between" align="center" pt={2}>
-                <Text fontSize="sm" color="gray.500">
-                  Created {new Date(auction.created_at).toLocaleDateString()}
+              {/* Footer */}
+              <Flex
+                mt="auto"
+                pt={3}
+                borderTopWidth="1px"
+                borderColor="border"
+                justify="space-between"
+                align="center"
+              >
+                <Text fontSize="xs" color="fg.muted">
+                  {formatAuctionDate(auction.created_at)}
                 </Text>
 
-                <Text fontWeight="semibold" color="blue.500">
+                <Text fontSize="sm" fontWeight="medium" color="blue.500">
                   View →
                 </Text>
               </Flex>
             </VStack>
-          </Box>
+          </MotionBox>
         ))}
       </SimpleGrid>
+
+      {pagination && (
+        <PaginationComponent
+          currentPage={page}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.totalItems}
+          limit={10}
+          hasNextPage={pagination.hasNextPage}
+          hasPreviousPage={pagination.hasPreviousPage}
+          onPageChange={setPage}
+        />
+      )}
     </Box>
   );
 }
