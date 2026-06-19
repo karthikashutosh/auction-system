@@ -21,6 +21,7 @@ export function BidForm({ currentPrice, disabled = false }: Props) {
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<BidFormValues>({
     resolver: zodResolver(bidSchema),
@@ -41,6 +42,7 @@ export function BidForm({ currentPrice, disabled = false }: Props) {
     }
 
     await mutateAsync({ auctionId, payload: { bidAmount: values.amount } });
+    setValue("amount", 0);
   };
 
   return (

@@ -8,6 +8,7 @@ import {
 } from "./auctions.service";
 import { createAuctionApiSchema, getAuctionsSchema } from "@repo/shared";
 import { AuthUser } from "../user/user.controller";
+import { Subscribe, unSubscribe } from "../realtime/sse-manager";
 
 interface GetAuctionByIdParams {
   id: string;
@@ -57,6 +58,7 @@ export const placeBidController = async (
     auctionId,
     userId: user.id,
     bidAmount: request.body.bidAmount,
+    userName: user.name,
   });
 
   reply.code(201).send(bidResult);
@@ -76,4 +78,40 @@ export const getBidsHistoryController = async (
   });
 
   reply.code(200).send(result);
+};
+
+export const getBidRealTimeController = (
+  request: FastifyRequest<{
+    Params: {
+      id: string;
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  const { id: userId } = request.user as AuthUser;
+  const auctionId = request.params.id;
+
+  reply.raw.setHeader("Content-Type", "text/event-stream");
+
+  reply.raw.setHeader("Cache-Control", "no-cache");
+
+  reply.raw.setHeader("Connection", "keep-alive");
+  reply.raw.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+
+  reply.raw.setHeader("Access-Control-Allow-Credentials", "true");
+
+  reply.raw.flushHeaders();
+
+  Subscribe({
+    auctionId,
+    userId,
+    connection: reply.raw,
+  });
+
+  request.raw.on("close", () => {
+    unSubscribe({
+      auctionId,
+      connection: reply.raw,
+    });
+  });
 };

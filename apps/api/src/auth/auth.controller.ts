@@ -22,6 +22,7 @@ export async function loginController(
   const token = request.server.jwt.sign({
     id: verifiedUser.id,
     email: verifiedUser.email,
+    name: verifiedUser.name,
   });
 
   reply.setCookie("accessToken", token, {

@@ -13,6 +13,7 @@ import {
   placeNewBid,
   updateAuctionRepository,
 } from "./auctions.repository";
+import { send } from "../realtime/sse-manager";
 
 interface GetAuctionsInput {
   limit: number;
@@ -99,8 +100,10 @@ export const getAuctionByIdService = async (
   };
 };
 
-export const placeBidService = async (data: PlaceBidServiceRequest) => {
-  const { auctionId, bidAmount, userId } = data;
+export const placeBidService = async (
+  data: PlaceBidServiceRequest & { userName: string }
+) => {
+  const { auctionId, bidAmount, userId, userName } = data;
 
   const client = await db.connect();
 
@@ -148,6 +151,15 @@ export const placeBidService = async (data: PlaceBidServiceRequest) => {
     });
 
     await client.query("COMMIT");
+
+    send({
+      auctionId,
+      payload: {
+        type: "NEW_BID",
+        ...newBid,
+        name: userName,
+      },
+    });
     return {
       id: newBid.id,
       bidAmount,

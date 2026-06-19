@@ -19,6 +19,7 @@ import { AuctionStatusCard } from "../../../components/Auction/auction-status-ca
 import { BidForm } from "../../../components/Auction/bid-form";
 import { BidFeed } from "../../../components/Auction/bit-feed";
 import NextLink from "next/link";
+import { useAuctionEvents } from "../../../../hooks/useAuctionEvents";
 
 export default function AuctionDetailPage() {
   const router = useParams();
@@ -27,21 +28,19 @@ export default function AuctionDetailPage() {
 
   const { data } = useGetAuctionById(router.id as string);
 
+  useAuctionEvents(router.id as string);
+
   if (!data) {
     return <div>Loading...</div>;
   }
 
   return (
     <Box bg="bg" minH="100vh">
-      <Container maxW="1400px" py={10}>
+      <Container maxW="1400px" py={4}>
         <Flex justify="space-between" align="center" mb={8}>
           <Button asChild variant="subtle">
             <NextLink href="/">← Back to Marketplace</NextLink>
           </Button>
-
-          <Badge colorPalette={data.status === "ACTIVE" ? "green" : "red"}>
-            {data.status}
-          </Badge>
         </Flex>
 
         <Grid
@@ -49,7 +48,7 @@ export default function AuctionDetailPage() {
             base: "1fr",
             xl: "1.5fr 1fr",
           }}
-          gap={8}
+          gap={4}
         >
           {/* LEFT */}
           <VStack align="stretch" gap={8}>
