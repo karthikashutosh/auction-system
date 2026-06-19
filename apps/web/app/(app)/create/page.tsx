@@ -209,7 +209,6 @@ export default function CreateAuctionPage() {
 
                   <Box>
                     <Text mb={2}>Reserve Price</Text>
-
                     <Input
                       type="number"
                       placeholder="150000"

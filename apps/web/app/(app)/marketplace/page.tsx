@@ -19,19 +19,27 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useGetAuctions } from "../../../hooks/useGetAllAuctions";
+import {
+  AuctionsResponse,
+  useGetAuctions,
+} from "../../../hooks/useGetAllAuctions";
 import { useMe } from "../../../hooks/useMe";
 import { useLogout } from "../../../hooks/userLogout";
 import { useAuthStore } from "../../../store/auth.store";
+import PaginationComponent from "../../components/Auction/pagination";
+import { useState } from "react";
 
 export default function MarketplacePage() {
   const router = useRouter();
   const { mutateAsync, isPending } = useLogout();
   const { data: userData } = useMe();
+  const [page, setPage] = useState(1);
 
   const user = useAuthStore((state) => state.user);
 
-  const { data } = useGetAuctions({ limit: 10, page: 1 });
+  const { data } = useGetAuctions({ limit: 10, page });
+
+  const pagination = data?.pagination as AuctionsResponse["pagination"];
 
   const handleLogout = async () => {
     try {
@@ -43,7 +51,7 @@ export default function MarketplacePage() {
   };
 
   return (
-    <Box bg="bg" minH="100vh">
+    <Box bg="bg" minH="100vh" padding={4}>
       <Container maxW="7xl" py={8}>
         <Flex
           justify="space-between"
@@ -183,6 +191,17 @@ export default function MarketplacePage() {
           ))}
         </Grid>
       </Container>
+      {pagination && (
+        <PaginationComponent
+          currentPage={page}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.totalItems}
+          limit={10}
+          hasNextPage={pagination.hasNextPage}
+          hasPreviousPage={pagination.hasPreviousPage}
+          onPageChange={setPage}
+        />
+      )}
     </Box>
   );
 }

@@ -38,7 +38,11 @@ export const getAuctionByIdController = async (
   request: FastifyRequest<{ Params: GetAuctionByIdParams }>,
   reply: FastifyReply
 ) => {
-  const response = await getAuctionByIdService(request.params.id);
+  const user = request.user as AuthUser;
+  const response = await getAuctionByIdService({
+    auctionId: request.params.id,
+    userId: user.id,
+  });
   return reply.send(response);
 };
 

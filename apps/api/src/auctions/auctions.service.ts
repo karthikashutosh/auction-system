@@ -82,12 +82,20 @@ export const getAllAuctionsService = async (query: GetAuctionsInput) => {
   };
 };
 
-export const getAuctionByIdService = async (data) => {
-  const result = await getAuctionById(data);
+export const getAuctionByIdService = async (
+  data: Omit<PlaceBidServiceRequest, "bidAmount">
+) => {
+  const { auctionId, userId } = data;
+  const result = await getAuctionById({ auctionId, userId });
   const imageUrl = await getSignedImageUrl(result.image_key);
   return {
     ...result,
     imageUrl,
+    starting_price: Number(result.starting_price),
+    current_price: Number(result.current_price),
+    reserve_price: Number(result.reserve_price),
+    total_bids: Number(result.total_bids),
+    participated_users: Number(result.participated_users),
   };
 };
 

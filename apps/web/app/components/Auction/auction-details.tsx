@@ -1,13 +1,14 @@
 "use client";
 
 import { Card, Grid, Heading, Separator, Text, VStack } from "@chakra-ui/react";
+import { formatAuctionDate } from "../../../utils";
 
 type Props = {
   description: string;
   ownerId: string;
   startTime: string;
   endTime: string;
-  reservePrice: string;
+  isReserveMet: boolean;
 };
 
 export function AuctionDetails({
@@ -15,7 +16,7 @@ export function AuctionDetails({
   ownerId,
   startTime,
   endTime,
-  reservePrice,
+  isReserveMet,
 }: Props) {
   return (
     <Card.Root>
@@ -47,12 +48,9 @@ export function AuctionDetails({
             >
               <div>
                 <Text color="fg.muted" fontSize="sm">
-                  Reserve Price
+                  Reserve met
                 </Text>
-
-                <Text fontWeight="bold">
-                  ₹{Number(reservePrice).toLocaleString()}
-                </Text>
+                <Text fontWeight="bold">{isReserveMet}</Text>
               </div>
 
               <div>
@@ -71,7 +69,7 @@ export function AuctionDetails({
                   Start Time
                 </Text>
 
-                <Text>{new Date(startTime).toLocaleString()}</Text>
+                <Text>{formatAuctionDate(startTime)}</Text>
               </div>
 
               <div>
@@ -79,7 +77,7 @@ export function AuctionDetails({
                   End Time
                 </Text>
 
-                <Text>{new Date(endTime).toLocaleString()}</Text>
+                <Text>{formatAuctionDate(endTime)}</Text>
               </div>
             </Grid>
           </div>

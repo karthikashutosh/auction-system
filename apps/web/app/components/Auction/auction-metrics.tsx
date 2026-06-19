@@ -3,10 +3,10 @@
 import { Card, Grid, GridItem, Heading, Text, VStack } from "@chakra-ui/react";
 
 type Props = {
-  startingPrice: string;
-  currentPrice: string;
-  totalBids?: number;
-  participants?: number;
+  startingPrice: number;
+  currentPrice: number;
+  totalBids: number;
+  participants: number;
 };
 
 export function AuctionMetrics({

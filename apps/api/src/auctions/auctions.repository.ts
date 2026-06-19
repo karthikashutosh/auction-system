@@ -43,9 +43,78 @@ export const getAuctionCount = async () => {
   return total;
 };
 
-export const getAuctionById = async (id) => {
-  const query = `SELECT * FROM auctions WHERE id = $1 LIMIT 1`;
-  const response = await db.query(query, [id]);
+export const getAuctionById = async (
+  data: Omit<PlaceBidServiceRequest, "bidAmount">
+) => {
+  const { auctionId, userId } = data;
+  const query = `WITH bid_stats AS (
+  SELECT
+    auction_id,
+    COUNT(*) AS total_bids,
+    COUNT(DISTINCT user_id) AS participated_users
+  FROM bids
+  WHERE auction_id = $1
+  GROUP BY auction_id
+),
+recent_bids AS (
+  SELECT
+    rb.auction_id,
+    JSON_AGG(
+      JSON_BUILD_OBJECT(
+        'id', rb.id,
+        'user_id', rb.user_id,
+        'name', rb.name,
+        'amount', rb.amount,
+        'created_at', rb.created_at
+      )
+      ORDER BY rb.created_at DESC
+    ) AS recent_bids_history
+  FROM (
+    SELECT
+      b.id,
+      b.auction_id,
+      b.user_id,
+      u.name,
+      b.amount,
+      b.created_at
+    FROM bids b
+    INNER JOIN users u
+      ON u.id = b.user_id
+    WHERE b.auction_id = $1
+    ORDER BY b.created_at DESC
+    LIMIT 10
+  ) rb
+  GROUP BY rb.auction_id
+)
+
+SELECT
+  a.*,
+
+  COALESCE(bs.total_bids, 0) AS total_bids,
+  COALESCE(bs.participated_users, 0) AS participated_users,
+
+  COALESCE(
+    rb.recent_bids_history,
+    '[]'::json
+  ) AS recent_bids_history,
+ owner.name AS owner_name,
+  (a.owner_id = $2) AS is_owner,
+  (a.highest_bidder_id = $2) AS is_highest_bidder,
+  (a.current_price >= a.reserve_price) AS is_reserve_met
+
+FROM auctions a
+
+LEFT JOIN users owner
+  ON owner.id = a.owner_id
+
+LEFT JOIN bid_stats bs
+  ON bs.auction_id = a.id
+
+LEFT JOIN recent_bids rb
+  ON rb.auction_id = a.id
+
+WHERE a.id = $1`;
+  const response = await db.query(query, [auctionId, userId]);
   return response.rows[0];
 };
 

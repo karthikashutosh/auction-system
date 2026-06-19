@@ -13,8 +13,8 @@ import { AuctionCountdown } from "./auction-countdown";
 import { AuctionProgress } from "./auction-progress";
 
 type Props = {
-  currentPrice: string;
-  reservePrice: string;
+  currentPrice: number;
+  isReserveMet: boolean;
   startTime: string;
   endTime: string;
   status: string;
@@ -22,13 +22,11 @@ type Props = {
 
 export function AuctionStatusCard({
   currentPrice,
-  reservePrice,
+  isReserveMet,
   startTime,
   endTime,
   status,
 }: Props) {
-  const reserveReached = Number(currentPrice) >= Number(reservePrice);
-
   return (
     <Card.Root>
       <Card.Body>
@@ -49,34 +47,26 @@ export function AuctionStatusCard({
               ₹{Number(currentPrice).toLocaleString()}
             </Heading>
           </div>
-
           <Separator />
 
           <div>
             <Text fontSize="sm" color="fg.muted" mb={2}>
               Time Remaining
             </Text>
-
             <AuctionCountdown endTime={endTime} />
           </div>
 
           <Separator />
-
           <AuctionProgress startTime={startTime} endTime={endTime} />
-
           <Separator />
 
           <div>
             <Text fontSize="sm" color="fg.muted">
-              Reserve Price
+              Reserve Price Stage
             </Text>
 
-            <Heading mt={2} size="md">
-              ₹{Number(reservePrice).toLocaleString()}
-            </Heading>
-
-            <Badge mt={3} colorPalette={reserveReached ? "green" : "orange"}>
-              {reserveReached ? "Reserve Met" : "Reserve Not Met"}
+            <Badge mt={3} colorPalette={isReserveMet ? "green" : "orange"}>
+              {isReserveMet ? "Reserve Met" : "Reserve Not Met"}
             </Badge>
           </div>
         </VStack>

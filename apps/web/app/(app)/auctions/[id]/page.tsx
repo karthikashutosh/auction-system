@@ -20,52 +20,12 @@ import { BidForm } from "../../../components/Auction/bid-form";
 import { BidFeed } from "../../../components/Auction/bit-feed";
 import NextLink from "next/link";
 
-const bids = [
-  {
-    id: "1",
-    bidderName: "John",
-    amount: 12000,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    bidderName: "Alice",
-    amount: 11800,
-    createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-  },
-];
-
-const bidHistory = [
-  {
-    user: "Karthik",
-    amount: "₹120,000",
-    time: "2 mins ago",
-  },
-  {
-    user: "Alex",
-    amount: "₹115,000",
-    time: "6 mins ago",
-  },
-  {
-    user: "John",
-    amount: "₹110,000",
-    time: "12 mins ago",
-  },
-  {
-    user: "Sarah",
-    amount: "₹105,000",
-    time: "20 mins ago",
-  },
-];
-
 export default function AuctionDetailPage() {
   const router = useParams();
 
   const user = useAuthStore((state) => state.user);
 
   const { data } = useGetAuctionById(router.id as string);
-
-  const isAuctionOwner = user?.id === data?.owner_id;
 
   if (!data) {
     return <div>Loading...</div>;
@@ -98,14 +58,14 @@ export default function AuctionDetailPage() {
             <AuctionMetrics
               startingPrice={data.starting_price}
               currentPrice={data.current_price}
-              totalBids={32}
-              participants={18}
+              totalBids={data.total_bids}
+              participants={data.participated_users}
             />
 
             <AuctionDetails
               description={data.description}
-              ownerId={data.owner_id}
-              reservePrice={data.reserve_price}
+              ownerId={data.owner_name}
+              isReserveMet={data.is_reserve_met}
               startTime={data.start_time}
               endTime={data.end_time}
             />
@@ -124,7 +84,7 @@ export default function AuctionDetailPage() {
           >
             <AuctionStatusCard
               currentPrice={data.current_price}
-              reservePrice={data.reserve_price}
+              isReserveMet={data.is_reserve_met}
               startTime={data.start_time}
               endTime={data.end_time}
               status={data.status}
@@ -132,10 +92,13 @@ export default function AuctionDetailPage() {
 
             <BidForm
               currentPrice={data.current_price}
-              disabled={isAuctionOwner}
+              disabled={data.is_owner}
             />
 
-            <BidFeed bids={bids} />
+            <BidFeed
+              bids={data.recent_bids_history}
+              totalBids={data.total_bids}
+            />
           </VStack>
         </Grid>
       </Container>

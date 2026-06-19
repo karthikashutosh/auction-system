@@ -9,10 +9,11 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { Auction } from "../../../hooks/useGetAuctionById";
+import { AuctionDetail } from "../../../hooks/useGetAuctionById";
+import { formatAuctionDate } from "../../../utils";
 
 type Props = {
-  auction: Auction;
+  auction: AuctionDetail;
 };
 
 export function AuctionHero({ auction }: Props) {
@@ -45,11 +46,11 @@ export function AuctionHero({ auction }: Props) {
             </Badge>
 
             <Text fontSize="sm" color="fg.muted">
-              Ends {new Date(auction.end_time).toLocaleDateString()}
+              Ends {formatAuctionDate(auction.end_time)}
             </Text>
 
             <Text fontSize="sm" color="fg.muted">
-              Created {new Date(auction.created_at).toLocaleDateString()}
+              Created {formatAuctionDate(auction.start_time)}
             </Text>
           </HStack>
         </VStack>

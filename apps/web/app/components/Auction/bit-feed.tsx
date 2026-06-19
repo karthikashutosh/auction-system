@@ -2,6 +2,8 @@
 
 import {
   Avatar,
+  Badge,
+  Box,
   Card,
   Flex,
   Heading,
@@ -9,16 +11,14 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { AuctionDetail } from "../../../hooks/useGetAuctionById";
 
-export type BidFeedItem = {
-  id: string;
-  bidderName: string;
-  amount: number;
-  createdAt: string;
-};
+const MotionBox = motion.create(Box);
 
 type Props = {
-  bids: BidFeedItem[];
+  bids: AuctionDetail["recent_bids_history"];
+  totalBids: number;
 };
 
 function formatRelativeTime(dateString: string) {
@@ -45,41 +45,85 @@ function formatRelativeTime(dateString: string) {
   return `${days}d ago`;
 }
 
-export function BidFeed({ bids }: Props) {
+export function BidFeed({ bids, totalBids }: Props) {
   return (
     <Card.Root>
-      <Card.Body>
+      <Card.Body maxH="400px" overflowY="auto">
         <VStack align="stretch" gap={4}>
-          <Heading size="sm">Live Bid Activity</Heading>
+          <Flex justify="space-between" align="center">
+            <HStack>
+              <Box w="8px" h="8px" borderRadius="full" bg="green.500" />
+              <Heading size="sm">Live Bids</Heading>
+            </HStack>
+
+            <Badge colorPalette="blue">{totalBids} bids</Badge>
+          </Flex>
 
           {bids.length === 0 ? (
             <Text textAlign="center" py={8} color="fg.muted">
               Be the first bidder on this auction.
             </Text>
           ) : (
-            bids.map((bid) => (
-              <Flex key={bid.id} justify="space-between" align="center">
-                <HStack>
-                  <Avatar.Root size="sm">
-                    <Avatar.Fallback>
-                      {bid.bidderName.charAt(0).toUpperCase()}
-                    </Avatar.Fallback>
-                  </Avatar.Root>
+            <AnimatePresence initial={false}>
+              {bids.map((bid, index) => (
+                <MotionBox
+                  key={bid.id}
+                  layout
+                  initial={{
+                    opacity: 0,
+                    y: -20,
+                    scale: 0.98,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.95,
+                  }}
+                  transition={{
+                    duration: 0.25,
+                  }}
+                  p={3}
+                  borderWidth="1px"
+                  borderRadius="md"
+                  bg={index === 0 ? "green.subtle" : undefined}
+                  borderColor={index === 0 ? "green.500" : undefined}
+                >
+                  <Flex justify="space-between" align="center">
+                    <HStack>
+                      <Avatar.Root size="sm">
+                        <Avatar.Fallback>
+                          {bid.name.charAt(0).toUpperCase()}
+                        </Avatar.Fallback>
+                      </Avatar.Root>
 
-                  <VStack align="start" gap={0}>
-                    <Text fontWeight="medium">{bid.bidderName}</Text>
+                      <VStack align="start" gap={0}>
+                        <HStack>
+                          <Text fontWeight="medium">{bid.name}</Text>
 
-                    <Text fontSize="xs" color="fg.muted">
-                      {formatRelativeTime(bid.createdAt)}
+                          {index === 0 && (
+                            <Badge size="sm" colorPalette="green">
+                              Latest
+                            </Badge>
+                          )}
+                        </HStack>
+
+                        <Text fontSize="xs" color="fg.muted">
+                          {formatRelativeTime(bid.created_at)}
+                        </Text>
+                      </VStack>
+                    </HStack>
+
+                    <Text fontWeight="bold" color="green.500">
+                      ₹{bid.amount.toLocaleString()}
                     </Text>
-                  </VStack>
-                </HStack>
-
-                <Text fontWeight="bold" color="green.500">
-                  ₹{bid.amount.toLocaleString()}
-                </Text>
-              </Flex>
-            ))
+                  </Flex>
+                </MotionBox>
+              ))}
+            </AnimatePresence>
           )}
         </VStack>
       </Card.Body>

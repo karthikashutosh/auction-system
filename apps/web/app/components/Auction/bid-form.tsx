@@ -9,7 +9,7 @@ import { bidSchema, type BidFormValues } from "@repo/shared";
 import { usePlaceBid } from "../../../hooks/usePlaceBid";
 
 type Props = {
-  currentPrice: string;
+  currentPrice: number;
   disabled?: boolean;
 };
 
