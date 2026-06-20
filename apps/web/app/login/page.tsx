@@ -3,6 +3,7 @@
 import NextLink from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { GoogleLogin } from "@react-oauth/google";
 
 import {
   Box,
@@ -22,6 +23,7 @@ import { PasswordInput } from "../components/ui/password-input";
 import { loginSchema, type LoginDto } from "@repo/shared";
 import { useLogin } from "../../hooks/userLogin";
 import { useRouter } from "next/navigation";
+import { useGoogleLogin } from "../../hooks/useGoogleAuth";
 
 export default function LoginPage() {
   const {
@@ -39,6 +41,8 @@ export default function LoginPage() {
   const router = useRouter();
 
   const { mutateAsync: loginAsync, isPending } = useLogin();
+
+  const { mutate: googleLogin } = useGoogleLogin();
 
   const onSubmit = async (data: LoginDto) => {
     loginAsync(data, {
@@ -164,16 +168,6 @@ export default function LoginPage() {
                 >
                   Sign In
                 </Button>
-
-                <Text
-                  color="primary"
-                  fontSize="sm"
-                  alignSelf="end"
-                  cursor="pointer"
-                >
-                  Forgot Password?
-                </Text>
-
                 <Flex w="full" align="center" gap={4}>
                   <Separator flex={1} />
                   <Text color="muted" fontSize="sm">
@@ -183,7 +177,13 @@ export default function LoginPage() {
                 </Flex>
 
                 <Button asChild variant="outline" w="full" size="lg">
-                  <NextLink href="/">Continue as Guest</NextLink>
+                  {/* <NextLink href="/">Continue as Guest</NextLink> */}
+                  <GoogleLogin
+                    theme="filled_black"
+                    onSuccess={(credentialResponse) => {
+                      googleLogin(credentialResponse.credential as string);
+                    }}
+                  />
                 </Button>
 
                 <Text color="muted" fontSize="sm">

@@ -15,7 +15,7 @@ export const signupSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
-      "Password must contain uppercase, lowercase, number and special character",
+      "Password must contain uppercase, lowercase, number and special character"
     ),
 });
 
@@ -27,6 +27,12 @@ export const signupExtendedSchema = signupSchema
     path: ["confirmPassword"],
     message: "Passwords do not match",
   });
+
+export const GoogleOauthDto = z.object({
+  token: z.string().min(1),
+});
+
+export type GoogleOauthDto = z.infer<typeof GoogleOauthDto>;
 
 export type SignupExtendedDto = z.infer<typeof signupExtendedSchema>;
 export type LoginDto = z.infer<typeof loginSchema>;

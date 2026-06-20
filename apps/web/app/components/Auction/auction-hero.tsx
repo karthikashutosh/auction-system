@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { AuctionDetail } from "../../../hooks/useGetAuctionById";
 import { formatAuctionDate } from "../../../utils";
-import Image from "next/image";
 
 type Props = {
   auction: AuctionDetail;
@@ -22,6 +21,7 @@ export function AuctionHero({ auction }: Props) {
     <Card.Root overflow="hidden">
       <Box position="relative" w="100%" h="200px">
         <img
+          loading="lazy"
           src={auction.imageUrl}
           alt={auction.title}
           style={{

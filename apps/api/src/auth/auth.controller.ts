@@ -1,6 +1,12 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { loginService, signupService } from "./auth.service";
-import { LoginDto, SignupDto } from "@repo/shared";
+import {
+  googleOauthService,
+  loginService,
+  signupService,
+} from "./auth.service";
+import { GoogleOauthDto, LoginDto, SignupDto } from "@repo/shared";
+import { createAuthSession, issueAccessToken } from "./auth.session";
+import { AuthUser } from "../user/user.controller";
 
 export async function signupController(
   request: FastifyRequest<{
@@ -17,23 +23,55 @@ export async function loginController(
   request: FastifyRequest<{ Body: LoginDto }>,
   reply: FastifyReply
 ) {
-  const verifiedUser = await loginService(request.body);
+  const user = await loginService(request.body);
 
-  const token = request.server.jwt.sign({
-    id: verifiedUser.id,
-    email: verifiedUser.email,
-    name: verifiedUser.name,
-  });
-
-  reply.setCookie("accessToken", token, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
+  createAuthSession(
+    { email: user.email, id: user.id, name: user.name },
+    request,
+    reply
+  );
 
   return reply.code(200).send({
     success: true,
   });
 }
+
+export const googleOauthController = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const validatedRequest = GoogleOauthDto.parse(request.body);
+
+  const user = await googleOauthService(validatedRequest.token);
+
+  createAuthSession(
+    { email: user.email, id: user.id, name: user.name },
+    request,
+    reply
+  );
+
+  return reply.code(200).send({
+    success: true,
+  });
+};
+
+export const refreshTokenController = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const refreshToken = request.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return reply.code(401).send({
+      message: "Unauthorized",
+    });
+  }
+
+  const payload = request.server.jwt.verify<AuthUser>(refreshToken);
+
+  issueAccessToken(payload, request, reply);
+
+  return reply.code(200).send({
+    success: true,
+  });
+};

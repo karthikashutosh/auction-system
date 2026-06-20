@@ -28,16 +28,20 @@ import { useLogout } from "../../../hooks/userLogout";
 import { useAuthStore } from "../../../store/auth.store";
 import PaginationComponent from "../../components/Auction/pagination";
 import { useState } from "react";
+import { LoadingScreen } from "../../../components/ui/loadingPage";
 
 export default function MarketplacePage() {
   const router = useRouter();
   const { mutateAsync, isPending } = useLogout();
-  const { data: userData } = useMe();
+  const { data: userData, isLoading } = useMe();
   const [page, setPage] = useState(1);
 
   const user = useAuthStore((state) => state.user);
 
-  const { data } = useGetAuctions({ limit: 10, page });
+  const { data, isLoading: isAuctionsLoading } = useGetAuctions({
+    limit: 10,
+    page,
+  });
 
   const pagination = data?.pagination as AuctionsResponse["pagination"];
 
@@ -49,6 +53,8 @@ export default function MarketplacePage() {
       console.error(error);
     }
   };
+
+  if (isLoading || isAuctionsLoading) return <LoadingScreen />;
 
   return (
     <Box bg="bg" minH="100vh" padding={4}>
