@@ -55,7 +55,7 @@ export const createAuthSession = (
   };
 };
 
-export const issueAccessToken = async (
+export const issueAccessToken = (
   user: AuthUser,
   request: FastifyRequest,
   reply: FastifyReply
@@ -67,7 +67,7 @@ export const issueAccessToken = async (
       name: user.name,
     },
     {
-      expiresIn: "10m",
+      expiresIn: "15m",
     }
   );
 
@@ -76,6 +76,6 @@ export const issueAccessToken = async (
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 10,
+    maxAge: 60 * 15,
   });
 };

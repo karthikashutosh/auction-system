@@ -19,11 +19,22 @@ export async function getMeController(
   reply.code(200).send(result);
 }
 
-export async function logoutController(_, reply: FastifyReply) {
+export const logoutController = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
   reply.clearCookie("accessToken", {
     path: "/",
   });
-}
+
+  reply.clearCookie("refreshToken", {
+    path: "/",
+  });
+
+  return reply.send({
+    success: true,
+  });
+};
 
 export const getMyAuctionsController = async (
   request: FastifyRequest,

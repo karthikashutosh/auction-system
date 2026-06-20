@@ -2,6 +2,7 @@ import { LoginDto, SignupDto } from "@repo/shared";
 import bcrypt from "bcrypt";
 import { createUser, findExistingUser } from "./auth.repository";
 import { googleClient } from "./googleOauthClient";
+import { BadRequestError, ConflictError, UnauthorizedError } from "../errors";
 
 export const signupService = async (data: SignupDto) => {
   const { email, name, password } = data;
@@ -12,12 +13,13 @@ export const signupService = async (data: SignupDto) => {
 
   if (existingUser) {
     if (existingUser.provider === "google") {
-      throw new Error(
-        "Account already exists with Google. Please sign in with Google."
+      throw new ConflictError(
+        "Account already exists with Google. Please sign in with Google.",
+        "GOOGLE_ACCOUNT_EXISTS"
       );
     }
 
-    throw new Error("User already exists");
+    throw new ConflictError("User already exists", "USER_ALREADY_EXISTS");
   }
 
   await createUser({
@@ -36,16 +38,25 @@ export const signupService = async (data: SignupDto) => {
 
 export async function loginService(data: LoginDto) {
   const { email, password } = data;
+
   const user = await findExistingUser(email);
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new UnauthorizedError("Invalid credentials", "INVALID_CREDENTIALS");
+  }
+
+  if (user.provider === "google") {
+    throw new UnauthorizedError(
+      "Please sign in with Google",
+      "GOOGLE_SIGNIN_REQUIRED"
+    );
   }
 
   const isValidPassword = await bcrypt.compare(password, user.password_hash);
 
-  if (!isValidPassword) throw new Error("Invalid credentials");
-
+  if (!isValidPassword) {
+    throw new UnauthorizedError("Invalid credentials", "INVALID_CREDENTIALS");
+  }
   return user;
 }
 
@@ -58,15 +69,13 @@ export const googleOauthService = async (token: string) => {
   const payload = ticket.getPayload();
 
   if (!payload?.email) {
-    throw new Error("Email not found");
+    throw new BadRequestError("Email not found", "EMAIL_NOT_FOUND");
   }
-
   const { email, picture, sub, name } = payload;
 
   if (!sub) {
-    throw new Error("Provider id not found");
+    throw new BadRequestError("Google user ID not found", "GOOGLE_SUB_MISSING");
   }
-
   let user = await findExistingUser(email);
 
   if (!user) {

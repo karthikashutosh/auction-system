@@ -10,19 +10,24 @@ export const api = axios.create({
 
 api.interceptors.response.use(
   (response) => response,
-
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401) {
+    // IMPORTANT
+    if (originalRequest.url === "/auth/refresh") {
+      return Promise.reject(error);
+    }
+
+    if (
+      error.response?.status === 401 &&
+      error.response?.data?.code === "UNAUTHORIZED"
+    ) {
       try {
         await refershSession();
 
         return api(originalRequest);
-      } catch (refreshError) {
-        window.location.href = "/login";
-        console.log("Refresh Failed");
-        return Promise.reject(refreshError);
+      } catch (err) {
+        return Promise.reject(err);
       }
     }
 
@@ -40,9 +45,7 @@ export const uploadFileToS3 = async (
     },
   });
 
-  if (response.status !== 200) {
-    throw new Error("Failed to upload file");
-  }
+  throw new Error(`File upload failed with status ${response.status}`);
 };
 
 export function getErrorMessage(error: unknown): string {

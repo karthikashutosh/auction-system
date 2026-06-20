@@ -1,7 +1,7 @@
 import { CreateAuctionApiInput } from "@repo/shared";
 import { getSignedImageUrl } from "../config";
 import { db } from "../db";
-import { BadRequestError, NotFoundError } from "../errors";
+import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 import {
   addAuction,
   getAuctionById,
@@ -14,6 +14,7 @@ import {
   updateAuctionRepository,
 } from "./auctions.repository";
 import { send } from "../realtime/sse-manager";
+import fastify from "fastify";
 
 interface GetAuctionsInput {
   limit: number;
@@ -38,7 +39,10 @@ export const createAuctionService = async (
     data;
 
   if (!imageKey.startsWith(`users/${userId}/`)) {
-    throw new Error("Image does not belong to user");
+    throw new ForbiddenError(
+      "Image does not belong to user",
+      "IMAGE_ACCESS_DENIED"
+    );
   }
   const response = await addAuction({
     ownerId: userId,
@@ -89,6 +93,7 @@ export const getAuctionByIdService = async (
   const { auctionId, userId } = data;
   const result = await getAuctionById({ auctionId, userId });
   const imageUrl = await getSignedImageUrl(result.image_key);
+  const isAuctionEnded = new Date(result.end_time).getTime() <= Date.now();
   return {
     ...result,
     imageUrl,
@@ -97,6 +102,7 @@ export const getAuctionByIdService = async (
     reserve_price: Number(result.reserve_price),
     total_bids: Number(result.total_bids),
     participated_users: Number(result.participated_users),
+    status: isAuctionEnded ? "ENDED" : result.status,
   };
 };
 
@@ -120,16 +126,17 @@ export const placeBidService = async (
     const minimumBid = validAuction.current_price + 100;
 
     if (!validAuction) {
-      throw new NotFoundError("Auction not found");
+      throw new NotFoundError("Auction not found", "AUCTION_NOT_FOUND");
     }
 
     if (validAuction.status !== "ACTIVE") {
-      throw new BadRequestError("Auction ended");
+      throw new BadRequestError("Auction ended", "AUCTION_ENDED");
     }
 
     if (bidAmount < minimumBid) {
       throw new BadRequestError(
-        "Bid Amount Should Minimum 100rs more than Current bid"
+        "Bid amount must be at least ₹100 higher than the current bid",
+        "BID_AMOUNT_TOO_LOW"
       );
     }
 

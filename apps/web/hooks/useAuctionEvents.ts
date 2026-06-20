@@ -22,7 +22,7 @@ export function useAuctionEvents(auctionId: string) {
       );
 
       eventSource.onopen = () => {
-        console.log("[SSE] Connected", auctionId);
+        console.log("[SSE] Connected");
       };
 
       eventSource.onmessage = (event) => {
@@ -58,9 +58,8 @@ export function useAuctionEvents(auctionId: string) {
             break;
         }
       };
-
-      eventSource.onerror = async () => {
-        console.log("[SSE] Error");
+      eventSource.onerror = async (error) => {
+        console.log("[SSE] Error", error);
 
         try {
           await refershSession();
@@ -68,8 +67,10 @@ export function useAuctionEvents(auctionId: string) {
           eventSource.close();
 
           createEventSource();
-        } catch {
-          window.location.href = "/login";
+        } catch (e) {
+          console.log("Refresh failed", e);
+
+          //   window.location.href = "/login";
         }
       };
     };

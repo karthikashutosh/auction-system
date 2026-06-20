@@ -13,6 +13,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "./theme";
 import { getErrorMessage } from "../api/axios";
 import axios from "axios";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -56,6 +57,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           {children}
           <Toaster />
         </ChakraProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </GoogleOAuthProvider>
   );

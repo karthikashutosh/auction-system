@@ -12,7 +12,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { PasswordInput } from "../components/ui/password-input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -22,8 +21,9 @@ import {
   signupExtendedSchema,
   type SignupDto,
 } from "@repo/shared";
-import { useSignup } from "../../hooks/useSignup";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "../../components/ui/password-input";
+import { useSignup } from "../../../hooks/useSignup";
 
 export default function SignupPage() {
   const router = useRouter();

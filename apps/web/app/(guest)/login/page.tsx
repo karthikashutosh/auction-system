@@ -17,13 +17,11 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-
-import { PasswordInput } from "../components/ui/password-input";
-
-import { loginSchema, type LoginDto } from "@repo/shared";
-import { useLogin } from "../../hooks/userLogin";
+import { LoginDto, loginSchema } from "@repo/shared";
 import { useRouter } from "next/navigation";
-import { useGoogleLogin } from "../../hooks/useGoogleAuth";
+import { useLogin } from "../../../hooks/userLogin";
+import { PasswordInput } from "../../components/ui/password-input";
+import { useGoogleLogin } from "../../../hooks/useGoogleAuth";
 
 export default function LoginPage() {
   const {

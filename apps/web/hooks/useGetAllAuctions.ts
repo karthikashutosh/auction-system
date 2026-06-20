@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllAuctions } from "../api/auctions";
 import { number } from "framer-motion";
+import { useAuthStore } from "../store/auth.store";
 
 export interface Auction {
   id: string;
@@ -38,8 +39,10 @@ export const useGetAuctions = ({
   limit: number;
   page: number;
 }) => {
+  const user = useAuthStore((state) => state.user);
   return useQuery<AuctionsResponse, Error>({
     queryKey: ["auctions", limit, page],
     queryFn: () => getAllAuctions(limit, page),
+    enabled: !!user,
   });
 };

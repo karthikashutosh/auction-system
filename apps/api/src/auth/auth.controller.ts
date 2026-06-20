@@ -62,7 +62,8 @@ export const refreshTokenController = async (
   const refreshToken = request.cookies.refreshToken;
 
   if (!refreshToken) {
-    return reply.code(401).send({
+    return reply.status(401).send({
+      code: "UNAUTHORIZED",
       message: "Unauthorized",
     });
   }

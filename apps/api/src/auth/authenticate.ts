@@ -7,7 +7,8 @@ export async function authenticate(
   try {
     await request.jwtVerify();
   } catch (error) {
-    reply.code(401).send({
+    return reply.status(401).send({
+      code: "UNAUTHORIZED",
       message: "Unauthorized",
     });
   }

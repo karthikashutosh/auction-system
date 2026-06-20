@@ -1,6 +1,5 @@
 "use client";
 
-import NextLink from "next/link";
 import {
   Avatar,
   Badge,
@@ -18,27 +17,23 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import NextLink from "next/link";
+import { useState } from "react";
 import {
   AuctionsResponse,
   useGetAuctions,
 } from "../../../hooks/useGetAllAuctions";
-import { useMe } from "../../../hooks/useMe";
 import { useLogout } from "../../../hooks/userLogout";
 import { useAuthStore } from "../../../store/auth.store";
 import PaginationComponent from "../../components/Auction/pagination";
-import { useState } from "react";
-import { LoadingScreen } from "../../../components/ui/loadingPage";
 
 export default function MarketplacePage() {
-  const router = useRouter();
   const { mutateAsync, isPending } = useLogout();
-  const { data: userData, isLoading } = useMe();
   const [page, setPage] = useState(1);
 
   const user = useAuthStore((state) => state.user);
 
-  const { data, isLoading: isAuctionsLoading } = useGetAuctions({
+  const { data } = useGetAuctions({
     limit: 10,
     page,
   });
@@ -48,13 +43,10 @@ export default function MarketplacePage() {
   const handleLogout = async () => {
     try {
       await mutateAsync();
-      router.push("/login");
     } catch (error) {
       console.error(error);
     }
   };
-
-  if (isLoading || isAuctionsLoading) return <LoadingScreen />;
 
   return (
     <Box bg="bg" minH="100vh" padding={4}>

@@ -76,15 +76,17 @@ app.get("/health", async (_, reply) => {
 });
 
 app.setErrorHandler((error, request, reply) => {
+  request.log.error(error);
+
   if (error instanceof AppError) {
     return reply.status(error.statusCode).send({
+      code: error.code,
       message: error.message,
     });
   }
 
-  request.log.error(error);
-
   return reply.status(500).send({
+    code: "INTERNAL_SERVER_ERROR",
     message: "Internal Server Error",
   });
 });
