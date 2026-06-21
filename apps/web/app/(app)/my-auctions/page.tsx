@@ -16,9 +16,9 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
+import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
 import { useMyAuctions } from "../../../hooks/useGetMyAuctions";
 import { formatAuctionDate, formatTimeRemaining } from "../../../utils";
-import PaginationComponent from "../../components/Auction/pagination";
 
 const MotionBox = motion.create(Box);
 
@@ -61,15 +61,17 @@ export default function MyAuctionsPage() {
     );
   }
 
+  if (!pagination) return null;
+
   return (
-    <Box
-      maxW="1400px"
-      mx="auto"
-      px={{
-        base: 4,
-        md: 6,
-      }}
-      py={8}
+    <PaginatedPage
+      currentPage={page}
+      totalPages={pagination?.totalPages}
+      totalItems={pagination.totalItems}
+      limit={10}
+      hasNextPage={pagination?.hasNextPage}
+      hasPreviousPage={pagination?.hasPreviousPage}
+      onPageChange={setPage}
     >
       <Flex justify="space-between" align="center" mb={8} wrap="wrap" gap={4}>
         <Box>
@@ -84,11 +86,9 @@ export default function MyAuctionsPage() {
           Create Auction
         </Button>
       </Flex>
-
       <Text color="fg.muted" mb={6}>
         Total Auctions: {data.pagination.totalItems}
       </Text>
-
       <SimpleGrid
         columns={{
           base: 1,
@@ -204,18 +204,6 @@ export default function MyAuctionsPage() {
           </MotionBox>
         ))}
       </SimpleGrid>
-
-      {pagination && (
-        <PaginationComponent
-          currentPage={page}
-          totalPages={pagination.totalPages}
-          totalItems={pagination.totalItems}
-          limit={10}
-          hasNextPage={pagination.hasNextPage}
-          hasPreviousPage={pagination.hasPreviousPage}
-          onPageChange={setPage}
-        />
-      )}
-    </Box>
+    </PaginatedPage>
   );
 }

@@ -83,11 +83,12 @@ export default function AuctionDetailPage() {
               endTime={data.end_time}
               status={data.status}
             />
-
-            <BidForm
-              currentPrice={data.current_price}
-              disabled={data.is_owner}
-            />
+            {data.status == "ACTIVE" && (
+              <BidForm
+                currentPrice={data.current_price}
+                disabled={data.is_owner}
+              />
+            )}
 
             <AuctionMetrics
               startingPrice={data.starting_price}

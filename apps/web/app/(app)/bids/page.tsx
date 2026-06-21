@@ -7,7 +7,7 @@ import {
   BidItem,
   useGetBidsByAuctionId,
 } from "../../../hooks/useGetBidsByAuctionId";
-import PaginationComponent from "../../components/Auction/pagination";
+import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
 
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: "green",
@@ -131,10 +131,19 @@ export default function DashboardPage() {
     ));
   };
 
-  return (
-    <Box p={6}>
-      <Heading mb={6}>My Bids</Heading>
+  if (!pagination) return null;
 
+  return (
+    <PaginatedPage
+      currentPage={Number(pagination.page)}
+      hasNextPage={pagination.hasNextPage}
+      hasPreviousPage={pagination.hasPreviousPage}
+      limit={LIMIT}
+      onPageChange={setPage}
+      totalItems={pagination.totalItems}
+      totalPages={pagination.totalPages}
+    >
+      <Heading mb={6}>My Bids</Heading>
       <Box overflowX="auto" borderWidth="1px" borderRadius="lg">
         <Table.Root size="md" variant="outline">
           <Table.Header bg="gray.50">
@@ -148,18 +157,6 @@ export default function DashboardPage() {
           <Table.Body>{renderRows()}</Table.Body>
         </Table.Root>
       </Box>
-
-      {!showSkeleton && pagination && (
-        <PaginationComponent
-          currentPage={page}
-          totalPages={pagination.totalPages}
-          totalItems={pagination.totalItems}
-          limit={LIMIT}
-          hasNextPage={pagination.hasNextPage}
-          hasPreviousPage={pagination.hasPreviousPage}
-          onPageChange={setPage}
-        />
-      )}
-    </Box>
+    </PaginatedPage>
   );
 }

@@ -1,4 +1,11 @@
 import axios from "axios";
+import { useAuthStore } from "../store/auth.store";
+
+declare module "axios" {
+  export interface InternalAxiosRequestConfig {
+    _retry?: boolean;
+  }
+}
 
 export const api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
@@ -10,24 +17,32 @@ export const api = axios.create({
 
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
-    // IMPORTANT
-    if (originalRequest.url === "/auth/refresh") {
+    if (originalRequest?.url === "/auth/refresh") {
       return Promise.reject(error);
     }
 
-    if (
+    const isUnauthorized =
       error.response?.status === 401 &&
-      error.response?.data?.code === "UNAUTHORIZED"
-    ) {
+      error.response?.data?.code === "UNAUTHORIZED";
+
+    if (isUnauthorized) {
+      if (originalRequest._retry) {
+        return Promise.reject(error);
+      }
+
+      originalRequest._retry = true;
+
       try {
         await refershSession();
-
         return api(originalRequest);
-      } catch (err) {
-        return Promise.reject(err);
+      } catch (refreshError) {
+        forceLogout();
+
+        return Promise.reject(refreshError);
       }
     }
 
@@ -76,3 +91,8 @@ export const refershSession = async () => {
 
   return refreshpromise;
 };
+
+export function forceLogout() {
+  useAuthStore.getState().setUser(null);
+  window.location.href = "/login";
+}

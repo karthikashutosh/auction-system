@@ -26,14 +26,18 @@ import {
 import { useLogout } from "../../../hooks/userLogout";
 import { useAuthStore } from "../../../store/auth.store";
 import PaginationComponent from "../../components/Auction/pagination";
+import { useMe } from "../../../hooks/useMe";
+import { LoadingScreen } from "../../../components/ui/loadingPage";
+import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
 
 export default function MarketplacePage() {
   const { mutateAsync, isPending } = useLogout();
   const [page, setPage] = useState(1);
 
   const user = useAuthStore((state) => state.user);
+  const { data: userData, isLoading } = useMe();
 
-  const { data } = useGetAuctions({
+  const { data, isLoading: auctionLoading } = useGetAuctions({
     limit: 10,
     page,
   });
@@ -48,8 +52,18 @@ export default function MarketplacePage() {
     }
   };
 
+  if (isLoading || auctionLoading) return <LoadingScreen />;
+
   return (
-    <Box bg="bg" minH="100vh" padding={4}>
+    <PaginatedPage
+      currentPage={page}
+      totalPages={pagination.totalPages}
+      totalItems={pagination.totalItems}
+      limit={10}
+      hasNextPage={pagination.hasNextPage}
+      hasPreviousPage={pagination.hasPreviousPage}
+      onPageChange={setPage}
+    >
       <Container maxW="7xl" py={8}>
         <Flex
           justify="space-between"
@@ -189,17 +203,6 @@ export default function MarketplacePage() {
           ))}
         </Grid>
       </Container>
-      {pagination && (
-        <PaginationComponent
-          currentPage={page}
-          totalPages={pagination.totalPages}
-          totalItems={pagination.totalItems}
-          limit={10}
-          hasNextPage={pagination.hasNextPage}
-          hasPreviousPage={pagination.hasPreviousPage}
-          onPageChange={setPage}
-        />
-      )}
-    </Box>
+    </PaginatedPage>
   );
 }

@@ -93,7 +93,6 @@ export const getAuctionByIdService = async (
   const { auctionId, userId } = data;
   const result = await getAuctionById({ auctionId, userId });
   const imageUrl = await getSignedImageUrl(result.image_key);
-  const isAuctionEnded = new Date(result.end_time).getTime() <= Date.now();
   return {
     ...result,
     imageUrl,
@@ -102,7 +101,6 @@ export const getAuctionByIdService = async (
     reserve_price: Number(result.reserve_price),
     total_bids: Number(result.total_bids),
     participated_users: Number(result.participated_users),
-    status: isAuctionEnded ? "ENDED" : result.status,
   };
 };
 

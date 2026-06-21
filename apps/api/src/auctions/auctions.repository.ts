@@ -89,7 +89,6 @@ recent_bids AS (
 
 SELECT
   a.*,
-
   COALESCE(bs.total_bids, 0) AS total_bids,
   COALESCE(bs.participated_users, 0) AS participated_users,
 

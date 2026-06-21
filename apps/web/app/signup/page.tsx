@@ -22,8 +22,8 @@ import {
   type SignupDto,
 } from "@repo/shared";
 import { useRouter } from "next/navigation";
-import { PasswordInput } from "../../components/ui/password-input";
-import { useSignup } from "../../../hooks/useSignup";
+import { PasswordInput } from "../components/ui/password-input";
+import { useSignup } from "../../hooks/useSignup";
 
 export default function SignupPage() {
   const router = useRouter();
