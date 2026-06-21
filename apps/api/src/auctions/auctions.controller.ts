@@ -96,7 +96,7 @@ export const getBidRealTimeController = (
   reply.raw.setHeader("Cache-Control", "no-cache");
 
   reply.raw.setHeader("Connection", "keep-alive");
-  reply.raw.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  reply.raw.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL!);
 
   reply.raw.setHeader("Access-Control-Allow-Credentials", "true");
 

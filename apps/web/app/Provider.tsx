@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Toaster, toaster } from "../components/ui/toaster";
+import { ChakraProvider } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import {
   MutationCache,
@@ -9,11 +8,13 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { ChakraProvider } from "@chakra-ui/react";
-import { system } from "./theme";
-import { getErrorMessage } from "../api/axios";
-import axios from "axios";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import axios from "axios";
+import { useState } from "react";
+import { Toaster } from "sonner";
+import { getErrorMessage } from "../api/axios";
+import { notify } from "./lib/notify";
+import { system } from "./theme";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -30,21 +31,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
               return;
             }
 
-            toaster.create({
-              title: "Error",
-              description: getErrorMessage(error),
-              type: "error",
-            });
+            notify.error(getErrorMessage(error));
           },
         }),
 
         mutationCache: new MutationCache({
           onError: (error) => {
-            toaster.create({
-              title: "Error",
-              description: getErrorMessage(error),
-              type: "error",
-            });
+            notify.error(getErrorMessage(error));
           },
         }),
       })
@@ -55,7 +48,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <ChakraProvider value={system}>
           {children}
-          <Toaster />
+          <Toaster richColors position="top-center" />
         </ChakraProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

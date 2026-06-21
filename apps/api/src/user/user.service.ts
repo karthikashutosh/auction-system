@@ -17,6 +17,7 @@ export async function getMe(userId: string) {
     id: user.id,
     email: user.email,
     name: user.name,
+    avatar_url: user.avatar_url,
   };
 }
 

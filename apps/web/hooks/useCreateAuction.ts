@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/axios";
+import { notify } from "../app/lib/notify";
 
 export interface CreateAuctionPayload {
   title: string;
@@ -26,6 +27,7 @@ export const useCreateAuction = () => {
       return data;
     },
     onSuccess: () => {
+      notify.success("Auction Created Successfully");
       queryClient.invalidateQueries({
         queryKey: ["auctions"],
       });

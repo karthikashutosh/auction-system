@@ -19,16 +19,15 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useState } from "react";
+import { LoadingScreen } from "../../../components/ui/loadingPage";
+import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
 import {
   AuctionsResponse,
   useGetAuctions,
 } from "../../../hooks/useGetAllAuctions";
+import { useMe } from "../../../hooks/useMe";
 import { useLogout } from "../../../hooks/userLogout";
 import { useAuthStore } from "../../../store/auth.store";
-import PaginationComponent from "../../components/Auction/pagination";
-import { useMe } from "../../../hooks/useMe";
-import { LoadingScreen } from "../../../components/ui/loadingPage";
-import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
 
 export default function MarketplacePage() {
   const { mutateAsync, isPending } = useLogout();

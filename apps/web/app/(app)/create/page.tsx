@@ -71,19 +71,6 @@ export default function CreateAuctionPage() {
     };
   }, [image]);
 
-  const handleFileChange = (file: File) => {
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-    }
-
-    setValue("image", file, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-
-    setImagePreview(URL.createObjectURL(file));
-  };
-
   useEffect(() => {
     return () => {
       if (imagePreview) {

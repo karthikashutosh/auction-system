@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { refershSession } from "../api/axios";
 import { AuctionDetail } from "./useGetAuctionById";
-import { api, refershSession } from "../api/axios";
 
 export function useAuctionEvents(auctionId: string) {
   const queryClient = useQueryClient();

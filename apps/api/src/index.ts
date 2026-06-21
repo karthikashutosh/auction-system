@@ -17,7 +17,7 @@ const app = Fastify();
 app.register(fastifyCookie);
 
 app.register(cors, {
-  origin: "http://localhost:3000",
+  origin: process.env.CLIENT_URL,
   credentials: true,
 });
 

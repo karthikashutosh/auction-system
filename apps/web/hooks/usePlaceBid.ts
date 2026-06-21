@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/axios";
+import { notify } from "../app/lib/notify";
 
 type PlaceBidPayload = {
   bidAmount: number;
@@ -30,6 +31,7 @@ export const usePlaceBid = () => {
     },
 
     onSuccess: (_, variables) => {
+      notify.success("Bid placed Successfully");
       queryClient.invalidateQueries({
         queryKey: ["auction", variables.auctionId],
       });
