@@ -21,11 +21,9 @@ import NextLink from "next/link";
 import { useState } from "react";
 import { LoadingScreen } from "../../../components/ui/loadingPage";
 import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
-import {
-  AuctionsResponse,
-  useGetAuctions,
-} from "../../../hooks/useGetAllAuctions";
+import { useGetAuctions } from "../../../hooks/useGetAllAuctions";
 import { useLogout } from "../../../hooks/userLogout";
+import { AuctionsResponse } from "@repo/types";
 
 export default function MarketplacePage() {
   const { mutateAsync, isPending } = useLogout();

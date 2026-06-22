@@ -1,37 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/axios";
 
-export type BidStatus = "ACTIVE" | "CLOSED" | "PENDING";
-
-export interface BidItem {
-  id: string;
-  title: string;
-  image_key: string;
-  bid_amount: string;
-  current_price: string;
-  status: BidStatus;
-  end_time: string;
-  bid_time: string;
-}
-
-export interface PaginationMeta {
-  page: string;
-  limit: string;
-  totalItems: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}
-
-export interface BidsResponse {
-  items: BidItem[];
-  pagination: PaginationMeta;
-}
-
-interface GetBidsParams {
-  limit?: number;
-  page?: number;
-}
+import { GetBidsParams, BidsResponse } from "@repo/types";
 
 export const useGetBidsByAuctionId = ({
   limit = 10,

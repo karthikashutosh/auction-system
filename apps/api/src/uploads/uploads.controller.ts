@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { preSignedUploadService } from "./uploads.service";
-import { AuthUser } from "../user/user.controller";
+import { AuthUser } from "@repo/types";
 
 interface GetPresignedUrlPayload {
   fileName: string;

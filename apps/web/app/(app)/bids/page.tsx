@@ -3,11 +3,9 @@
 import { Badge, Box, Heading, Skeleton, Table, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  BidItem,
-  useGetBidsByAuctionId,
-} from "../../../hooks/useGetBidsByAuctionId";
+import { useGetBidsByAuctionId } from "../../../hooks/useGetBidsByAuctionId";
 import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
+import { BidItem } from "@repo/types";
 
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: "green",

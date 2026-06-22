@@ -7,8 +7,8 @@ import {
   placeBidService,
 } from "./auctions.service";
 import { createAuctionApiSchema, getAuctionsSchema } from "@repo/shared";
-import { AuthUser } from "../user/user.controller";
 import { Subscribe, unSubscribe } from "../realtime/sse-manager";
+import { AuthUser } from "@repo/types";
 
 interface GetAuctionByIdParams {
   id: string;

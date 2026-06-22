@@ -1,22 +1,13 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getAuctionsSchema } from "../../../../packages/shared/src/createAuctions.schema";
 import { getMe, getMyAuctionService } from "./user.service";
-import { db } from "../db";
-
-export type AuthUser = {
-  id: string;
-  email: string;
-  name: string;
-};
+import { AuthUser } from "@repo/types";
 
 export async function getMeController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
   const user = request.user as AuthUser;
-
-  const results = await db.query("SELECT NOW()");
-  console.log(results.rows);
 
   const result = await getMe(user.id);
 

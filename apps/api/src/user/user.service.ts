@@ -1,8 +1,4 @@
-import {
-  findById,
-  getMyAuctionCount,
-  getMyAuctionRepository,
-} from "./user.repository";
+import { findById, getMyAuctionCount, getMyAuctionRepository } from "@repo/db";
 
 export interface myAuctionsServiceInput {
   id: string;

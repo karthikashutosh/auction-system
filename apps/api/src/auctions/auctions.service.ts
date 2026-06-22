@@ -1,10 +1,18 @@
 import { CreateAuctionApiInput } from "@repo/shared";
 import { getSignedImageUrl } from "../config";
-import { db } from "../db";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
 import { send } from "../realtime/sse-manager";
 import {
+  BidHistoryInput,
+  GetAuctionsInput,
+  PlaceBidServiceRequest,
+} from "@repo/types";
+
+import { auctionQueue } from "@repo/queue";
+import { PoolClient } from "pg";
+import {
   addAuction,
+  db,
   getAuctionById,
   getAuctionCount,
   getAuctions,
@@ -13,22 +21,16 @@ import {
   getValidAuctionById,
   placeNewBid,
   updateAuctionRepository,
-} from "./auctions.repository";
-import { auctionQueue } from "@repo/queue";
+} from "@repo/db";
 
-interface GetAuctionsInput {
-  limit: number;
-  page: number;
+export interface ValidAuction {
+  client: PoolClient;
+  auctionInput: PlaceBidServiceRequest;
 }
 
-export interface BidHistoryInput extends GetAuctionsInput {
-  userId: string;
-}
-
-export interface PlaceBidServiceRequest {
-  auctionId: string;
-  userId: string;
-  bidAmount: number;
+export interface ValidAuctionById {
+  client: PoolClient;
+  auctionInput: Pick<PlaceBidServiceRequest, "auctionId">;
 }
 
 export const createAuctionService = async (

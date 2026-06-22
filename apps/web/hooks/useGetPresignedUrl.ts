@@ -1,16 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { uploadSignedUrl } from "../api/uploads.api";
-
-export interface GetPresignedUrlPayload {
-  fileName: string;
-  contentType: string;
-}
-
-export interface GetPresignedUrlResponse {
-  uploadUrl: string;
-  key: string;
-  //   imageUrl: string;
-}
+import { GetPresignedUrlPayload, GetPresignedUrlResponse } from "@repo/types";
 
 export const useGetPresignedUrl = () => {
   return useMutation({

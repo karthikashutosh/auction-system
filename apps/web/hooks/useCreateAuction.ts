@@ -1,20 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/axios";
 import { notify } from "../app/lib/notify";
-
-export interface CreateAuctionPayload {
-  title: string;
-  description: string;
-  startingPrice: number;
-  reservePrice: number;
-  endDate: string;
-  imageKey: string;
-}
-
-export interface CreateAuctionResponse {
-  id: string;
-  message: string;
-}
+import { CreateAuctionPayload, CreateAuctionResponse } from "@repo/types";
 
 export const useCreateAuction = () => {
   const queryClient = useQueryClient();

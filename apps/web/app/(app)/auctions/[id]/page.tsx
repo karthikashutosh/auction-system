@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  Flex,
-  Grid,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Grid, VStack } from "@chakra-ui/react";
+import NextLink from "next/link";
 import { useParams } from "next/navigation";
+import { useAuctionEvents } from "../../../../hooks/useAuctionEvents";
 import { useGetAuctionById } from "../../../../hooks/useGetAuctionById";
 import { useAuthStore } from "../../../../store/auth.store";
 import { AuctionDetails } from "../../../components/Auction/auction-details";
@@ -18,8 +12,6 @@ import { AuctionMetrics } from "../../../components/Auction/auction-metrics";
 import { AuctionStatusCard } from "../../../components/Auction/auction-status-card";
 import { BidForm } from "../../../components/Auction/bid-form";
 import { BidFeed } from "../../../components/Auction/bit-feed";
-import NextLink from "next/link";
-import { useAuctionEvents } from "../../../../hooks/useAuctionEvents";
 
 export default function AuctionDetailPage() {
   const router = useParams();

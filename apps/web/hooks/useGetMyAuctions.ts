@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getMyauctions } from "../api/auctions";
-import { AuctionsResponse } from "./useGetAllAuctions";
+import { AuctionsResponse } from "@repo/types";
 
 type UseMyAuctionsProps = {
   page: number;

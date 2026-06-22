@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { db } from "../db";
-import { BidHistoryInput, PlaceBidServiceRequest } from "./auctions.service";
+import { BidHistoryInput, PlaceBidServiceRequest } from "@repo/types";
 
 export interface ValidAuction {
   client: PoolClient;

@@ -1,21 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/axios";
 import { notify } from "../app/lib/notify";
-
-type PlaceBidPayload = {
-  bidAmount: number;
-};
-
-type PlaceBidVariables = {
-  auctionId: string;
-  payload: PlaceBidPayload;
-};
-
-type PlaceBidResponse = {
-  id: string;
-  bidAmount: number;
-  userId: string;
-};
+import { PlaceBidResponse, PlaceBidVariables } from "@repo/types";
 
 export const usePlaceBid = () => {
   const queryClient = useQueryClient();

@@ -1,6 +1,5 @@
 import "dotenv/config";
 import Fastify from "fastify";
-import { db } from "./db";
 import { authRoutes } from "./auth/auth.routes";
 import cors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
@@ -11,6 +10,7 @@ import multipart from "@fastify/multipart";
 import { uploadRoutes } from "./uploads/uploads.routes";
 import { auctionsRoutes } from "./auctions/auctions.routes";
 import { AppError } from "./errors";
+import { db } from "@repo/db";
 
 const app = Fastify();
 

@@ -1,0 +1,15 @@
+{
+  "name": "@repo/db",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@types/pg": "^8.20.0"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "pg": "^8.22.0",
+    "@repo/types": "*"
+  }
+}

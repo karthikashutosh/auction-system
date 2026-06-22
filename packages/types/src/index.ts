@@ -1,5 +1,1 @@
-export interface Auction {
-  id: string;
-  title: string;
-  currentPrice: number;
-}
+export * from "./auction.types";
