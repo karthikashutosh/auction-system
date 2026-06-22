@@ -1,0 +1,12 @@
+{
+  "name": "@repo/queue",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "bullmq": "^5.79.1",
+    "ioredis": "^5.11.1"
+  }
+}

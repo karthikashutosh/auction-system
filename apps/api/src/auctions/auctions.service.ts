@@ -2,6 +2,7 @@ import { CreateAuctionApiInput } from "@repo/shared";
 import { getSignedImageUrl } from "../config";
 import { db } from "../db";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
+import { send } from "../realtime/sse-manager";
 import {
   addAuction,
   getAuctionById,
@@ -13,8 +14,7 @@ import {
   placeNewBid,
   updateAuctionRepository,
 } from "./auctions.repository";
-import { send } from "../realtime/sse-manager";
-import fastify from "fastify";
+import { auctionQueue } from "@repo/queue";
 
 interface GetAuctionsInput {
   limit: number;
@@ -56,8 +56,19 @@ export const createAuctionService = async (
     endTime: new Date(endDate),
   });
 
+  await auctionQueue.add(
+    "auction-expiry",
+    {
+      auctionId: response.id,
+    },
+    {
+      jobId: `auction-expiry-${response.id}`,
+      delay: new Date(endDate).getTime() - Date.now(),
+    }
+  );
+
   return {
-    id: response.owner_id,
+    id: response.id,
     message: "Auction created successfully",
   };
 };
@@ -136,6 +147,17 @@ export const placeBidService = async (
         "Bid amount must be at least ₹100 higher than the current bid",
         "BID_AMOUNT_TOO_LOW"
       );
+    }
+
+    if (validAuction.sellerId === userId) {
+      throw new BadRequestError(
+        "You cannot bid on your own auction",
+        "SELF_BIDDING_NOT_ALLOWED"
+      );
+    }
+
+    if (new Date() > validAuction.endTime) {
+      throw new BadRequestError("Auction has ended", "AUCTION_ENDED");
     }
 
     const newBid = await placeNewBid({

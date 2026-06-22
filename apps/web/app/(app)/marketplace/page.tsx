@@ -25,16 +25,11 @@ import {
   AuctionsResponse,
   useGetAuctions,
 } from "../../../hooks/useGetAllAuctions";
-import { useMe } from "../../../hooks/useMe";
 import { useLogout } from "../../../hooks/userLogout";
-import { useAuthStore } from "../../../store/auth.store";
 
 export default function MarketplacePage() {
   const { mutateAsync, isPending } = useLogout();
   const [page, setPage] = useState(1);
-
-  const user = useAuthStore((state) => state.user);
-  const { data: userData, isLoading } = useMe();
 
   const { data, isLoading: auctionLoading } = useGetAuctions({
     limit: 10,
@@ -51,7 +46,11 @@ export default function MarketplacePage() {
     }
   };
 
-  if (isLoading || auctionLoading) return <LoadingScreen />;
+  if (!data) {
+    return null;
+  }
+
+  if (auctionLoading) return <LoadingScreen />;
 
   return (
     <PaginatedPage

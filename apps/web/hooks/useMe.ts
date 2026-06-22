@@ -8,9 +8,7 @@ export const useMe = () => {
     queryKey: ["me"],
     queryFn: async () => {
       const user = await getUserProfile();
-
       setUser(user);
-
       return user;
     },
     retry: false,

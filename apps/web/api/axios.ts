@@ -59,8 +59,6 @@ export const uploadFileToS3 = async (
       "Content-Type": file.type,
     },
   });
-
-  throw new Error(`File upload failed with status ${response.status}`);
 };
 
 export function getErrorMessage(error: unknown): string {
