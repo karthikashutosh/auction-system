@@ -14,7 +14,7 @@ export const useCreateAuction = () => {
       return data;
     },
     onSuccess: () => {
-      notify.success("Auction Created Successfully");
+      notify.success({ title: "Auction Created Successfully" });
       queryClient.invalidateQueries({
         queryKey: ["auctions"],
       });

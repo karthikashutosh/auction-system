@@ -5,7 +5,6 @@ import NextLink from "next/link";
 import { useParams } from "next/navigation";
 import { useAuctionEvents } from "../../../../hooks/useAuctionEvents";
 import { useGetAuctionById } from "../../../../hooks/useGetAuctionById";
-import { useAuthStore } from "../../../../store/auth.store";
 import { AuctionDetails } from "../../../components/Auction/auction-details";
 import { AuctionHero } from "../../../components/Auction/auction-hero";
 import { AuctionMetrics } from "../../../components/Auction/auction-metrics";
@@ -15,8 +14,6 @@ import { BidFeed } from "../../../components/Auction/bit-feed";
 
 export default function AuctionDetailPage() {
   const router = useParams();
-
-  const user = useAuthStore((state) => state.user);
 
   const { data } = useGetAuctionById(router.id as string);
 

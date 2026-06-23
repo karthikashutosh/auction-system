@@ -17,7 +17,7 @@ export const usePlaceBid = () => {
     },
 
     onSuccess: (_, variables) => {
-      notify.success("Bid placed Successfully");
+      notify.success({ title: "Bid placed Successfully" });
       queryClient.invalidateQueries({
         queryKey: ["auction", variables.auctionId],
       });

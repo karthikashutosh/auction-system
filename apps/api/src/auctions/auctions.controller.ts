@@ -9,6 +9,10 @@ import {
 import { createAuctionApiSchema, getAuctionsSchema } from "@repo/shared";
 import { Subscribe, unSubscribe } from "../realtime/sse-manager";
 import { AuthUser } from "@repo/types";
+import {
+  subscribeNotification,
+  unSubscribeNotification,
+} from "../realtime/notification-sse-manager";
 
 interface GetAuctionByIdParams {
   id: string;
@@ -113,5 +117,25 @@ export const getBidRealTimeController = (
       auctionId,
       connection: reply.raw,
     });
+  });
+};
+
+export const getNotificationEvents = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const { id: userId } = request.user as AuthUser;
+
+  reply.raw.setHeader("Content-Type", "text/event-stream");
+  reply.raw.setHeader("Cache-Control", "no-cache");
+  reply.raw.setHeader("Connection", "keep-alive");
+  reply.raw.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL!);
+  reply.raw.setHeader("Access-Control-Allow-Credentials", "true");
+  reply.raw.flushHeaders();
+
+  subscribeNotification({ connection: reply.raw, userId });
+
+  reply.raw.on("close", () => {
+    unSubscribeNotification({ connection: reply.raw, userId });
   });
 };

@@ -1,10 +1,12 @@
 import { CreateAuctionApiInput } from "@repo/shared";
 import { getSignedImageUrl } from "../config";
-import { BadRequestError, ForbiddenError, NotFoundError } from "../errors";
-import { send } from "../realtime/sse-manager";
+import { sendRealTimeBidsUpdate } from "../realtime/sse-manager";
 import {
+  BadRequestError,
   BidHistoryInput,
+  ForbiddenError,
   GetAuctionsInput,
+  NotFoundError,
   PlaceBidServiceRequest,
 } from "@repo/types";
 
@@ -22,6 +24,7 @@ import {
   placeNewBid,
   updateAuctionRepository,
 } from "@repo/db";
+import { publish } from "@repo/redis";
 
 export interface ValidAuction {
   client: PoolClient;
@@ -181,7 +184,7 @@ export const placeBidService = async (
 
     await client.query("COMMIT");
 
-    send({
+    await publish("auction-events", {
       auctionId,
       payload: {
         type: "NEW_BID",
@@ -189,6 +192,7 @@ export const placeBidService = async (
         name: userName,
       },
     });
+
     return {
       id: newBid.id,
       bidAmount,

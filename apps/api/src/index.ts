@@ -1,16 +1,30 @@
 import "dotenv/config";
-import Fastify from "fastify";
-import { authRoutes } from "./auth/auth.routes";
+import fastifyCookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
-import fastifyCookie from "@fastify/cookie";
-import { authenticate } from "./auth/authenticate";
-import { userRoutes } from "./user/user.routes";
 import multipart from "@fastify/multipart";
-import { uploadRoutes } from "./uploads/uploads.routes";
-import { auctionsRoutes } from "./auctions/auctions.routes";
-import { AppError } from "./errors";
 import { db } from "@repo/db";
+import Fastify from "fastify";
+import { auctionsRoutes } from "./auctions/auctions.routes";
+import { authRoutes } from "./auth/auth.routes";
+import { authenticate } from "./auth/authenticate";
+import { AppError } from "./errors";
+import { uploadRoutes } from "./uploads/uploads.routes";
+import { userRoutes } from "./user/user.routes";
+import { subscribe } from "@repo/redis";
+import {
+  bidsEventsHandler,
+  notificationHandler,
+} from "./events/events-handler";
+
+// {
+//   logger: {
+//     level: "info",
+//     transport: {
+//       target: "pino-pretty",
+//     },
+//   },
+// }
 
 const app = Fastify();
 
@@ -91,11 +105,15 @@ app.setErrorHandler((error, request, reply) => {
   });
 });
 
-app.listen({ port: 3001 }, (err) => {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
+const start = async () => {
+  await subscribe("auction-events", bidsEventsHandler);
+  await subscribe("notifications-events", notificationHandler);
+
+  await app.listen({
+    port: 3001,
+  });
 
   console.log("Server running on port 3001");
-});
+};
+
+start();

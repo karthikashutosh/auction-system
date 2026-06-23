@@ -50,7 +50,7 @@ export function unSubscribe(data: Omit<SubscribeData, "userId">) {
   }
 }
 
-export function send(data: SendStream) {
+export function sendRealTimeBidsUpdate(data: SendStream) {
   const { auctionId, payload } = data;
 
   const clients = auctionMap.get(auctionId);

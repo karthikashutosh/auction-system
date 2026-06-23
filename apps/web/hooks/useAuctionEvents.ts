@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { refershSession } from "../api/axios";
-import { AuctionDetail } from "./useGetAuctionById";
+import { AuctionDetail } from "@repo/types";
 
 export function useAuctionEvents(auctionId: string) {
   const queryClient = useQueryClient();

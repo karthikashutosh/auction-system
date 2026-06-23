@@ -6,7 +6,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "bullmq": "^5.79.1",
-    "ioredis": "^5.11.1"
+    "@repo/redis": "*",
+    "bullmq": "^5.79.1"
   }
 }

@@ -1,3 +1,2 @@
-import "@repo/queue";
-
-console.log("Auction Worker Started");
+import "dotenv/config";
+export * from "./auction-worker";

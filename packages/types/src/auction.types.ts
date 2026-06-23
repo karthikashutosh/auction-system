@@ -153,3 +153,27 @@ export interface PlaceBidResponse {
   bidAmount: number;
   userId: string;
 }
+
+export type NotificationType =
+  | "AUCTION_WON"
+  | "AUCTION_ENDED"
+  | "OUTBID"
+  | "NEW_BID"
+  | "AUCTION_CREATED";
+
+export interface NotificationPayload {
+  userId: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+}
+
+export interface NotificationResponse {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  is_read: boolean;
+  created_at: string;
+}

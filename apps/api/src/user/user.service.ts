@@ -1,4 +1,9 @@
-import { findById, getMyAuctionCount, getMyAuctionRepository } from "@repo/db";
+import {
+  db,
+  findById,
+  getMyAuctionCount,
+  getMyAuctionRepository,
+} from "@repo/db";
 
 export interface myAuctionsServiceInput {
   id: string;
@@ -39,4 +44,22 @@ export const getMyAuctionService = async (data: myAuctionsServiceInput) => {
       hasPreviousPage: page > 1,
     },
   };
+};
+export const getAllNotificationsRepository = async (userId: string) => {
+  const client = await db.connect();
+
+  try {
+    const query = `
+      SELECT *
+      FROM notifications
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+    `;
+
+    const result = await client.query(query, [userId]);
+
+    return result.rows;
+  } finally {
+    client.release();
+  }
 };

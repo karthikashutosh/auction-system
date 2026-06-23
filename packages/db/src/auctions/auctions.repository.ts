@@ -1,6 +1,18 @@
-import { PoolClient } from "pg";
+import { Client, PoolClient } from "pg";
 import { db } from "../db";
-import { BidHistoryInput, PlaceBidServiceRequest } from "@repo/types";
+import {
+  BidHistoryInput,
+  CreateAuctionPayload,
+  NotificationPayload,
+  PlaceBidServiceRequest,
+} from "@repo/types";
+
+type UpdateAuctionStatusInput = {
+  client: PoolClient;
+  auctionId: string;
+  status: "ACTIVE" | "ENDED";
+  highest_bidder_id: string | null;
+};
 
 export interface ValidAuction {
   client: PoolClient;
@@ -12,7 +24,21 @@ export interface ValidAuctionById {
   auctionInput: Pick<PlaceBidServiceRequest, "auctionId">;
 }
 
-export const addAuction = async (data) => {
+export interface NotificationPayloadWithClient extends NotificationPayload {
+  client: PoolClient;
+}
+
+export interface CreateAuctionPayloadWithvalid extends Omit<
+  CreateAuctionPayload,
+  "endDate"
+> {
+  ownerId: string;
+  currentPrice: number;
+  startTime: Date;
+  endTime: Date;
+}
+
+export const addAuction = async (data: CreateAuctionPayloadWithvalid) => {
   const query = `INSERT INTO auctions(owner_id, title, description, image_key, starting_price, current_price, reserve_price, start_time, end_time) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`;
   const values = [
     data.ownerId,
@@ -30,7 +56,13 @@ export const addAuction = async (data) => {
   return result.rows[0];
 };
 
-export const getAuctions = async ({ limit, offset }) => {
+export const getAuctions = async ({
+  limit,
+  offset,
+}: {
+  limit: number;
+  offset: number;
+}) => {
   const query = `SELECT * FROM auctions ORDER BY start_time DESC LIMIT $1 OFFSET $2`;
   const response = await db.query(query, [limit, offset]);
   return response.rows;
@@ -86,7 +118,6 @@ recent_bids AS (
   ) rb
   GROUP BY rb.auction_id
 )
-
 SELECT
   a.*,
   COALESCE(bs.total_bids, 0) AS total_bids,
@@ -176,4 +207,38 @@ export const getCountBidsHistory = async ({ userId }: { userId: string }) => {
   const result = await db.query(query, [userId]);
   const total = Number(result.rows[0].count);
   return total;
+};
+
+export const updateAuctionStatusRepository = async ({
+  client,
+  auctionId,
+  status,
+  highest_bidder_id,
+}: UpdateAuctionStatusInput) => {
+  const query = `
+    UPDATE auctions
+    SET
+    status = $1,
+    highest_bidder_id = $2
+    WHERE id = $3
+    RETURNING *;
+    `;
+
+  const result = await client.query(query, [
+    status,
+    highest_bidder_id,
+    auctionId,
+  ]);
+
+  return result.rows[0];
+};
+
+export const createNotificationRepository = async (
+  data: NotificationPayloadWithClient
+) => {
+  const { client, message, title, type, userId } = data;
+  const query = `INSERT INTO notifications (user_id, message,title,type) values($1, $2, $3, $4) RETURNING *`;
+  const values = [userId, message, title, type];
+  const result = await client.query(query, values);
+  return result.rows[0];
 };

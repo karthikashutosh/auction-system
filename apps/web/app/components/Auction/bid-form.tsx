@@ -42,7 +42,6 @@ export function BidForm({ currentPrice, disabled = false }: Props) {
     }
 
     await mutateAsync({ auctionId, payload: { bidAmount: values.amount } });
-    setValue("amount", 0);
   };
 
   return (

@@ -1,19 +1,32 @@
 import { toast } from "sonner";
 
+type ToastOptions = {
+  title: string;
+  description?: string;
+};
+
 export const notify = {
-  success: (message: string) => {
-    toast.success(message);
+  success: ({ title, description }: ToastOptions) => {
+    toast.success(title, {
+      description,
+    });
   },
 
-  error: (message: string) => {
-    toast.error(message);
+  error: ({ title, description }: ToastOptions) => {
+    toast.error(title, {
+      description,
+    });
   },
 
-  warning: (message: string) => {
-    toast.warning(message);
+  warning: ({ title, description }: ToastOptions) => {
+    toast.warning(title, {
+      description,
+    });
   },
 
-  info: (message: string) => {
-    toast.info(message);
+  info: ({ title, description }: ToastOptions) => {
+    toast.info(title, {
+      description,
+    });
   },
 };

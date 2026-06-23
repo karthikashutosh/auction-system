@@ -1,6 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getAuctionsSchema } from "../../../../packages/shared/src/createAuctions.schema";
-import { getMe, getMyAuctionService } from "./user.service";
+import {
+  getAllNotificationsRepository,
+  getMe,
+  getMyAuctionService,
+} from "./user.service";
 import { AuthUser } from "@repo/types";
 
 export async function getMeController(
@@ -42,4 +46,14 @@ export const getMyAuctionsController = async (
   const response = await getMyAuctionService({ id: user.id, limit, page });
 
   reply.code(200).send(response);
+};
+
+export const getAllNotificationsController = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  const user = request.user as AuthUser;
+  const result = await getAllNotificationsRepository(user.id);
+
+  reply.code(200).send(result);
 };

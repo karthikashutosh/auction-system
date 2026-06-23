@@ -8,6 +8,10 @@
   },
   "dependencies": {
     "@repo/db": "*",
-    "@repo/types": "*"
+    "@repo/queue": "*",
+    "@repo/redis": "*",
+    "@repo/types": "*",
+    "bullmq": "^5.79.1",
+    "dotenv": "^16.6.1"
   }
 }
