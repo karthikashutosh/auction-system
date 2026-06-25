@@ -14,7 +14,7 @@ type Props = {
   onPageChange: (page: number) => void;
 };
 
-export function PaginatedPage({
+export default function PaginatedLayout({
   children,
   currentPage,
   totalPages,

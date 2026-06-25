@@ -12,11 +12,6 @@ export const appNavItems = [
     href: "/marketplace",
     icon: Store,
   },
-  //   {
-  //     label: "Dashboard",
-  //     href: "/dashboard",
-  //     icon: LayoutDashboard,
-  //   },
   {
     label: "My Auctions",
     href: "/my-auctions",
@@ -26,10 +21,5 @@ export const appNavItems = [
     label: "My Bids",
     href: "/bids",
     icon: BadgeDollarSign,
-  },
-  {
-    label: "Profile",
-    href: "/profile",
-    icon: User,
   },
 ];

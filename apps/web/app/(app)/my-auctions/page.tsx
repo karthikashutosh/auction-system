@@ -16,9 +16,9 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
-import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
 import { useMyAuctions } from "../../../hooks/useGetMyAuctions";
 import { formatAuctionDate, formatTimeRemaining } from "../../../utils";
+import PaginatedLayout from "../../../components/ui/PaginatedLayout";
 
 const MotionBox = motion.create(Box);
 
@@ -27,7 +27,7 @@ export default function MyAuctionsPage() {
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useMyAuctions({
-    page: 1,
+    page,
     limit: 10,
   });
 
@@ -64,7 +64,7 @@ export default function MyAuctionsPage() {
   if (!pagination) return null;
 
   return (
-    <PaginatedPage
+    <PaginatedLayout
       currentPage={page}
       totalPages={pagination?.totalPages}
       totalItems={pagination.totalItems}
@@ -204,6 +204,6 @@ export default function MyAuctionsPage() {
           </MotionBox>
         ))}
       </SimpleGrid>
-    </PaginatedPage>
+    </PaginatedLayout>
   );
 }

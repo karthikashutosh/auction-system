@@ -9,12 +9,14 @@ export const notify = {
   success: ({ title, description }: ToastOptions) => {
     toast.success(title, {
       description,
+      duration: 6000,
     });
   },
 
   error: ({ title, description }: ToastOptions) => {
     toast.error(title, {
       description,
+      duration: 8000,
     });
   },
 
@@ -27,6 +29,7 @@ export const notify = {
   info: ({ title, description }: ToastOptions) => {
     toast.info(title, {
       description,
+      duration: 6000,
     });
   },
 };

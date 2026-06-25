@@ -36,7 +36,7 @@ export const formatTimeRemaining = (endTime: string) => {
   const diff = new Date(endTime).getTime() - Date.now();
 
   if (diff <= 0) {
-    return "Ended";
+    return "Auction Over";
   }
 
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));

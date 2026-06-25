@@ -1,10 +1,5 @@
+import { AuthUser } from "@repo/types";
 import { FastifyReply, FastifyRequest } from "fastify";
-
-type AuthUser = {
-  id: string;
-  email: string;
-  name: string;
-};
 
 export const createAuthSession = (
   user: AuthUser,
@@ -14,8 +9,6 @@ export const createAuthSession = (
   const accessToken = request.server.jwt.sign(
     {
       id: user.id,
-      email: user.email,
-      name: user.name,
     },
     {
       expiresIn: "15m",
@@ -25,8 +18,6 @@ export const createAuthSession = (
   const refreshToken = request.server.jwt.sign(
     {
       id: user.id,
-      email: user.email,
-      name: user.name,
     },
     {
       expiresIn: "30d",
@@ -63,8 +54,6 @@ export const issueAccessToken = (
   const accessToken = request.server.jwt.sign(
     {
       id: user.id,
-      email: user.email,
-      name: user.name,
     },
     {
       expiresIn: "15m",

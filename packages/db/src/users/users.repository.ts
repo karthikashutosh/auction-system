@@ -7,7 +7,15 @@ export async function findById(id: string) {
   return results.rows[0];
 }
 
-export const getMyAuctionRepository = async ({ id, limit, offset }) => {
+export const getMyAuctionRepository = async ({
+  id,
+  limit,
+  offset,
+}: {
+  id: string;
+  limit: number;
+  offset: number;
+}) => {
   const result = await db.query(
     `SELECT *
 FROM auctions

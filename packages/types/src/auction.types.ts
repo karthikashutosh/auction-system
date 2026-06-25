@@ -15,8 +15,6 @@ export interface PlaceBidServiceRequest {
 
 export type AuthUser = {
   id: string;
-  email: string;
-  name: string;
 };
 
 export type BidStatus = "ACTIVE" | "CLOSED" | "PENDING";
@@ -161,11 +159,15 @@ export type NotificationType =
   | "NEW_BID"
   | "AUCTION_CREATED";
 
+export type EntityType = "AUCTION";
+
 export interface NotificationPayload {
   userId: string;
   title: string;
   message: string;
   type: NotificationType;
+  entityType: EntityType;
+  entityId: "string";
 }
 
 export interface NotificationResponse {
@@ -176,4 +178,11 @@ export interface NotificationResponse {
   type: NotificationType;
   is_read: boolean;
   created_at: string;
+  entity_id: string;
+  entity_type: EntityType;
 }
+
+export type NotificationControlType = {
+  notificationId: string;
+  userId: string;
+};

@@ -4,8 +4,8 @@ import { Badge, Box, Heading, Skeleton, Table, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGetBidsByAuctionId } from "../../../hooks/useGetBidsByAuctionId";
-import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
 import { BidItem } from "@repo/types";
+import PaginatedLayout from "../../../components/ui/PaginatedLayout";
 
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: "green",
@@ -132,7 +132,7 @@ export default function DashboardPage() {
   if (!pagination) return null;
 
   return (
-    <PaginatedPage
+    <PaginatedLayout
       currentPage={Number(pagination.page)}
       hasNextPage={pagination.hasNextPage}
       hasPreviousPage={pagination.hasPreviousPage}
@@ -155,6 +155,6 @@ export default function DashboardPage() {
           <Table.Body>{renderRows()}</Table.Body>
         </Table.Root>
       </Box>
-    </PaginatedPage>
+    </PaginatedLayout>
   );
 }

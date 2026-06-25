@@ -16,23 +16,23 @@ import {
   bidsEventsHandler,
   notificationHandler,
 } from "./events/events-handler";
+import { notificationsRoutes } from "./notifications/notifications.routes";
 
-// {
-//   logger: {
-//     level: "info",
-//     transport: {
-//       target: "pino-pretty",
-//     },
-//   },
-// }
-
-const app = Fastify();
+const app = Fastify({
+  logger: {
+    level: "info",
+    transport: {
+      target: "pino-pretty",
+    },
+  },
+});
 
 app.register(fastifyCookie);
 
 app.register(cors, {
   origin: process.env.CLIENT_URL,
   credentials: true,
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 });
 
 app.register(fastifyJwt, {
@@ -70,6 +70,13 @@ app.register(async (app) => {
   app.addHook("preHandler", authenticate);
   app.register(auctionsRoutes, {
     prefix: "api/auctions",
+  });
+});
+
+app.register(async (app) => {
+  app.addHook("preHandler", authenticate);
+  app.register(notificationsRoutes, {
+    prefix: "api/notifications",
   });
 });
 

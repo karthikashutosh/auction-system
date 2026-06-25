@@ -6,7 +6,7 @@ import {
 } from "./auth.service";
 import { GoogleOauthDto, LoginDto, SignupDto } from "@repo/shared";
 import { createAuthSession, issueAccessToken } from "./auth.session";
-import { AuthUser } from "../user/user.controller";
+import { AuthUser } from "@repo/types";
 
 export async function signupController(
   request: FastifyRequest<{
@@ -25,11 +25,7 @@ export async function loginController(
 ) {
   const user = await loginService(request.body);
 
-  createAuthSession(
-    { email: user.email, id: user.id, name: user.name },
-    request,
-    reply
-  );
+  createAuthSession({ id: user.id }, request, reply);
 
   return reply.code(200).send({
     success: true,
@@ -44,11 +40,7 @@ export const googleOauthController = async (
 
   const user = await googleOauthService(validatedRequest.token);
 
-  createAuthSession(
-    { email: user.email, id: user.id, name: user.name },
-    request,
-    reply
-  );
+  createAuthSession({ id: user.id }, request, reply);
 
   return reply.code(200).send({
     success: true,

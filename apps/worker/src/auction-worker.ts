@@ -74,6 +74,8 @@ export const auctionExpiryJob = async (id: string) => {
         title: "Auction Won",
         message: `You won ${validAuction.title}`,
         type: "AUCTION_WON",
+        entityType: "AUCTION",
+        entityId: validAuction.id,
       });
     }
 
@@ -83,7 +85,10 @@ export const auctionExpiryJob = async (id: string) => {
       title: "Auction Ended",
       message: `Your auction ${validAuction.title} has ended`,
       type: "AUCTION_ENDED",
+      entityType: "AUCTION",
+      entityId: validAuction.id,
     });
+
     await client.query("COMMIT");
 
     if (winnerNotification) {

@@ -13,6 +13,7 @@ import {
   subscribeNotification,
   unSubscribeNotification,
 } from "../realtime/notification-sse-manager";
+import { findById } from "@repo/db";
 
 interface GetAuctionByIdParams {
   id: string;
@@ -56,13 +57,14 @@ export const placeBidController = async (
   reply: FastifyReply
 ) => {
   const user = request.user as AuthUser;
+  const userInfo = await findById(user.id);
   const { id: auctionId } = request.params as { id: string };
 
   const bidResult = await placeBidService({
     auctionId,
     userId: user.id,
     bidAmount: request.body.bidAmount,
-    userName: user.name,
+    userName: userInfo.name,
   });
 
   reply.code(201).send(bidResult);

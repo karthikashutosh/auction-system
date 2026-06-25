@@ -20,10 +20,11 @@ import {
 import NextLink from "next/link";
 import { useState } from "react";
 import { LoadingScreen } from "../../../components/ui/loadingPage";
-import { PaginatedPage } from "../../../components/ui/PaginatedComponent";
 import { useGetAuctions } from "../../../hooks/useGetAllAuctions";
 import { useLogout } from "../../../hooks/userLogout";
 import { AuctionsResponse } from "@repo/types";
+import { Notification } from "../../components/Notifications/Notifications";
+import PaginatedLayout from "../../../components/ui/PaginatedLayout";
 
 export default function MarketplacePage() {
   const { mutateAsync, isPending } = useLogout();
@@ -51,7 +52,7 @@ export default function MarketplacePage() {
   if (auctionLoading) return <LoadingScreen />;
 
   return (
-    <PaginatedPage
+    <PaginatedLayout
       currentPage={page}
       totalPages={pagination.totalPages}
       totalItems={pagination.totalItems}
@@ -82,7 +83,7 @@ export default function MarketplacePage() {
             <Button asChild colorPalette="brand">
               <NextLink href="/create">Create Auction</NextLink>
             </Button>
-
+            <Notification />
             <Menu.Root positioning={{ placement: "bottom-end" }}>
               <Menu.Trigger asChild>
                 <Button
@@ -169,7 +170,7 @@ export default function MarketplacePage() {
 
                     <Badge
                       colorPalette={
-                        auction.status === "Active" ? "green" : "orange"
+                        auction.status === "ACTIVE" ? "green" : "red"
                       }
                     >
                       {auction.status}
@@ -199,6 +200,6 @@ export default function MarketplacePage() {
           ))}
         </Grid>
       </Container>
-    </PaginatedPage>
+    </PaginatedLayout>
   );
 }

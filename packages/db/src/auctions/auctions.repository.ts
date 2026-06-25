@@ -236,9 +236,30 @@ export const updateAuctionStatusRepository = async ({
 export const createNotificationRepository = async (
   data: NotificationPayloadWithClient
 ) => {
-  const { client, message, title, type, userId } = data;
-  const query = `INSERT INTO notifications (user_id, message,title,type) values($1, $2, $3, $4) RETURNING *`;
-  const values = [userId, message, title, type];
+  const { client, userId, title, message, type, entityType, entityId } = data;
+
+  const query = `
+    INSERT INTO notifications (
+      user_id,
+      message,
+      title,
+      type,
+      entity_type,
+      entity_id
+    )
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING *;
+  `;
+
+  const values = [userId, message, title, type, entityType, entityId];
+
   const result = await client.query(query, values);
+
   return result.rows[0];
+};
+
+export const getActiveAuctionsRepository = async () => {
+  const query = `SELECT id,end_time FROM AUCTIONS WHERE status = 'ACTIVE'`;
+  const results = await db.query(query);
+  return results.rows;
 };
