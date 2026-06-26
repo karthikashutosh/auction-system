@@ -151,6 +151,7 @@ export default function CreateAuctionPage() {
                     <Text mb={2}>Auction Title</Text>
 
                     <Input
+                      data-testid="auction-title-input"
                       placeholder="MacBook Pro M4"
                       {...register("title")}
                     />
@@ -166,6 +167,7 @@ export default function CreateAuctionPage() {
                     <Text mb={2}>Description</Text>
 
                     <Textarea
+                      data-testid="auction-description-input"
                       minH="140px"
                       placeholder="Describe your item..."
                       {...register("description")}
@@ -182,6 +184,7 @@ export default function CreateAuctionPage() {
                     <Text mb={2}>Starting Price</Text>
 
                     <Input
+                      data-testid="auction-starting-price-input"
                       type="number"
                       placeholder="100000"
                       {...register("startingPrice")}
@@ -197,6 +200,7 @@ export default function CreateAuctionPage() {
                   <Box>
                     <Text mb={2}>Reserve Price</Text>
                     <Input
+                      data-testid="auction-reserve-price-input"
                       type="number"
                       placeholder="150000"
                       {...register("reservePrice")}
@@ -212,7 +216,11 @@ export default function CreateAuctionPage() {
                   <Box>
                     <Text mb={2}>Auction End Date</Text>
 
-                    <Input type="datetime-local" {...register("endDate")} />
+                    <Input
+                      data-testid="auction-end-date-input"
+                      type="datetime-local"
+                      {...register("endDate")}
+                    />
 
                     {errors.endDate && (
                       <Text mt={1} color="red.500" fontSize="sm">
@@ -238,6 +246,7 @@ export default function CreateAuctionPage() {
                   </Box>
 
                   <Button
+                    data-testid="create-auction-submit-button"
                     loading={isSubmitting}
                     type="submit"
                     size="lg"

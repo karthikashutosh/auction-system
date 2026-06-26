@@ -80,13 +80,18 @@ export default function MarketplacePage() {
           <HStack gap={4}>
             <Input placeholder="Search auctions..." w="320px" />
 
-            <Button asChild colorPalette="brand">
+            <Button
+              asChild
+              data-testid="create-auction-nav-button"
+              colorPalette="brand"
+            >
               <NextLink href="/create">Create Auction</NextLink>
             </Button>
             <Notification />
             <Menu.Root positioning={{ placement: "bottom-end" }}>
               <Menu.Trigger asChild>
                 <Button
+                  data-testid="profile-menu-button"
                   variant="ghost"
                   p={0}
                   minW="auto"
@@ -103,6 +108,7 @@ export default function MarketplacePage() {
                 <Menu.Positioner>
                   <Menu.Content p={2}>
                     <Button
+                      data-testid="logout-button"
                       colorPalette="red"
                       size="sm"
                       width="full"
@@ -152,6 +158,7 @@ export default function MarketplacePage() {
           {data?.items.map((auction) => (
             <Card.Root
               key={auction.id}
+              data-testid={`auction-card-${auction.id}`}
               bg="surface"
               borderColor="border"
               borderWidth="1px"
@@ -190,7 +197,10 @@ export default function MarketplacePage() {
                   {/* <Text color="muted">{auction.bids} bids placed</Text> */}
 
                   <Button asChild colorPalette="brand" variant="subtle">
-                    <NextLink href={`/auctions/${auction.id}`}>
+                    <NextLink
+                      data-testid={`view-auction-${auction.id}`}
+                      href={`/auctions/${auction.id}`}
+                    >
                       View Auction
                     </NextLink>
                   </Button>

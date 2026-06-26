@@ -29,6 +29,7 @@ export function FileUpload({ file, error, onChange }: FileUploadProps) {
   return (
     <VStack align="stretch" gap={2}>
       <Box
+        data-testid="auction-image-upload"
         {...getRootProps()}
         cursor="pointer"
         border="2px dashed"

@@ -131,6 +131,7 @@ export default function LoginPage() {
 
                 <Box w="full">
                   <Input
+                    data-testid="email-input"
                     size="lg"
                     placeholder="Email address"
                     {...register("email")}
@@ -145,6 +146,7 @@ export default function LoginPage() {
 
                 <Box w="full">
                   <PasswordInput
+                    data-testid="password-input"
                     size="lg"
                     placeholder="Password"
                     {...register("password")}
@@ -158,6 +160,7 @@ export default function LoginPage() {
                 </Box>
 
                 <Button
+                  data-testid="login-button"
                   type="submit"
                   w="full"
                   size="lg"

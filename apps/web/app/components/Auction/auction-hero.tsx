@@ -9,8 +9,8 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { AuctionDetail } from "../../../hooks/useGetAuctionById";
 import { formatAuctionDate } from "../../../utils";
+import { AuctionDetail } from "@repo/types";
 
 type Props = {
   auction: AuctionDetail;
@@ -19,7 +19,7 @@ type Props = {
 export function AuctionHero({ auction }: Props) {
   return (
     <Card.Root overflow="hidden">
-      <Box position="relative" w="100%" h="200px">
+      <Box data-testid="auction-hero" position="relative" w="100%" h="200px">
         <img
           loading="lazy"
           src={auction.imageUrl}

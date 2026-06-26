@@ -14,7 +14,7 @@ export function AuctionMetrics({
   participants,
 }: Props) {
   return (
-    <Card.Root>
+    <Card.Root data-testid="auction-metrics">
       <Card.Body>
         <Heading size="sm" mb={4}>
           Auction Stats

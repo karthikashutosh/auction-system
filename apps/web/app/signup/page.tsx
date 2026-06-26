@@ -135,6 +135,7 @@ export default function SignupPage() {
                 <Box w="full">
                   <Input
                     size="lg"
+                    data-testid="signup-name-input"
                     placeholder="Full Name"
                     {...register("name")}
                   />
@@ -148,6 +149,7 @@ export default function SignupPage() {
 
                 <Box w="full">
                   <Input
+                    data-testid="signup-email-input"
                     size="lg"
                     type="email"
                     placeholder="Email address"
@@ -163,6 +165,7 @@ export default function SignupPage() {
 
                 <Box w="full">
                   <PasswordInput
+                    data-testid="signup-password-input"
                     size="lg"
                     placeholder="Password"
                     {...register("password")}
@@ -177,6 +180,7 @@ export default function SignupPage() {
 
                 <Box w="full">
                   <PasswordInput
+                    data-testid="signup-confirm-password-input"
                     size="lg"
                     placeholder="Confirm Password"
                     {...register("confirmPassword")}
@@ -190,6 +194,7 @@ export default function SignupPage() {
                 </Box>
 
                 <Button
+                  data-testid="signup-button"
                   type="submit"
                   w="full"
                   size="lg"

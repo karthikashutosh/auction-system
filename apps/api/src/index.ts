@@ -8,7 +8,6 @@ import Fastify from "fastify";
 import { auctionsRoutes } from "./auctions/auctions.routes";
 import { authRoutes } from "./auth/auth.routes";
 import { authenticate } from "./auth/authenticate";
-import { AppError } from "./errors";
 import { uploadRoutes } from "./uploads/uploads.routes";
 import { userRoutes } from "./user/user.routes";
 import { subscribe } from "@repo/redis";
@@ -17,6 +16,7 @@ import {
   notificationHandler,
 } from "./events/events-handler";
 import { notificationsRoutes } from "./notifications/notifications.routes";
+import { AppError } from "@repo/types";
 
 const app = Fastify({
   logger: {

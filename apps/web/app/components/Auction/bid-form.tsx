@@ -46,7 +46,7 @@ export function BidForm({ currentPrice, disabled = false }: Props) {
 
   return (
     <form onSubmit={handleSubmit(submit)}>
-      <Card.Root>
+      <Card.Root data-testid="bid-form">
         <Card.Body>
           <VStack align="stretch" gap={4}>
             <Text fontWeight="semibold" fontSize="lg">
@@ -54,6 +54,7 @@ export function BidForm({ currentPrice, disabled = false }: Props) {
             </Text>
 
             <Input
+              data-testid="bid-amount-input"
               type="number"
               size="lg"
               placeholder={`Minimum ₹${minimumBid.toLocaleString()}`}
@@ -71,6 +72,7 @@ export function BidForm({ currentPrice, disabled = false }: Props) {
             </Text>
 
             <Button
+              data-testid="place-bid-button"
               type="submit"
               size="lg"
               colorPalette="blue"

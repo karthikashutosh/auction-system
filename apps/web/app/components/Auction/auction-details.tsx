@@ -18,7 +18,7 @@ export function AuctionDetails({
   endTime,
 }: Props) {
   return (
-    <Card.Root>
+    <Card.Root data-testid="auction-status-card">
       <Card.Body>
         <VStack align="stretch" gap={6}>
           {/* Description */}

@@ -50,7 +50,7 @@ export function AuctionStatusCard({
               Current Highest Bid
             </Text>
 
-            <Heading size="3xl" color="blue.500">
+            <Heading data-testid="current-price" size="3xl" color="blue.500">
               ₹{currentPrice.toLocaleString()}
             </Heading>
           </VStack>

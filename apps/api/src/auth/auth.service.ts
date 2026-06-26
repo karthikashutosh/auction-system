@@ -1,8 +1,8 @@
 import { LoginDto, SignupDto } from "@repo/shared";
 import bcrypt from "bcrypt";
 import { googleClient } from "./googleOauthClient";
-import { BadRequestError, ConflictError, UnauthorizedError } from "../errors";
 import { createUser, findExistingUser } from "@repo/db";
+import { BadRequestError, ConflictError, UnauthorizedError } from "@repo/types";
 
 export const signupService = async (data: SignupDto) => {
   const { email, name, password } = data;

@@ -1,6 +1,4 @@
 import { CreateAuctionApiInput } from "@repo/shared";
-import { getSignedImageUrl } from "../config";
-import { sendRealTimeBidsUpdate } from "../realtime/sse-manager";
 import {
   BadRequestError,
   BidHistoryInput,
@@ -9,9 +7,8 @@ import {
   NotFoundError,
   PlaceBidServiceRequest,
 } from "@repo/types";
+import { getSignedImageUrl } from "../config";
 
-import { auctionQueue } from "@repo/queue";
-import { PoolClient } from "pg";
 import {
   addAuction,
   db,
@@ -24,7 +21,9 @@ import {
   placeNewBid,
   updateAuctionRepository,
 } from "@repo/db";
+import { auctionQueue } from "@repo/queue";
 import { publish } from "@repo/redis";
+import { PoolClient } from "pg";
 
 export interface ValidAuction {
   client: PoolClient;
@@ -137,11 +136,11 @@ export const placeBidService = async (
       },
     });
 
-    const minimumBid = validAuction.current_price + 100;
-
     if (!validAuction) {
       throw new NotFoundError("Auction not found", "AUCTION_NOT_FOUND");
     }
+
+    const minimumBid = validAuction.current_price + 100;
 
     if (validAuction.status !== "ACTIVE") {
       throw new BadRequestError("Auction ended", "AUCTION_ENDED");

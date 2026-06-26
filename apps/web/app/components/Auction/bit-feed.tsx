@@ -12,8 +12,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AuctionDetail } from "../../../hooks/useGetAuctionById";
 import { formatRelativeTime } from "../../../utils";
+import { AuctionDetail } from "@repo/types";
 
 const MotionBox = motion.create(Box);
 
@@ -24,7 +24,7 @@ type Props = {
 
 export function BidFeed({ bids, totalBids }: Props) {
   return (
-    <Card.Root>
+    <Card.Root data-testid="bid-feed">
       <Card.Body maxH="400px" overflowY="auto">
         <VStack align="stretch" gap={4}>
           <Flex justify="space-between" align="center">
