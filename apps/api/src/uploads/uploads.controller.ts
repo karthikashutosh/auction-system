@@ -1,12 +1,6 @@
+import { AuthUser, GetPresignedUrlPayload } from "@repo/types";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { preSignedUploadService } from "./uploads.service";
-import { AuthUser } from "@repo/types";
-import { publish } from "@repo/redis";
-
-interface GetPresignedUrlPayload {
-  fileName: string;
-  contentType: string;
-}
 
 export const uploadsController = async (
   request: FastifyRequest,

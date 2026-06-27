@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getAuctionsSchema } from "../../../../packages/shared/src/createAuctions.schema";
 import {
   getAllNotificationsRepository,
   getMe,
   getMyAuctionService,
 } from "./user.service";
 import { AuthUser } from "@repo/types";
+import { getAuctionsSchema } from "@repo/shared";
 
 export async function getMeController(
   request: FastifyRequest,

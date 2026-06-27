@@ -7,13 +7,13 @@ import {
   placeBidService,
 } from "./auctions.service";
 import { createAuctionApiSchema, getAuctionsSchema } from "@repo/shared";
-import { Subscribe, unSubscribe } from "../realtime/sse-manager.ts";
 import { AuthUser } from "@repo/types";
 import {
   subscribeNotification,
   unSubscribeNotification,
 } from "../realtime/notification-sse-manager";
 import { findById } from "@repo/db";
+import { Subscribe, unSubscribe } from "../realtime/sse-manager";
 
 interface GetAuctionByIdParams {
   id: string;

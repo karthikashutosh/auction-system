@@ -2,6 +2,7 @@ services:
   postgres:
     image: postgres:17
     container_name: auction-postgres
+    restart: unless-stopped
 
     environment:
       POSTGRES_USER: karthikselvam
@@ -13,6 +14,76 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: auction-redis
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+
+    container_name: auction-api
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+      - redis
+
+    env_file:
+      - ./apps/api/.env
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+    ports:
+      - "3001:3001"
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+
+    container_name: auction-worker
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+      - redis
+
+    env_file:
+      - ./apps/worker/.env
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:3001
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+
+    container_name: auction-web
+    restart: unless-stopped
+
+    depends_on:
+      - api
+
+    ports:
+      - "3000:3000"
 
 volumes:
   postgres_data:

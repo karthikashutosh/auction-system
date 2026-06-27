@@ -1,5 +1,5 @@
 import { sendNotification } from "../realtime/notification-sse-manager";
-import { sendRealTimeBidsUpdate } from "../realtime/sse-manager.ts";
+import { sendRealTimeBidsUpdate } from "../realtime/sse-manager";
 
 export const bidsEventsHandler = (message: string) => {
   const updatedBids = JSON.parse(message);

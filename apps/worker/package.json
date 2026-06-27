@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "start": "tsx src/index.ts"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@repo/db": "*",
@@ -13,5 +14,10 @@
     "@repo/types": "*",
     "bullmq": "^5.79.1",
     "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "typescript": "^5.9.2",
+    "tsx": "^4.22.4"
   }
 }

@@ -1,4 +1,4 @@
-import { GetPresignedUrlPayload } from "../hooks/useGetPresignedUrl";
+import { GetPresignedUrlPayload } from "@repo/types";
 import { api } from "./axios";
 
 export const uploadSignedUrl = async (payload: GetPresignedUrlPayload) => {

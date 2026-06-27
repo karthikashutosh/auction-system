@@ -31,13 +31,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
               return;
             }
 
-            notify.error(getErrorMessage(error));
+            notify.error({ title: getErrorMessage(error) });
           },
         }),
 
         mutationCache: new MutationCache({
           onError: (error) => {
-            notify.error(getErrorMessage(error));
+            notify.error({ title: getErrorMessage(error) });
           },
         }),
       })

@@ -24,6 +24,9 @@ coverage
 # Build Outputs
 .next/
 out/
+out-web/
+out-api/
+out-worker/
 build
 dist
 
