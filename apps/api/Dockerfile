@@ -8,7 +8,7 @@
     
     COPY out-api/full/ ./
     
-    RUN npx turbo run build --filter=api
+    RUN npx turbo run build --filter=@auction/api
     
     FROM node:22-alpine AS runner
     
@@ -29,4 +29,4 @@
     
     WORKDIR /app/apps/api
     
-    CMD ["node", "dist/index.js"]
+    CMD ["sh", "-c", "npm run migrate:prod && node dist/index.js"]

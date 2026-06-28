@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@auction/api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,8 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "migrate": "tsx src/scripts/migrate.ts",
+    "migrate:prod": "node dist/scripts/migrate.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
