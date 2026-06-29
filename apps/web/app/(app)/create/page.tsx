@@ -104,7 +104,7 @@ export default function CreateAuctionPage() {
         description: data.description,
         startingPrice: data.startingPrice,
         reservePrice: data.reservePrice,
-        endDate: data.endDate,
+        endDate: new Date(data.endDate).toISOString(),
         imageKey: presigned.key,
       });
 
