@@ -78,7 +78,7 @@ export default function MarketplacePage() {
           </Box>
 
           <HStack gap={4}>
-            <Input placeholder="Search auctions..." w="320px" />
+            {/* <Input placeholder="Search auctions..." w="320px" /> */}
 
             <Button
               asChild
