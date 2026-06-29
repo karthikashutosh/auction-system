@@ -24,9 +24,7 @@ services:
       - "6379:6379"
 
   api:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+    image: ghcr.io/karthikashutosh/auction-api:latest
 
     container_name: auction-api
     restart: unless-stopped
@@ -48,9 +46,7 @@ services:
       - "3001:3001"
 
   worker:
-    build:
-      context: .
-      dockerfile: apps/worker/Dockerfile
+    image: ghcr.io/karthikashutosh/auction-worker:latest
 
     container_name: auction-worker
     restart: unless-stopped
@@ -69,12 +65,7 @@ services:
       REDIS_PORT: 6379
 
   web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-      args:
-        NEXT_PUBLIC_API_URL: /api
-        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+    image: ghcr.io/karthikashutosh/auction-web:latest
 
     container_name: auction-web
     restart: unless-stopped
