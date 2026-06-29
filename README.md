@@ -1,159 +1,445 @@
-# Turborepo starter
+# Engineering Decisions
 
-This Turborepo starter is maintained by the Turborepo core team.
+This project intentionally prioritizes correctness, scalability, and maintainability over implementing features as quickly as possible. The following sections explain the architectural decisions made throughout the application.
 
-## Using this example
+---
 
-Run the following command:
+# Why Fastify?
 
-```sh
-npx create-turbo@latest
+Fastify was selected over Express because of its lightweight architecture, excellent TypeScript support, high throughput, and plugin-based design.
+
+Benefits:
+
+- Low request overhead
+- Schema-based request validation
+- Built-in serialization
+- Excellent TypeScript experience
+- Plugin encapsulation
+- Better performance under high request loads
+
+---
+
+# Why PostgreSQL?
+
+An online auction system requires strong consistency and transactional guarantees.
+
+PostgreSQL provides:
+
+- ACID transactions
+- Row-level locking
+- Foreign key constraints
+- Advanced indexing
+- JSON aggregation
+- Window functions
+- Complex joins
+
+These capabilities are essential for preventing inconsistent auction states.
+
+---
+
+# Why Redis?
+
+Redis serves two independent responsibilities.
+
+## 1. Pub/Sub
+
+Redis Pub/Sub broadcasts auction and notification events between services.
+
+This allows API instances and workers to communicate without direct dependencies.
+
+## 2. Background Processing
+
+BullMQ uses Redis internally to schedule delayed jobs.
+
+Examples:
+
+- Auction expiration
+- Winner notification
+- Recovery jobs
+
+Redis was selected because of its low latency and excellent support for distributed messaging.
+
+---
+
+# Why BullMQ?
+
+Auction expiration should never depend on incoming user requests.
+
+Instead of checking auction status whenever someone visits the page, delayed jobs automatically execute when the auction ends.
+
+Advantages:
+
+- Accurate execution timing
+- Retry support
+- Failure recovery
+- Delayed execution
+- Independent worker processes
+
+---
+
+# Why Server Sent Events Instead of WebSockets?
+
+The application only requires server-to-client communication.
+
+Clients never send messages through the persistent connection.
+
+Therefore Server Sent Events were chosen because they provide:
+
+- Native browser support
+- Automatic reconnection
+- Simpler infrastructure
+- Lower resource usage
+- HTTP compatible transport
+
+If future requirements include chat or bidirectional communication, the architecture can evolve to WebSockets.
+
+---
+
+# Why Transactions?
+
+Placing a bid updates multiple database records.
+
+The following operations must succeed together:
+
+- Validate auction status
+- Validate bid amount
+- Insert bid
+- Update current price
+- Update highest bidder
+
+If any operation fails, every change must be rolled back.
+
+Transactions guarantee database consistency.
+
+---
+
+# Why Row-Level Locking?
+
+Two users may submit bids simultaneously.
+
+Without locking:
+
+```
+User A reads current price
+User B reads current price
+
+Both place bids
+
+Database becomes inconsistent
 ```
 
-## What's inside?
+AuctionFlow prevents this using:
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```sql
+SELECT ...
+FOR UPDATE
 ```
 
-Without global `turbo`, use your package manager:
+The first transaction acquires the lock.
 
-```sh
-cd my-turborepo
-npx turbo build
-npm dlx turbo build
-npm exec turbo build
+The second transaction waits until the first completes.
+
+This guarantees only one transaction updates the auction at a time.
+
+---
+
+# Why HttpOnly Cookies?
+
+Authentication tokens are stored in HttpOnly cookies instead of Local Storage.
+
+Benefits:
+
+- Protected from JavaScript access
+- Reduced XSS attack surface
+- Automatic cookie handling
+- Secure token storage
+
+---
+
+# Why Amazon S3 Presigned URLs?
+
+Uploading images through the backend would require every file to pass through the API server.
+
+Instead:
+
+Browser
+↓
+Receive Presigned URL
+↓
+Upload directly to Amazon S3
+
+Benefits:
+
+- Reduced API bandwidth
+- Lower server memory usage
+- Stateless backend
+- Better scalability
+
+The backend only stores the generated S3 object key.
+
+---
+
+# Why a Monorepo?
+
+The project uses Turborepo to manage multiple applications.
+
+```
+apps/
+    web
+    api
+    worker
+
+packages/
+    database
+    redis
+    queue
+    shared
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Benefits:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+- Shared validation schemas
+- Shared database utilities
+- Shared Redis configuration
+- Shared TypeScript types
+- Independent applications
+- Simplified dependency management
 
-```sh
-turbo build --filter=docs
+---
+
+# Request Lifecycle
+
+## Create Auction
+
+```
+Browser
+    │
+    ▼
+React Form
+    │
+Validation
+    │
+Upload Image to Amazon S3
+    │
+Receive Image Key
+    │
+POST /auctions
+    │
+Fastify Validation
+    │
+PostgreSQL Transaction
+    │
+Create Auction
+    │
+Schedule BullMQ Expiry Job
+    │
+Return Auction
 ```
 
-Without global `turbo`:
+---
 
-```sh
-npx turbo build --filter=docs
-npm exec turbo build --filter=docs
-npm exec turbo build --filter=docs
+## Place Bid
+
+```
+Client
+    │
+POST /bids
+    │
+Fastify
+    │
+Authentication
+    │
+Database Transaction
+    │
+SELECT ... FOR UPDATE
+    │
+Validate Auction
+    │
+Validate Bid Amount
+    │
+Insert Bid
+    │
+Update Auction Price
+    │
+Commit Transaction
+    │
+Publish Redis Event
+    │
+Server Sent Events
+    │
+Connected Clients Updated
 ```
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+## Auction Expiration
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
+```
+BullMQ Delay
+     │
+     ▼
+Worker
+     │
+Begin Transaction
+     │
+Lock Auction
+     │
+Mark Auction Ended
+     │
+Determine Winner
+     │
+Create Notifications
+     │
+Publish Redis Event
+     │
+SSE Broadcast
 ```
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo dev
-npm exec turbo dev
-npm exec turbo dev
+# Scalability Considerations
+
+The application has been designed to remain largely stateless.
+
+Current architecture supports:
+
+- Multiple API instances
+- Independent workers
+- Shared Redis messaging
+- Shared PostgreSQL database
+- Horizontal API scaling
+- Stateless Docker containers
+
+Images are stored externally in Amazon S3, allowing application containers to remain disposable.
+
+---
+
+# Production Considerations
+
+Current production capabilities include:
+
+- JWT Authentication
+- Refresh Token Rotation
+- Google OAuth
+- Dockerized Services
+- Background Workers
+- Redis Pub/Sub
+- PostgreSQL Transactions
+- Database Migrations
+- Automated CI/CD
+- GitHub Container Registry
+- Amazon EC2 Deployment
+- Production Docker Compose
+
+---
+
+# CI/CD Pipeline
+
+```
+Developer
+
+        │
+git push origin main
+
+        │
+        ▼
+
+GitHub Actions
+
+        │
+        ▼
+
+Install Dependencies
+
+        │
+        ▼
+
+Lint
+
+        │
+        ▼
+
+Type Check
+
+        │
+        ▼
+
+Tests
+
+        │
+        ▼
+
+Build
+
+        │
+        ▼
+
+Docker Build
+
+        │
+        ▼
+
+Push Images to GHCR
+
+        │
+        ▼
+
+SSH into EC2
+
+        │
+        ▼
+
+git pull
+
+        │
+        ▼
+
+docker compose pull
+
+        │
+        ▼
+
+docker compose up
+
+        │
+        ▼
+
+Application Updated
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+# Future Improvements
 
-```sh
-turbo dev --filter=web
-```
+Potential enhancements include:
 
-Without global `turbo`:
+- WebSocket support for bidirectional communication
+- Distributed rate limiting
+- OpenTelemetry tracing
+- Prometheus & Grafana monitoring
+- Blue-Green deployments
+- Immutable Docker image versioning
+- Automatic rollback on failed deployments
+- Read replicas for PostgreSQL
+- Redis caching for frequently accessed auction data
+- Kubernetes deployment
+- CDN support for static assets
 
-```sh
-npx turbo dev --filter=web
-npm exec turbo dev --filter=web
-npm exec turbo dev --filter=web
-```
+---
 
-### Remote Caching
+# Lessons Learned
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Building AuctionFlow provided practical experience with:
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+- Designing transactional systems
+- Preventing race conditions
+- Building event-driven architectures
+- Background job processing
+- Real-time communication
+- Cloud object storage
+- Docker containerization
+- CI/CD automation
+- Production deployment
+- Scalable monorepo architecture
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-npm exec turbo login
-npm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-npm exec turbo link
-npm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+The project emphasizes engineering trade-offs and production-oriented architecture rather than focusing solely on implementing features.
