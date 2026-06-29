@@ -52,8 +52,6 @@ jobs:
           file: ./apps/api/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/auction-api:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Generate Web Prune Output
         run: npx turbo prune @auction/web --docker --out-dir out-web
@@ -65,8 +63,6 @@ jobs:
           file: ./apps/web/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/auction-web:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           build-args: |
             NEXT_PUBLIC_API_URL=/api
             NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
@@ -81,8 +77,6 @@ jobs:
           file: ./apps/worker/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/auction-worker:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.2
