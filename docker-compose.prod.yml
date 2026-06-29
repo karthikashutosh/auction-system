@@ -36,7 +36,7 @@ services:
       - redis
 
     env_file:
-      - ./apps/api/.env
+      - ./apps/api/.env.production
 
     environment:
       DB_HOST: postgres
@@ -60,7 +60,7 @@ services:
       - redis
 
     env_file:
-      - ./apps/worker/.env
+      - ./apps/api/.env.production
 
     environment:
       DB_HOST: postgres
@@ -73,7 +73,7 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: http://localhost:3001/api
+        NEXT_PUBLIC_API_URL: /api
         NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
 
     container_name: auction-web

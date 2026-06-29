@@ -8,7 +8,7 @@ export const useNotificationEvents = () => {
 
   useEffect(() => {
     const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/user/notifications-event`,
+      `${process.env.NEXT_PUBLIC_API_URL}/user/notifications-event`,
       {
         withCredentials: true,
       }

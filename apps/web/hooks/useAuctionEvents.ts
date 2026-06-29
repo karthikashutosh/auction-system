@@ -2,8 +2,8 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { refershSession } from "../api/axios";
 import { AuctionDetail } from "@repo/types";
+import { refershSession } from "../api/axios";
 
 export function useAuctionEvents(auctionId: string) {
   const queryClient = useQueryClient();
@@ -15,7 +15,7 @@ export function useAuctionEvents(auctionId: string) {
 
     const createEventSource = () => {
       eventSource = new EventSource(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auctions/${auctionId}/events`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auctions/${auctionId}/events`,
         {
           withCredentials: true,
         }
