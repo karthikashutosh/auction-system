@@ -21,7 +21,7 @@ describe("upload.service", () => {
   describe("preSignedUploadService", () => {
     it("should generate pre-signed upload url", async () => {
       vi.mocked(getSignedUrl).mockResolvedValue(
-        "https://signed-upload-url.com"
+        "https://signed-upload-url.com",
       );
 
       const result = await preSignedUploadService({

@@ -7,7 +7,7 @@ type PlaceBidParams = {
 
 export async function placeBid(
   page: Page,
-  { auctionId, amount }: PlaceBidParams
+  { auctionId, amount }: PlaceBidParams,
 ) {
   await page.goto(`/auctions/${auctionId}`);
 
@@ -15,7 +15,8 @@ export async function placeBid(
 
   const bidResponsePromise = page.waitForResponse(
     (response) =>
-      response.url().includes("/bids") && response.request().method() === "POST"
+      response.url().includes("/bids") &&
+      response.request().method() === "POST",
   );
 
   await page.getByTestId("bid-amount-input").fill(amount.toString());

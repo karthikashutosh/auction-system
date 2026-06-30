@@ -15,7 +15,7 @@ export const signupService = async (data: SignupDto) => {
     if (existingUser.provider === "google") {
       throw new ConflictError(
         "Account already exists with Google. Please sign in with Google.",
-        "GOOGLE_ACCOUNT_EXISTS"
+        "GOOGLE_ACCOUNT_EXISTS",
       );
     }
 
@@ -48,7 +48,7 @@ export async function loginService(data: LoginDto) {
   if (user.provider === "google") {
     throw new UnauthorizedError(
       "Please sign in with Google",
-      "GOOGLE_SIGNIN_REQUIRED"
+      "GOOGLE_SIGNIN_REQUIRED",
     );
   }
 

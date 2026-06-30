@@ -76,7 +76,7 @@ export const getAuctionCount = async () => {
 };
 
 export const getAuctionById = async (
-  data: Omit<PlaceBidServiceRequest, "bidAmount">
+  data: Omit<PlaceBidServiceRequest, "bidAmount">,
 ) => {
   const { auctionId, userId } = data;
   const query = `WITH bid_stats AS (
@@ -184,7 +184,7 @@ export const updateAuctionRepository = async (data: ValidAuction) => {
 };
 
 export const getBidsHistoryRepository = async (
-  data: Omit<BidHistoryInput, "page"> & { offset: number }
+  data: Omit<BidHistoryInput, "page"> & { offset: number },
 ) => {
   const { userId, limit, offset } = data;
 
@@ -234,7 +234,7 @@ export const updateAuctionStatusRepository = async ({
 };
 
 export const createNotificationRepository = async (
-  data: NotificationPayloadWithClient
+  data: NotificationPayloadWithClient,
 ) => {
   const { client, userId, title, message, type, entityType, entityId } = data;
 

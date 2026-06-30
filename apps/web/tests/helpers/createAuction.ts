@@ -31,7 +31,7 @@ export async function createAuction(page: Page) {
   const responsePromise = page.waitForResponse(
     (response) =>
       response.url().includes("/auctions") &&
-      response.request().method() === "POST"
+      response.request().method() === "POST",
   );
 
   await page.getByTestId("create-auction-submit-button").click();

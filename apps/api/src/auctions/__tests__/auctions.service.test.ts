@@ -94,7 +94,7 @@ describe("auction.service", () => {
           startingPrice: 50000,
           currentPrice: 50000,
           reservePrice: 60000,
-        })
+        }),
       );
 
       expect(auctionQueue.add).toHaveBeenCalledWith(
@@ -104,7 +104,7 @@ describe("auction.service", () => {
         },
         expect.objectContaining({
           jobId: "auction-expiry-auction-1",
-        })
+        }),
       );
 
       expect(result).toEqual({
@@ -122,7 +122,7 @@ describe("auction.service", () => {
           startingPrice: 50000,
           reservePrice: 60000,
           endDate: new Date().toISOString(),
-        })
+        }),
       ).rejects.toMatchObject({
         statusCode: 403,
         code: "IMAGE_ACCESS_DENIED",
@@ -227,7 +227,7 @@ describe("auction.service", () => {
       } as any);
 
       vi.mocked(getSignedImageUrl).mockResolvedValue(
-        "https://signed-url.com/image.png"
+        "https://signed-url.com/image.png",
       );
 
       const result = await getAuctionByIdService({
@@ -241,7 +241,7 @@ describe("auction.service", () => {
       });
 
       expect(getSignedImageUrl).toHaveBeenCalledWith(
-        "users/user-1/macbook.png"
+        "users/user-1/macbook.png",
       );
 
       expect(result).toEqual({
@@ -335,7 +335,7 @@ describe("auction.service", () => {
         "auction-events",
         expect.objectContaining({
           auctionId: "auction-1",
-        })
+        }),
       );
 
       expect(mockClient.release).toHaveBeenCalled();
@@ -356,7 +356,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        })
+        }),
       ).rejects.toThrow("Database failure");
 
       expect(mockClient.query).toHaveBeenCalledWith("ROLLBACK");
@@ -373,7 +373,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        })
+        }),
       ).rejects.toMatchObject({
         statusCode: 404,
         code: "AUCTION_NOT_FOUND",
@@ -395,7 +395,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        })
+        }),
       ).rejects.toMatchObject({
         statusCode: 400,
         code: "AUCTION_ENDED",
@@ -417,7 +417,7 @@ describe("auction.service", () => {
           bidAmount: 1050,
           userId: "buyer-1",
           userName: "John",
-        })
+        }),
       ).rejects.toMatchObject({
         statusCode: 400,
         code: "BID_AMOUNT_TOO_LOW",
@@ -439,7 +439,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        })
+        }),
       ).rejects.toMatchObject({
         statusCode: 400,
         code: "SELF_BIDDING_NOT_ALLOWED",
@@ -461,7 +461,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        })
+        }),
       ).rejects.toMatchObject({
         statusCode: 400,
         code: "AUCTION_ENDED",

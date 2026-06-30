@@ -5,7 +5,7 @@ import { GetPresignedUrlPayload, GetPresignedUrlResponse } from "@repo/types";
 export const useGetPresignedUrl = () => {
   return useMutation({
     mutationFn: async (
-      payload: GetPresignedUrlPayload
+      payload: GetPresignedUrlPayload,
     ): Promise<GetPresignedUrlResponse> => {
       const { data } = await uploadSignedUrl(payload);
 

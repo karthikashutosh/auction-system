@@ -12,7 +12,7 @@ export async function signupController(
   request: FastifyRequest<{
     Body: SignupDto;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const user = await signupService(request.body);
 
@@ -21,7 +21,7 @@ export async function signupController(
 
 export async function loginController(
   request: FastifyRequest<{ Body: LoginDto }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const user = await loginService(request.body);
 
@@ -34,7 +34,7 @@ export async function loginController(
 
 export const googleOauthController = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const validatedRequest = GoogleOauthDto.parse(request.body);
 
@@ -49,7 +49,7 @@ export const googleOauthController = async (
 
 export const refreshTokenController = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const refreshToken = request.cookies.refreshToken;
 

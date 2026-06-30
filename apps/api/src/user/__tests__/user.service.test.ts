@@ -165,7 +165,7 @@ describe("user.service", () => {
 
       expect(mockClient.query).toHaveBeenCalledWith(
         expect.stringContaining("SELECT *"),
-        ["user-1"]
+        ["user-1"],
       );
 
       expect(result).toEqual(notifications);
@@ -177,7 +177,7 @@ describe("user.service", () => {
       mockClient.query.mockRejectedValue(new Error("Database Error"));
 
       await expect(getAllNotificationsRepository("user-1")).rejects.toThrow(
-        "Database Error"
+        "Database Error",
       );
 
       expect(mockClient.release).toHaveBeenCalled();

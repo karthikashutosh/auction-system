@@ -9,7 +9,7 @@ import { getAuctionsSchema } from "@repo/shared";
 
 export async function getMeController(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const user = request.user as AuthUser;
 
@@ -20,7 +20,7 @@ export async function getMeController(
 
 export const logoutController = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   reply.clearCookie("accessToken", {
     path: "/",
@@ -37,7 +37,7 @@ export const logoutController = async (
 
 export const getMyAuctionsController = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const user = request.user as AuthUser;
   const query = getAuctionsSchema.parse(request.query);
@@ -50,7 +50,7 @@ export const getMyAuctionsController = async (
 
 export const getAllNotificationsController = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const user = request.user as AuthUser;
   const result = await getAllNotificationsRepository(user.id);

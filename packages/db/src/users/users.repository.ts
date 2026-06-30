@@ -23,7 +23,7 @@ WHERE owner_id = $1
 ORDER BY start_time DESC
 LIMIT $2
 OFFSET $3`,
-    [id, limit, offset]
+    [id, limit, offset],
   );
 
   return result.rows;
@@ -32,7 +32,7 @@ OFFSET $3`,
 export const getMyAuctionCount = async (id: string) => {
   const result = await db.query(
     `SELECT COUNT(*) FROM auctions WHERE owner_id = $1`,
-    [id]
+    [id],
   );
 
   const toatl = Number(result.rows[0].count);

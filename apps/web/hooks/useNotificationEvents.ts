@@ -11,7 +11,7 @@ export const useNotificationEvents = () => {
       `${process.env.NEXT_PUBLIC_API_URL}/user/notifications-event`,
       {
         withCredentials: true,
-      }
+      },
     );
 
     eventSource.onmessage = (event) => {

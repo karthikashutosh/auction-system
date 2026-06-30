@@ -49,7 +49,7 @@ describe("auth.service", () => {
   describe("signupService", () => {
     it("should create a new user successfully", async () => {
       vi.mocked(bcrypt.hash).mockResolvedValue(
-        "hashed-password" as unknown as void
+        "hashed-password" as unknown as void,
       );
       vi.mocked(findExistingUser).mockResolvedValue(null);
       vi.mocked(createUser).mockResolvedValue(mockUser as any);
@@ -78,7 +78,7 @@ describe("auth.service", () => {
 
     it("should throw if google account already exists", async () => {
       vi.mocked(bcrypt.hash).mockResolvedValue(
-        "hashed-password" as unknown as void
+        "hashed-password" as unknown as void,
       );
 
       vi.mocked(findExistingUser).mockResolvedValue({
@@ -91,13 +91,13 @@ describe("auth.service", () => {
           name: "John",
           email: "john@example.com",
           password: "password123",
-        })
+        }),
       ).rejects.toBeInstanceOf(ConflictError);
     });
 
     it("should throw if local account already exists", async () => {
       vi.mocked(bcrypt.hash).mockResolvedValue(
-        "hashed-password" as unknown as void
+        "hashed-password" as unknown as void,
       );
 
       vi.mocked(findExistingUser).mockResolvedValue({
@@ -110,7 +110,7 @@ describe("auth.service", () => {
           name: "John",
           email: "john@example.com",
           password: "password123",
-        })
+        }),
       ).rejects.toBeInstanceOf(ConflictError);
     });
   });
@@ -129,7 +129,7 @@ describe("auth.service", () => {
       expect(findExistingUser).toHaveBeenCalledWith("john@example.com");
       expect(bcrypt.compare).toHaveBeenCalledWith(
         "password123",
-        "hashed-password"
+        "hashed-password",
       );
       expect(result).toEqual(mockUser);
     });
@@ -141,7 +141,7 @@ describe("auth.service", () => {
         loginService({
           email: "john@example.com",
           password: "password123",
-        })
+        }),
       ).rejects.toBeInstanceOf(UnauthorizedError);
     });
 
@@ -155,7 +155,7 @@ describe("auth.service", () => {
         loginService({
           email: "john@example.com",
           password: "password123",
-        })
+        }),
       ).rejects.toBeInstanceOf(UnauthorizedError);
     });
 
@@ -168,7 +168,7 @@ describe("auth.service", () => {
         loginService({
           email: "john@example.com",
           password: "password123",
-        })
+        }),
       ).rejects.toBeInstanceOf(UnauthorizedError);
     });
   });
@@ -230,7 +230,7 @@ describe("auth.service", () => {
       } as any);
 
       await expect(googleOauthService("token")).rejects.toBeInstanceOf(
-        BadRequestError
+        BadRequestError,
       );
     });
 
@@ -242,7 +242,7 @@ describe("auth.service", () => {
       } as any);
 
       await expect(googleOauthService("token")).rejects.toBeInstanceOf(
-        BadRequestError
+        BadRequestError,
       );
     });
   });

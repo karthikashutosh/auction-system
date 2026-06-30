@@ -19,7 +19,7 @@ export const useMarkNotificationRead = () => {
         `/notifications/read`,
         {
           notificationId,
-        }
+        },
       );
 
       return response.data;
@@ -43,8 +43,8 @@ export const useMarkNotificationRead = () => {
                   ...notification,
                   is_read: true,
                 }
-              : notification
-          )
+              : notification,
+          ),
       );
 
       return {
@@ -56,7 +56,7 @@ export const useMarkNotificationRead = () => {
       if (context?.previousNotifications) {
         queryClient.setQueryData(
           ["notifications"],
-          context.previousNotifications
+          context.previousNotifications,
         );
       }
     },
@@ -68,8 +68,8 @@ export const useMarkNotificationRead = () => {
           old.map((notification) =>
             notification.id === updatedNotification.id
               ? updatedNotification
-              : notification
-          )
+              : notification,
+          ),
       );
     },
   });

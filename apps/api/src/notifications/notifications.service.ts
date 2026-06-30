@@ -5,7 +5,7 @@ import {
 import { NotificationControlType } from "@repo/types";
 
 export const notificationsReadService = async (
-  data: NotificationControlType
+  data: NotificationControlType,
 ) => {
   const { notificationId, userId } = data;
   const response = await notificationReadRespository({

@@ -7,7 +7,7 @@ export const useCreateAuction = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (
-      payload: CreateAuctionPayload
+      payload: CreateAuctionPayload,
     ): Promise<CreateAuctionResponse> => {
       const { data } = await api.post("/auctions", payload);
 

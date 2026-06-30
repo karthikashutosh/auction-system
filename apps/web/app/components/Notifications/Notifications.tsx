@@ -90,11 +90,11 @@ export const Notification = () => {
   };
 
   const handleNotificationClick = async (
-    notification: NotificationResponse
+    notification: NotificationResponse,
   ) => {
     try {
       const markedNotification = await markesAsReadSingleNotification(
-        notification.id
+        notification.id,
       );
 
       router.push(`auctions/${markedNotification.entity_id}`);

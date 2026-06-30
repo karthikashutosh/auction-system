@@ -40,7 +40,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             notify.error({ title: getErrorMessage(error) });
           },
         }),
-      })
+      }),
   );
 
   return (

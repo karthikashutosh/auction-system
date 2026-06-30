@@ -26,7 +26,7 @@ export const useMarkAllNotificationsRead = () => {
           old.map((notification) => ({
             ...notification,
             is_read: true,
-          }))
+          })),
       );
 
       return {
@@ -38,7 +38,7 @@ export const useMarkAllNotificationsRead = () => {
       if (context?.previousNotifications) {
         queryClient.setQueryData(
           ["notifications"],
-          context.previousNotifications
+          context.previousNotifications,
         );
       }
     },

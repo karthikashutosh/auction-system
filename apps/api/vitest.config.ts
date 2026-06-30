@@ -7,7 +7,13 @@ export default defineConfig({
     clearMocks: true,
     restoreMocks: true,
     mockReset: true,
+
+    include: ["src/**/*.test.ts"],
+
+    exclude: ["**/dist/**", "**/node_modules/**", "**/coverage/**"],
+
     setupFiles: ["./test/setup.ts"],
+
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],

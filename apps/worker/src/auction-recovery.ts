@@ -15,7 +15,7 @@ export const auctionRecovery = async () => {
       {
         jobId: `auction-expiry-${auction.id}`,
         ...(delay >= 0 ? { delay } : {}),
-      }
+      },
     );
   }
 };

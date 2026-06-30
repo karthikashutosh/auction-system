@@ -17,6 +17,7 @@ import {
 } from "./events/events-handler";
 import { notificationsRoutes } from "./notifications/notifications.routes";
 import { AppError } from "@repo/types";
+import fastifyRateLimit from "@fastify/rate-limit";
 
 const app = Fastify({
   logger: {
@@ -46,6 +47,12 @@ app.register(fastifyJwt, {
 app.register(multipart);
 
 app.decorate("authenticate", authenticate);
+
+app.register(fastifyRateLimit, {
+  global: true,
+  max: 100,
+  timeWindow: "1 minute",
+});
 
 app.register(authRoutes, {
   prefix: "api/auth",

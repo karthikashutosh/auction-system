@@ -12,7 +12,7 @@ export type CreateUserInput = {
 export const findExistingUser = async (email: string) => {
   const results = await db.query(
     `SELECT * FROM users WHERE email =$1 LIMIT 1`,
-    [email]
+    [email],
   );
   return results.rows[0];
 };
@@ -31,7 +31,7 @@ export const createUser = async (data: CreateUserInput) => {
     )
     VALUES ($1,$2,$3,$4,$5,$6)
     RETURNING *`,
-    [name, email, passwordHash, provider, providerId, avatarUrl]
+    [name, email, passwordHash, provider, providerId, avatarUrl],
   );
   return results.rows[0];
 };

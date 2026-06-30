@@ -18,7 +18,7 @@ export function useAuctionEvents(auctionId: string) {
         `${process.env.NEXT_PUBLIC_API_URL}/auctions/${auctionId}/events`,
         {
           withCredentials: true,
-        }
+        },
       );
 
       eventSource.onopen = () => {
@@ -52,7 +52,7 @@ export function useAuctionEvents(auctionId: string) {
                     ...oldData.recent_bids_history,
                   ],
                 };
-              }
+              },
             );
 
             break;

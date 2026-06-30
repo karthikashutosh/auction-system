@@ -4,7 +4,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 export const createAuthSession = (
   user: AuthUser,
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const accessToken = request.server.jwt.sign(
     {
@@ -12,7 +12,7 @@ export const createAuthSession = (
     },
     {
       expiresIn: "15m",
-    }
+    },
   );
 
   const refreshToken = request.server.jwt.sign(
@@ -21,7 +21,7 @@ export const createAuthSession = (
     },
     {
       expiresIn: "30d",
-    }
+    },
   );
 
   reply.setCookie("accessToken", accessToken, {
@@ -49,7 +49,7 @@ export const createAuthSession = (
 export const issueAccessToken = (
   user: AuthUser,
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const accessToken = request.server.jwt.sign(
     {
@@ -57,7 +57,7 @@ export const issueAccessToken = (
     },
     {
       expiresIn: "15m",
-    }
+    },
   );
 
   reply.setCookie("accessToken", accessToken, {

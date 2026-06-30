@@ -47,12 +47,12 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export const uploadFileToS3 = async (
   uploadUrl: string,
-  file: File
+  file: File,
 ): Promise<void> => {
   const response = await axios.put(uploadUrl, file, {
     headers: {

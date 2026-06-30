@@ -4,7 +4,7 @@ import { preSignedUploadService } from "./uploads.service";
 
 export const uploadsController = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const body = request.body as GetPresignedUrlPayload;
   const user = request.user as AuthUser;

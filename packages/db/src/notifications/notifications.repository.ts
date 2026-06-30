@@ -2,7 +2,7 @@ import { NotificationControlType } from "@repo/types";
 import { db } from "../db";
 
 export const notificationReadRespository = async (
-  data: NotificationControlType
+  data: NotificationControlType,
 ) => {
   const { notificationId, userId } = data;
   const query = `UPDATE notifications SET is_read = true WHERE id = $1 AND user_id =$2 RETURNING *`;

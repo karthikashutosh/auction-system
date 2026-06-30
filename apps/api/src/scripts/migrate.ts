@@ -5,7 +5,7 @@ import path from "node:path";
 
 const migrationsDir = path.join(
   process.cwd(),
-  "../../packages/db/src/migrations"
+  "../../packages/db/src/migrations",
 );
 
 async function migrate() {
@@ -41,7 +41,7 @@ async function migrate() {
         FROM schema_migrations
         WHERE migration_name = $1
         `,
-        [file]
+        [file],
       );
 
       if (existingMigration.rowCount) {
@@ -60,7 +60,7 @@ async function migrate() {
         INSERT INTO schema_migrations (migration_name)
         VALUES ($1)
         `,
-        [file]
+        [file],
       );
 
       console.log(`✅ Completed ${file}`);

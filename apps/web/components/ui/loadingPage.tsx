@@ -18,7 +18,7 @@ const LOADING_MESSAGES = [
 export function LoadingScreen() {
   const message = useMemo(
     () => LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)],
-    []
+    [],
   );
 
   return (

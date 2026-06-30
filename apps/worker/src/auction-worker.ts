@@ -22,7 +22,7 @@ export const auctionWorker = new Worker(
   },
   {
     connection: bullRedis,
-  }
+  },
 );
 
 auctionWorker.on("completed", (job) => {

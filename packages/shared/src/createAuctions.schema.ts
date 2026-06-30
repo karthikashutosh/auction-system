@@ -35,11 +35,11 @@ export const createAuctionSchema = z
       .refine(
         (file) =>
           ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
-            file.type
+            file.type,
           ),
         {
           message: "Only JPG, PNG and WEBP images are allowed",
-        }
+        },
       )
       .refine((file) => file.size <= MAX_FILE_SIZE, {
         message: "Image size must be less than 5MB",
@@ -57,7 +57,7 @@ export const createAuctionSchema = z
     {
       path: ["endDate"],
       message: "Auction end date must be in the future",
-    }
+    },
   );
 
 export const createAuctionApiSchema = z
@@ -86,7 +86,7 @@ export const createAuctionApiSchema = z
     {
       path: ["endDate"],
       message: "Auction end date must be in the future",
-    }
+    },
   );
 
 export const getAuctionsSchema = z.object({

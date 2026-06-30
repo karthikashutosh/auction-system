@@ -23,6 +23,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@fastify/rate-limit": "^11.1.0",
     "@tanstack/react-query-devtools": "^5.101.0",
     "pg": "^8.21.0"
   }

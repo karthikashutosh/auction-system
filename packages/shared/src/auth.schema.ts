@@ -14,11 +14,11 @@ export const signupSchema = z.object({
     .string()
     .min(
       8,
-      "Password must contain uppercase, lowercase, number and special character"
+      "Password must contain uppercase, lowercase, number and special character",
     )
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
-      "Password must contain uppercase, lowercase, number and special character"
+      "Password must contain uppercase, lowercase, number and special character",
     ),
 });
 

@@ -11,7 +11,7 @@ export const notificationReadController = async (
       notificationId: string;
     };
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const notificationId = request.body.notificationId;
   const user = request.user as AuthUser;
@@ -26,7 +26,7 @@ export const notificationReadController = async (
 
 export const allNotificationsReadController = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   const user = request.user as AuthUser;
   const result = await notificationsAllReadService(user.id);

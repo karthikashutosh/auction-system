@@ -37,7 +37,7 @@ export interface ValidAuctionById {
 
 export const createAuctionService = async (
   userId: string,
-  data: CreateAuctionApiInput
+  data: CreateAuctionApiInput,
 ) => {
   const { description, endDate, imageKey, reservePrice, startingPrice, title } =
     data;
@@ -45,7 +45,7 @@ export const createAuctionService = async (
   if (!imageKey.startsWith(`users/${userId}/`)) {
     throw new ForbiddenError(
       "Image does not belong to user",
-      "IMAGE_ACCESS_DENIED"
+      "IMAGE_ACCESS_DENIED",
     );
   }
   const response = await addAuction({
@@ -68,7 +68,7 @@ export const createAuctionService = async (
     {
       jobId: `auction-expiry-${response.id}`,
       delay: new Date(endDate).getTime() - Date.now(),
-    }
+    },
   );
 
   return {
@@ -103,7 +103,7 @@ export const getAllAuctionsService = async (query: GetAuctionsInput) => {
 };
 
 export const getAuctionByIdService = async (
-  data: Omit<PlaceBidServiceRequest, "bidAmount">
+  data: Omit<PlaceBidServiceRequest, "bidAmount">,
 ) => {
   const { auctionId, userId } = data;
   const result = await getAuctionById({ auctionId, userId });
@@ -120,7 +120,7 @@ export const getAuctionByIdService = async (
 };
 
 export const placeBidService = async (
-  data: PlaceBidServiceRequest & { userName: string }
+  data: PlaceBidServiceRequest & { userName: string },
 ) => {
   const { auctionId, bidAmount, userId, userName } = data;
 
@@ -149,14 +149,14 @@ export const placeBidService = async (
     if (bidAmount < minimumBid) {
       throw new BadRequestError(
         "Bid amount must be at least ₹100 higher than the current bid",
-        "BID_AMOUNT_TOO_LOW"
+        "BID_AMOUNT_TOO_LOW",
       );
     }
 
     if (validAuction.sellerId === userId) {
       throw new BadRequestError(
         "You cannot bid on your own auction",
-        "SELF_BIDDING_NOT_ALLOWED"
+        "SELF_BIDDING_NOT_ALLOWED",
       );
     }
 

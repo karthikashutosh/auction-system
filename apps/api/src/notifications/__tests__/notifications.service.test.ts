@@ -47,14 +47,14 @@ describe("notification.service", () => {
 
     it("should propagate repository errors", async () => {
       vi.mocked(notificationReadRespository).mockRejectedValue(
-        new Error("Database Error")
+        new Error("Database Error"),
       );
 
       await expect(
         notificationsReadService({
           userId: "user-1",
           notificationId: "notification-1",
-        })
+        }),
       ).rejects.toThrow("Database Error");
     });
   });
@@ -66,7 +66,7 @@ describe("notification.service", () => {
       };
 
       vi.mocked(notificationAllReadRespository).mockResolvedValue(
-        response as any
+        response as any,
       );
 
       const result = await notificationsAllReadService("user-1");
@@ -78,11 +78,11 @@ describe("notification.service", () => {
 
     it("should propagate repository errors", async () => {
       vi.mocked(notificationAllReadRespository).mockRejectedValue(
-        new Error("Database Error")
+        new Error("Database Error"),
       );
 
       await expect(notificationsAllReadService("user-1")).rejects.toThrow(
-        "Database Error"
+        "Database Error",
       );
     });
   });
