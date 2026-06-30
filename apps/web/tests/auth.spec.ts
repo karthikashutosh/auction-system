@@ -32,7 +32,7 @@ test("user can signup", async ({ page }) => {
   const responsePromise = page.waitForResponse(
     (response) =>
       response.url().includes("/auth/signup") &&
-      response.request().method() === "POST",
+      response.request().method() === "POST"
   );
 
   await page.getByTestId("signup-button").click();

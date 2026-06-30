@@ -32,11 +32,8 @@ jobs:
       - name: Type Check
         run: npm run check-types
 
-      - name: Run API Tests
-        run: npm run test --workspace=@auction/api
-
-      - name: Run Web Tests
-        run: npm run test --workspace=@auction/web
+      - name: Run Tests
+        run: npm run test
 
       - name: Build
         run: npm run build
