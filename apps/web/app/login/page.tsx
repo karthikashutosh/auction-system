@@ -79,30 +79,6 @@ export default function LoginPage() {
             Experience live bidding, instant updates, notifications, caching,
             and high-performance auction workflows.
           </Text>
-
-          <HStack gap={4}>
-            <Card.Root bg="surface" borderColor="border" borderWidth="1px">
-              <Card.Body>
-                <Text color="text" fontWeight="bold">
-                  10K+
-                </Text>
-                <Text color="muted" fontSize="sm">
-                  Active Users
-                </Text>
-              </Card.Body>
-            </Card.Root>
-
-            <Card.Root bg="surface" borderColor="border" borderWidth="1px">
-              <Card.Body>
-                <Text color="text" fontWeight="bold">
-                  ₹12M+
-                </Text>
-                <Text color="muted" fontSize="sm">
-                  Total Bids
-                </Text>
-              </Card.Body>
-            </Card.Root>
-          </HStack>
         </VStack>
       </Flex>
 
