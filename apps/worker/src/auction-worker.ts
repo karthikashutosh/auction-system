@@ -22,7 +22,7 @@ export const auctionWorker = new Worker(
   },
   {
     connection: bullRedis,
-  },
+  }
 );
 
 auctionWorker.on("completed", (job) => {
@@ -66,8 +66,9 @@ export const auctionExpiryJob = async (id: string) => {
     });
 
     let winnerNotification: NotificationResponse | null = null;
+    const isReserveMet = validAuction.is_reserve_met;
 
-    if (validAuction.highest_bidder_id) {
+    if (isReserveMet && validAuction.highest_bidder_id) {
       winnerNotification = await createNotificationRepository({
         client,
         userId: validAuction.highest_bidder_id,
@@ -78,12 +79,13 @@ export const auctionExpiryJob = async (id: string) => {
         entityId: validAuction.id,
       });
     }
-
     const sellerNotification = await createNotificationRepository({
       client,
       userId: validAuction.owner_id,
-      title: "Auction Ended",
-      message: `Your auction ${validAuction.title} has ended`,
+      title: isReserveMet ? "Auction Ended" : "Reserve Price Not Met",
+      message: isReserveMet
+        ? `Your auction ${validAuction.title} has ended.`
+        : `Your auction ${validAuction.title} ended without meeting the reserve price.`,
       type: "AUCTION_ENDED",
       entityType: "AUCTION",
       entityId: validAuction.id,
