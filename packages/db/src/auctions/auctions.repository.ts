@@ -3,6 +3,7 @@ import { db } from "../db";
 import {
   BidHistoryInput,
   CreateAuctionPayload,
+  GetAuctionsInput,
   NotificationPayload,
   PlaceBidServiceRequest,
 } from "@repo/types";
@@ -56,15 +57,27 @@ export const addAuction = async (data: CreateAuctionPayloadWithvalid) => {
   return result.rows[0];
 };
 
-export const getAuctions = async ({
-  limit,
-  offset,
-}: {
-  limit: number;
-  offset: number;
-}) => {
-  const query = `SELECT * FROM auctions ORDER BY start_time DESC LIMIT $1 OFFSET $2`;
-  const response = await db.query(query, [limit, offset]);
+export const getAuctions = async (data: GetAuctionsInput) => {
+  const { limit, cursor } = data;
+
+  if (!cursor) {
+    const query = `SELECT * FROM auctions ORDER BY start_time DESC,id DESC LIMIT $1`;
+    const response = await db.query(query, [limit]);
+    return response.rows;
+  }
+
+  const query = `SELECT *
+FROM auctions
+WHERE (
+    start_time < $1
+    OR (
+        start_time = $1
+        AND id < $2
+    )
+)
+ORDER BY start_time DESC, id DESC
+LIMIT $3`;
+  const response = await db.query(query, [cursor.startTime, cursor.id, limit]);
   return response.rows;
 };
 

@@ -57,84 +57,97 @@ describe("user.service", () => {
   });
 
   describe("getMyAuctionService", () => {
-    it("should return paginated auctions", async () => {
-      vi.mocked(getMyAuctionCount).mockResolvedValue(25);
-
-      vi.mocked(getMyAuctionRepository).mockResolvedValue([
+    it("should return items with next cursor when more items exist", async () => {
+      const rows = [
         {
           id: "auction-1",
-          title: "MacBook",
+          start_time: "2026-07-04T16:00:00.000Z",
         },
-      ] as any);
+        {
+          id: "auction-2",
+          start_time: "2026-07-04T15:00:00.000Z",
+        },
+        {
+          id: "auction-3",
+          start_time: "2026-07-04T14:00:00.000Z",
+        },
+      ];
+
+      vi.mocked(getMyAuctionRepository).mockResolvedValue(rows as any);
 
       const result = await getMyAuctionService({
         id: "user-1",
-        page: 2,
-        limit: 10,
+        limit: 2,
+        cursor: undefined,
       });
-
-      expect(getMyAuctionCount).toHaveBeenCalledWith("user-1");
 
       expect(getMyAuctionRepository).toHaveBeenCalledWith({
         id: "user-1",
-        limit: 10,
-        offset: 10,
+        limit: 3,
+        cursor: undefined,
       });
 
       expect(result).toEqual({
-        items: [
-          {
-            id: "auction-1",
-            title: "MacBook",
-          },
-        ],
+        items: rows.slice(0, 2),
         pagination: {
-          page: 2,
-          limit: 10,
-          totalItems: 25,
-          totalPages: 3,
+          limit: 2,
           hasNextPage: true,
-          hasPreviousPage: true,
+          nextCursor: {
+            startTime: rows[1].start_time,
+            id: rows[1].id,
+          },
         },
       });
     });
 
-    it("should return first page correctly", async () => {
-      vi.mocked(getMyAuctionCount).mockResolvedValue(5);
+    it("should return last page correctly", async () => {
+      const rows = [
+        {
+          id: "auction-1",
+          start_time: "2026-07-04T16:00:00.000Z",
+        },
+        {
+          id: "auction-2",
+          start_time: "2026-07-04T15:00:00.000Z",
+        },
+      ];
 
-      vi.mocked(getMyAuctionRepository).mockResolvedValue([] as any);
+      vi.mocked(getMyAuctionRepository).mockResolvedValue(rows as any);
 
       const result = await getMyAuctionService({
         id: "user-1",
-        page: 1,
-        limit: 10,
+        limit: 2,
+        cursor: undefined,
       });
 
-      expect(result.pagination).toEqual({
-        page: 1,
-        limit: 10,
-        totalItems: 5,
-        totalPages: 1,
-        hasNextPage: false,
-        hasPreviousPage: false,
+      expect(result).toEqual({
+        items: rows,
+        pagination: {
+          limit: 2,
+          hasNextPage: false,
+          nextCursor: null,
+        },
       });
     });
 
-    it("should calculate offset correctly", async () => {
-      vi.mocked(getMyAuctionCount).mockResolvedValue(100);
+    it("should forward cursor to repository", async () => {
+      const cursor = {
+        startTime: "2026-07-04T15:00:00.000Z",
+        id: "auction-10",
+      };
 
-      vi.mocked(getMyAuctionRepository).mockResolvedValue([] as any);
+      vi.mocked(getMyAuctionRepository).mockResolvedValue([]);
 
       await getMyAuctionService({
         id: "user-1",
-        page: 5,
-        limit: 20,
+        limit: 10,
+        cursor,
       });
 
       expect(getMyAuctionRepository).toHaveBeenCalledWith({
         id: "user-1",
-        limit: 20,
-        offset: 80,
+        limit: 11,
+        cursor,
       });
     });
   });
@@ -165,7 +178,7 @@ describe("user.service", () => {
 
       expect(mockClient.query).toHaveBeenCalledWith(
         expect.stringContaining("SELECT *"),
-        ["user-1"],
+        ["user-1"]
       );
 
       expect(result).toEqual(notifications);
@@ -177,7 +190,7 @@ describe("user.service", () => {
       mockClient.query.mockRejectedValue(new Error("Database Error"));
 
       await expect(getAllNotificationsRepository("user-1")).rejects.toThrow(
-        "Database Error",
+        "Database Error"
       );
 
       expect(mockClient.release).toHaveBeenCalled();

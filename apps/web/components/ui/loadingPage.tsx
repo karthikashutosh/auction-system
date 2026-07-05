@@ -7,20 +7,7 @@ import { useMemo } from "react";
 
 const MotionBox = motion.create(Box);
 
-const LOADING_MESSAGES = [
-  "🔨 Warming up the auction floor...",
-  "💰 Checking your latest bids...",
-  "📦 Gathering your active auctions...",
-  "👀 Looking for outbid alerts...",
-  "🚀 Preparing your dashboard...",
-];
-
 export function LoadingScreen() {
-  const message = useMemo(
-    () => LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)],
-    [],
-  );
-
   return (
     <Box
       minH="100vh"
@@ -45,7 +32,7 @@ export function LoadingScreen() {
         </MotionBox>
 
         <Text fontSize="lg" fontWeight="semibold" textAlign="center">
-          {message}
+          {"🔨Warming up the auction floor..."}
         </Text>
       </VStack>
     </Box>

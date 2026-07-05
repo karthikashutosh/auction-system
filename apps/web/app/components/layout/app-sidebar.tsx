@@ -2,6 +2,7 @@
 
 import { Box, Flex } from "@chakra-ui/react";
 import { useState } from "react";
+
 import { NavItem } from "./app-nav-item";
 import { appNavItems } from "./app-nav-config";
 
@@ -10,10 +11,14 @@ export function AppSidebar() {
 
   return (
     <Box
-      bg="gray.900"
-      color="white"
-      w={expanded ? "240px" : "72px"}
-      transition="all 0.2s"
+      bg="sidebar.bg"
+      color="sidebar.text"
+      borderRightWidth="1px"
+      borderColor="sidebar.border"
+      shadow="sm"
+      w={expanded ? "240px" : "50px"}
+      transition="width 0.2s ease"
+      overflow="hidden"
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >

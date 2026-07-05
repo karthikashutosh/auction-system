@@ -1,20 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
-import { getMyauctions } from "../api/auctions";
-import { AuctionsResponse } from "@repo/types";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getMyAuctions } from "../api/auctions";
 
-type UseMyAuctionsProps = {
-  page: number;
-  limit: number;
+type Cursor = {
+  startTime: string;
+  id: string;
 };
 
-export const useMyAuctions = ({ page, limit }: UseMyAuctionsProps) => {
-  return useQuery<AuctionsResponse>({
-    queryKey: ["my-auctions", page, limit],
+export const useMyAuctions = (limit = 10) => {
+  return useInfiniteQuery({
+    queryKey: ["my-auctions", limit],
 
-    queryFn: () =>
-      getMyauctions({
-        page,
+    initialPageParam: undefined as Cursor | undefined,
+
+    queryFn: ({ pageParam }) =>
+      getMyAuctions({
         limit,
+        cursor: pageParam,
       }),
+
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.hasNextPage
+        ? lastPage.pagination.nextCursor
+        : undefined,
   });
 };

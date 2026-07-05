@@ -1,10 +1,23 @@
 export interface GetAuctionsInput {
   limit: number;
-  page: number;
+  cursor?: {
+    startTime: string;
+    id: string;
+  };
 }
 
-export interface BidHistoryInput extends GetAuctionsInput {
+export interface User {
+  avatar_url?: "string";
+  email: "string";
+  id: "string";
+  name: "string";
+  role: "user" | "admin";
+}
+
+export interface BidHistoryInput {
   userId: string;
+  page: number;
+  limit: number;
 }
 
 export interface PlaceBidServiceRequest {
@@ -80,15 +93,17 @@ export interface Auction {
   updated_at: string;
 }
 
+export interface Cursor {
+  startTime: string;
+  id: string;
+}
+
 export interface AuctionsResponse {
   items: Auction[];
   pagination: {
-    page: number;
     limit: number;
-    totalItems: number;
-    totalPages: number;
     hasNextPage: boolean;
-    hasPreviousPage: boolean;
+    nextCursor?: Cursor;
   };
 }
 

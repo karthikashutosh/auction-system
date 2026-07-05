@@ -23,17 +23,24 @@ export function NavItem({ icon: Icon, label, href, expanded }: Props) {
         gap={3}
         px={4}
         py={3}
+        borderRadius="lg"
         cursor="pointer"
-        borderRadius="md"
-        bg={isActive ? "gray.700" : "transparent"}
+        transition="all 0.2s ease"
+        bg={isActive ? "sidebar.active" : "transparent"}
+        color={isActive ? "primary" : "sidebar.text"}
         _hover={{
-          bg: "gray.800",
+          bg: "sidebar.hover",
         }}
       >
         <Icon size={20} />
 
         {expanded && (
-          <Text whiteSpace="nowrap" overflow="hidden">
+          <Text
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            fontWeight={isActive ? "semibold" : "medium"}
+          >
             {label}
           </Text>
         )}

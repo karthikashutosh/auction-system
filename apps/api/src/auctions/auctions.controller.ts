@@ -1,4 +1,12 @@
+import { findById } from "@repo/db";
+import { createAuctionApiSchema, getAuctionsCursorSchema } from "@repo/shared";
+import { AuthUser } from "@repo/types";
 import { FastifyReply, FastifyRequest } from "fastify";
+import {
+  subscribeNotification,
+  unSubscribeNotification,
+} from "../realtime/notification-sse-manager";
+import { Subscribe, unSubscribe } from "../realtime/sse-manager";
 import {
   createAuctionService,
   getAllAuctionsService,
@@ -6,14 +14,6 @@ import {
   getBidsHistoryService,
   placeBidService,
 } from "./auctions.service";
-import { createAuctionApiSchema, getAuctionsSchema } from "@repo/shared";
-import { AuthUser } from "@repo/types";
-import {
-  subscribeNotification,
-  unSubscribeNotification,
-} from "../realtime/notification-sse-manager";
-import { findById } from "@repo/db";
-import { Subscribe, unSubscribe } from "../realtime/sse-manager";
 
 interface GetAuctionByIdParams {
   id: string;
@@ -21,7 +21,7 @@ interface GetAuctionByIdParams {
 
 export const createAuctionController = async (
   request: FastifyRequest,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) => {
   const user = request.user as AuthUser;
   const payload = createAuctionApiSchema.parse(request.body);
@@ -31,18 +31,21 @@ export const createAuctionController = async (
 
 export const getAllAuctionsController = async (
   request: FastifyRequest,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) => {
-  const query = getAuctionsSchema.parse(request.query);
-
-  const result = await getAllAuctionsService(query);
-
-  return reply.code(200).send(result);
+  try {
+    const query = getAuctionsCursorSchema.parse(request.query);
+    const result = await getAllAuctionsService(query);
+    return reply.send(result);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 };
 
 export const getAuctionByIdController = async (
   request: FastifyRequest<{ Params: GetAuctionByIdParams }>,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) => {
   const user = request.user as AuthUser;
   const response = await getAuctionByIdService({
@@ -54,7 +57,7 @@ export const getAuctionByIdController = async (
 
 export const placeBidController = async (
   request: FastifyRequest<{ Body: { bidAmount: number } }>,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) => {
   const user = request.user as AuthUser;
   const userInfo = await findById(user.id);
@@ -72,7 +75,7 @@ export const placeBidController = async (
 
 export const getBidsHistoryController = async (
   request: FastifyRequest,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) => {
   const user = request.user as AuthUser;
 
@@ -92,7 +95,7 @@ export const getBidRealTimeController = (
       id: string;
     };
   }>,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) => {
   const { id: userId } = request.user as AuthUser;
   const auctionId = request.params.id;
@@ -124,7 +127,7 @@ export const getBidRealTimeController = (
 
 export const getNotificationEvents = async (
   request: FastifyRequest,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) => {
   const { id: userId } = request.user as AuthUser;
 

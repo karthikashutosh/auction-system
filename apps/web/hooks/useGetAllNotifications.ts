@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/axios";
 import { NotificationResponse } from "@repo/types";
 
-export const useGetAllNotifications = () => {
+export const useGetAllNotifications = (isAuthenticated: boolean) => {
   return useQuery<NotificationResponse[], Error>({
     queryKey: ["notifications"],
     queryFn: async () => {
@@ -10,5 +10,6 @@ export const useGetAllNotifications = () => {
 
       return response.data;
     },
+    enabled: isAuthenticated,
   });
 };

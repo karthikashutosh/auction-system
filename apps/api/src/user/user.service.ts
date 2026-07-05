@@ -1,14 +1,10 @@
-import {
-  db,
-  findById,
-  getMyAuctionCount,
-  getMyAuctionRepository,
-} from "@repo/db";
+import { db, findById, getMyAuctionRepository } from "@repo/db";
+import { GetAuctionsInput } from "@repo/types";
 
 export interface myAuctionsServiceInput {
   id: string;
-  page: number;
   limit: number;
+  cursor: GetAuctionsInput["cursor"];
 }
 
 export async function getMe(userId: string) {
@@ -24,28 +20,32 @@ export async function getMe(userId: string) {
 }
 
 export const getMyAuctionService = async (data: myAuctionsServiceInput) => {
-  const { id, limit, page } = data;
+  const { id, limit, cursor } = data;
 
-  const offset = (page - 1) * limit;
+  const rows = await getMyAuctionRepository({ id, limit: limit + 1, cursor });
 
-  const [count, items] = await Promise.all([
-    getMyAuctionCount(id),
-    getMyAuctionRepository({ id, limit, offset }),
-  ]);
-  const totalPages = Math.ceil(count / limit);
+  const hasNextPage = rows.length > limit;
+  const items = hasNextPage ? rows.slice(0, limit) : rows;
+  const lastItem = items[items.length - 1];
+
+  const nextCursor =
+    hasNextPage && lastItem
+      ? {
+          startTime: lastItem.start_time,
+          id: lastItem.id,
+        }
+      : null;
 
   return {
     items,
     pagination: {
-      page,
       limit,
-      totalItems: count,
-      totalPages,
-      hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1,
+      hasNextPage,
+      nextCursor,
     },
   };
 };
+
 export const getAllNotificationsRepository = async (userId: string) => {
   const client = await db.connect();
 

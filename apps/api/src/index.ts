@@ -18,15 +18,16 @@ import {
 import { notificationsRoutes } from "./notifications/notifications.routes";
 import { AppError } from "@repo/types";
 import fastifyRateLimit from "@fastify/rate-limit";
+// {
+//   logger: {
+//     level: "info",
+//     transport: {
+//       target: "pino-pretty",
+//     },
+//   },
+// }
 
-const app = Fastify({
-  logger: {
-    level: "info",
-    transport: {
-      target: "pino-pretty",
-    },
-  },
-});
+const app = Fastify();
 
 app.register(fastifyCookie);
 

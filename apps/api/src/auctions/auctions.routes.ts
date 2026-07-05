@@ -19,7 +19,7 @@ export const auctionsRoutes: FastifyPluginAsync = async (app) => {
         },
       },
     },
-    createAuctionController,
+    createAuctionController
   );
   app.get("/", getAllAuctionsController);
   app.get("/:id", getAuctionByIdController);
@@ -33,7 +33,7 @@ export const auctionsRoutes: FastifyPluginAsync = async (app) => {
         },
       },
     },
-    placeBidController,
+    placeBidController
   );
   app.get("/bids/me", getBidsHistoryController);
   app.get("/:id/events", getBidRealTimeController);

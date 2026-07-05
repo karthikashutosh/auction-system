@@ -1,19 +1,26 @@
-import { AuctionsResponse } from "@repo/types";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getAllAuctions } from "../api/auctions";
-import { useAuthStore } from "../store/auth.store";
 
-export const useGetAuctions = ({
-  limit = 10,
-  page = 1,
-}: {
-  limit: number;
-  page: number;
-}) => {
-  const user = useAuthStore((state) => state.user);
-  return useQuery<AuctionsResponse, Error>({
-    queryKey: ["auctions", limit, page],
-    queryFn: () => getAllAuctions(limit, page),
-    enabled: !!user,
+export const useGetAuctions = (limit = 10) => {
+  return useInfiniteQuery({
+    queryKey: ["auctions", limit],
+
+    initialPageParam: undefined as
+      | {
+          startTime: string;
+          id: string;
+        }
+      | undefined,
+
+    queryFn: ({ pageParam }) =>
+      getAllAuctions({
+        limit,
+        cursor: pageParam,
+      }),
+
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.hasNextPage
+        ? lastPage.pagination.nextCursor
+        : undefined,
   });
 };

@@ -94,7 +94,7 @@ describe("auction.service", () => {
           startingPrice: 50000,
           currentPrice: 50000,
           reservePrice: 60000,
-        }),
+        })
       );
 
       expect(auctionQueue.add).toHaveBeenCalledWith(
@@ -104,7 +104,7 @@ describe("auction.service", () => {
         },
         expect.objectContaining({
           jobId: "auction-expiry-auction-1",
-        }),
+        })
       );
 
       expect(result).toEqual({
@@ -122,7 +122,7 @@ describe("auction.service", () => {
           startingPrice: 50000,
           reservePrice: 60000,
           endDate: new Date().toISOString(),
-        }),
+        })
       ).rejects.toMatchObject({
         statusCode: 403,
         code: "IMAGE_ACCESS_DENIED",
@@ -134,82 +134,75 @@ describe("auction.service", () => {
     });
   });
   describe("getAllAuctionsService", () => {
-    it("should return paginated auctions", async () => {
-      const mockAuctions = [
-        {
-          id: "auction-1",
-          title: "MacBook Pro",
-        },
-        {
-          id: "auction-2",
-          title: "iPhone",
-        },
+    it("should return items with next cursor when more items exist", async () => {
+      const rows = [
+        { id: "1", start_time: "2026-07-04T10:00:00.000Z" },
+        { id: "2", start_time: "2026-07-04T09:00:00.000Z" },
+        { id: "3", start_time: "2026-07-04T08:00:00.000Z" },
       ];
 
-      vi.mocked(getAuctionCount).mockResolvedValue(25);
-      vi.mocked(getAuctions).mockResolvedValue(mockAuctions as any);
+      vi.mocked(getAuctions).mockResolvedValue(rows as any);
 
       const result = await getAllAuctionsService({
-        page: 2,
-        limit: 10,
+        limit: 2,
       });
 
-      expect(getAuctionCount).toHaveBeenCalled();
-
       expect(getAuctions).toHaveBeenCalledWith({
-        limit: 10,
-        offset: 10,
+        limit: 3,
+        cursor: undefined,
       });
 
       expect(result).toEqual({
-        items: mockAuctions,
+        items: rows.slice(0, 2),
         pagination: {
-          page: 2,
-          limit: 10,
-          totalItems: 25,
-          totalPages: 3,
+          limit: 2,
           hasNextPage: true,
-          hasPreviousPage: true,
+          nextCursor: {
+            startTime: rows[1].start_time,
+            id: rows[1].id,
+          },
         },
       });
     });
 
-    it("should return first page correctly", async () => {
-      vi.mocked(getAuctionCount).mockResolvedValue(5);
+    it("should return last page correctly", async () => {
+      const rows = [
+        { id: "1", start_time: "2026-07-04T10:00:00.000Z" },
+        { id: "2", start_time: "2026-07-04T09:00:00.000Z" },
+      ];
 
-      vi.mocked(getAuctions).mockResolvedValue([
-        {
-          id: "auction-1",
-        },
-      ] as any);
+      vi.mocked(getAuctions).mockResolvedValue(rows as any);
 
       const result = await getAllAuctionsService({
-        page: 1,
-        limit: 10,
+        limit: 2,
       });
 
-      expect(result.pagination).toEqual({
-        page: 1,
-        limit: 10,
-        totalItems: 5,
-        totalPages: 1,
-        hasNextPage: false,
-        hasPreviousPage: false,
+      expect(result).toEqual({
+        items: rows,
+        pagination: {
+          limit: 2,
+          hasNextPage: false,
+          nextCursor: null,
+        },
       });
     });
 
-    it("should calculate offset correctly", async () => {
-      vi.mocked(getAuctionCount).mockResolvedValue(100);
+    it("should forward cursor to repository", async () => {
+      const cursor = {
+        startTime: "2026-07-04T08:00:00.000Z",
+        id: "auction-10",
+      };
+
       vi.mocked(getAuctions).mockResolvedValue([]);
 
       await getAllAuctionsService({
-        page: 5,
-        limit: 20,
+        limit: 10,
+        cursor,
       });
 
       expect(getAuctions).toHaveBeenCalledWith({
-        limit: 20,
-        offset: 80,
+        limit: 11,
+        cursor,
       });
     });
   });
@@ -227,7 +220,7 @@ describe("auction.service", () => {
       } as any);
 
       vi.mocked(getSignedImageUrl).mockResolvedValue(
-        "https://signed-url.com/image.png",
+        "https://signed-url.com/image.png"
       );
 
       const result = await getAuctionByIdService({
@@ -241,7 +234,7 @@ describe("auction.service", () => {
       });
 
       expect(getSignedImageUrl).toHaveBeenCalledWith(
-        "users/user-1/macbook.png",
+        "users/user-1/macbook.png"
       );
 
       expect(result).toEqual({
@@ -335,7 +328,7 @@ describe("auction.service", () => {
         "auction-events",
         expect.objectContaining({
           auctionId: "auction-1",
-        }),
+        })
       );
 
       expect(mockClient.release).toHaveBeenCalled();
@@ -356,7 +349,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        }),
+        })
       ).rejects.toThrow("Database failure");
 
       expect(mockClient.query).toHaveBeenCalledWith("ROLLBACK");
@@ -373,7 +366,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        }),
+        })
       ).rejects.toMatchObject({
         statusCode: 404,
         code: "AUCTION_NOT_FOUND",
@@ -395,7 +388,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        }),
+        })
       ).rejects.toMatchObject({
         statusCode: 400,
         code: "AUCTION_ENDED",
@@ -417,7 +410,7 @@ describe("auction.service", () => {
           bidAmount: 1050,
           userId: "buyer-1",
           userName: "John",
-        }),
+        })
       ).rejects.toMatchObject({
         statusCode: 400,
         code: "BID_AMOUNT_TOO_LOW",
@@ -439,7 +432,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        }),
+        })
       ).rejects.toMatchObject({
         statusCode: 400,
         code: "SELF_BIDDING_NOT_ALLOWED",
@@ -461,7 +454,7 @@ describe("auction.service", () => {
           bidAmount: 1200,
           userId: "buyer-1",
           userName: "John",
-        }),
+        })
       ).rejects.toMatchObject({
         statusCode: 400,
         code: "AUCTION_ENDED",

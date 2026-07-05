@@ -250,7 +250,7 @@ export default function CreateAuctionPage() {
                     loading={isSubmitting}
                     type="submit"
                     size="lg"
-                    colorPalette="blue"
+                    colorPalette="brand"
                   >
                     Create Auction
                   </Button>

@@ -19,7 +19,7 @@ export const preSignedUploadService = async (data: PreSignedUploadType) => {
   });
 
   const uploadUrl = await getSignedUrl(s3Client, command, {
-    expiresIn: 60 * 5, // 5 minutes
+    expiresIn: 60 * 5,
   });
 
   return {

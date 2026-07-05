@@ -14,24 +14,29 @@ import {
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
 
-import { useState } from "react";
+import { useIntersectionObserver } from "../../../hooks/useIntersectionObserver";
 import { useMyAuctions } from "../../../hooks/useGetMyAuctions";
 import { formatAuctionDate, formatTimeRemaining } from "../../../utils";
-import PaginatedLayout from "../../../components/ui/PaginatedLayout";
 
 const MotionBox = motion.create(Box);
 
 export default function MyAuctionsPage() {
   const router = useRouter();
-  const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useMyAuctions({
-    page,
-    limit: 10,
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useMyAuctions();
+
+  const auctions = data?.pages.flatMap((page) => page.items) ?? [];
+
+  useIntersectionObserver({
+    target: loadMoreRef,
+    enabled: hasNextPage && !isFetchingNextPage,
+    onIntersect: fetchNextPage,
   });
-
-  const pagination = data?.pagination;
 
   if (isLoading) {
     return (
@@ -41,7 +46,7 @@ export default function MyAuctionsPage() {
     );
   }
 
-  if (!data?.items.length) {
+  if (!auctions.length) {
     return (
       <Center h="70vh">
         <VStack gap={4}>
@@ -53,7 +58,7 @@ export default function MyAuctionsPage() {
             Create your first auction and start receiving bids.
           </Text>
 
-          <Button colorPalette="blue" onClick={() => router.push("/create")}>
+          <Button colorPalette="brand" onClick={() => router.push("/create")}>
             Create Auction
           </Button>
         </VStack>
@@ -61,35 +66,28 @@ export default function MyAuctionsPage() {
     );
   }
 
-  if (!pagination) return null;
-
   return (
-    <PaginatedLayout
-      currentPage={page}
-      totalPages={pagination?.totalPages}
-      totalItems={pagination.totalItems}
-      limit={10}
-      hasNextPage={pagination?.hasNextPage}
-      hasPreviousPage={pagination?.hasPreviousPage}
-      onPageChange={setPage}
-    >
-      <Flex justify="space-between" align="center" mb={8} wrap="wrap" gap={4}>
+    <>
+      <Flex justify="space-between" align="center" p={8} wrap="wrap" gap={4}>
         <Box>
           <Heading size="xl">My Auctions</Heading>
+
+          <Text color="fg.muted" mb={6}>
+            Showing {auctions.length} auctions
+          </Text>
 
           <Text color="fg.muted" mt={2}>
             Manage and track your auctions
           </Text>
         </Box>
 
-        <Button colorPalette="blue" onClick={() => router.push("/create")}>
+        <Button colorPalette="brand" onClick={() => router.push("/create")}>
           Create Auction
         </Button>
       </Flex>
-      <Text color="fg.muted" mb={6}>
-        Total Auctions: {data.pagination.totalItems}
-      </Text>
+
       <SimpleGrid
+        p={8}
         columns={{
           base: 1,
           md: 2,
@@ -97,7 +95,7 @@ export default function MyAuctionsPage() {
         }}
         gap={6}
       >
-        {data.items.map((auction, index) => (
+        {auctions.map((auction, index) => (
           <MotionBox
             key={auction.id}
             role="button"
@@ -112,14 +110,8 @@ export default function MyAuctionsPage() {
             cursor="pointer"
             overflow="hidden"
             position="relative"
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{
               delay: index * 0.05,
               duration: 0.2,
@@ -129,9 +121,7 @@ export default function MyAuctionsPage() {
               boxShadow:
                 "0 0 0 1px rgba(59,130,246,.4), 0 12px 32px rgba(59,130,246,.15)",
             }}
-            whileTap={{
-              scale: 0.98,
-            }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => router.push(`/auctions/${auction.id}`)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -140,7 +130,6 @@ export default function MyAuctionsPage() {
             }}
           >
             <VStack align="stretch" gap={3} h="100%">
-              {/* Header */}
               <Flex justify="space-between" align="center">
                 <Badge
                   colorPalette={auction.status === "ACTIVE" ? "green" : "red"}
@@ -156,7 +145,6 @@ export default function MyAuctionsPage() {
                 </Text>
               </Flex>
 
-              {/* Title + Description */}
               <Box>
                 <Heading size="sm" lineClamp={1} mb={1}>
                   {auction.title}
@@ -167,7 +155,6 @@ export default function MyAuctionsPage() {
                 </Text>
               </Box>
 
-              {/* Current Bid */}
               <Box>
                 <Text
                   fontSize="xs"
@@ -183,7 +170,6 @@ export default function MyAuctionsPage() {
                 </Heading>
               </Box>
 
-              {/* Footer */}
               <Flex
                 mt="auto"
                 pt={3}
@@ -204,6 +190,14 @@ export default function MyAuctionsPage() {
           </MotionBox>
         ))}
       </SimpleGrid>
-    </PaginatedLayout>
+
+      {hasNextPage && <Box ref={loadMoreRef} h="1px" />}
+
+      {isFetchingNextPage && (
+        <Center py={8}>
+          <Spinner />
+        </Center>
+      )}
+    </>
   );
 }
