@@ -21,6 +21,7 @@ import { useGetAllNotifications } from "../../../hooks/useGetAllNotifications";
 import { NotificationResponse } from "@repo/types";
 import { useMarkNotificationRead } from "../../../hooks/useMarkNotificationRead";
 import { useMarkAllNotificationsRead } from "../../../hooks/useMarkAllNotificationsRead";
+import { useAuthStore } from "../../../store/auth.store";
 
 const MotionBox = motion(Box);
 
@@ -68,11 +69,13 @@ const getNotificationIcon = (type: string) => {
 };
 
 export const Notification = () => {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
   const {
     data: notifications = [],
     isLoading,
     isError,
-  } = useGetAllNotifications();
+  } = useGetAllNotifications(isAuthenticated);
 
   const router = useRouter();
 
@@ -90,11 +93,11 @@ export const Notification = () => {
   };
 
   const handleNotificationClick = async (
-    notification: NotificationResponse,
+    notification: NotificationResponse
   ) => {
     try {
       const markedNotification = await markesAsReadSingleNotification(
-        notification.id,
+        notification.id
       );
 
       router.push(`auctions/${markedNotification.entity_id}`);
