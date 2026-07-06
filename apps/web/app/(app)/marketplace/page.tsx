@@ -16,8 +16,6 @@ export default function MarketplacePage() {
 
   const user = useAuthStore((state) => state.user);
 
-  const { mutateAsync, isPending } = useLogout();
-
   const {
     data,
     isLoading,
@@ -35,14 +33,6 @@ export default function MarketplacePage() {
     onIntersect: fetchNextPage,
   });
 
-  const handleLogout = async () => {
-    try {
-      await mutateAsync();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <Container maxW="7xl" py={8}>
       <VStack align="stretch" gap={8}>
@@ -55,11 +45,7 @@ export default function MarketplacePage() {
           borderBottomWidth="1px"
           borderColor="gray.200"
         >
-          <MarketplaceHeader
-            user={user}
-            isLoggingOut={isPending}
-            onLogout={handleLogout}
-          />
+          <MarketplaceHeader user={user} />
           {!isError && <MarketplaceFilters />}
         </Box>
 

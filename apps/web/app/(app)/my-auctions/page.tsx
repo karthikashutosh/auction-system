@@ -113,7 +113,6 @@ export default function MyAuctionsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
-              delay: index * 0.05,
               duration: 0.2,
             }}
             whileHover={{
@@ -165,7 +164,7 @@ export default function MyAuctionsPage() {
                   Current Bid
                 </Text>
 
-                <Heading size="lg" color="blue.500">
+                <Heading size="lg" color="primary">
                   ₹{Number(auction.current_price).toLocaleString()}
                 </Heading>
               </Box>
@@ -182,7 +181,7 @@ export default function MyAuctionsPage() {
                   {formatAuctionDate(auction.created_at)}
                 </Text>
 
-                <Text fontSize="sm" fontWeight="medium" color="blue.500">
+                <Text fontSize="sm" fontWeight="medium" color="primary">
                   View →
                 </Text>
               </Flex>

@@ -16,18 +16,23 @@ import {
 import { ringCss } from "../../../theme";
 import { User } from "@repo/types";
 import { Notification } from "../../../components/Notifications/Notifications";
+import { useLogout } from "../../../../hooks/userLogout";
 
 type MarketplaceHeaderProps = {
   user: User | null;
-  isLoggingOut: boolean;
-  onLogout: () => Promise<void>;
 };
 
-export function MarketplaceHeader({
-  user,
-  isLoggingOut,
-  onLogout,
-}: MarketplaceHeaderProps) {
+export function MarketplaceHeader({ user }: MarketplaceHeaderProps) {
+  const { mutateAsync, isPending } = useLogout();
+
+  const handleLogout = async () => {
+    try {
+      await mutateAsync();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Flex justify="space-between" align="center" py={6} gap={4} flexWrap="wrap">
       <Box>
@@ -74,8 +79,8 @@ export function MarketplaceHeader({
                   width="full"
                   size="sm"
                   colorPalette="red"
-                  loading={isLoggingOut}
-                  onClick={onLogout}
+                  loading={isPending}
+                  onClick={handleLogout}
                   data-testid="logout-button"
                 >
                   Logout

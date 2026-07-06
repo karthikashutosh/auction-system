@@ -7,13 +7,12 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const setUser = useAuthStore((state) => state.setUser);
+  const logOut = useAuthStore((state) => state.logout);
 
   return useMutation({
     mutationFn: userlogout,
     onSuccess: () => {
-      setUser(null);
-      queryClient.clear();
+      logOut();
       router.replace("/login");
     },
   });
