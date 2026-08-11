@@ -46,7 +46,7 @@ export default function MarketplacePage() {
           borderColor="gray.200"
         >
           <MarketplaceHeader user={user} />
-          {!isError && <MarketplaceFilters />}
+          {/* {!isError && <MarketplaceFilters />} */}
         </Box>
 
         <MarketplaceContent

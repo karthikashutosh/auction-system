@@ -9,9 +9,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <AuthBootstrap>
       <AppBootstrap>
-        <Flex minH="100vh">
+        <Flex h="100vh" overflow="hidden">
           <AppSidebar />
-          <Box flex="1">{children}</Box>
+          <Box flex="1" overflowY="auto" minW={0}>
+            {children}
+          </Box>
         </Flex>
       </AppBootstrap>
     </AuthBootstrap>
