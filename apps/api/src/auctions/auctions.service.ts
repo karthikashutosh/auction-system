@@ -2,6 +2,7 @@ import { CreateAuctionApiInput } from "@repo/shared";
 import {
   BadRequestError,
   BidHistoryInput,
+  ConflictError,
   ForbiddenError,
   GetAuctionsInput,
   NotFoundError,
@@ -128,10 +129,13 @@ export const placeBidService = async (
 ) => {
   const { auctionId, bidAmount, userId, userName } = data;
 
+  let newBid;
+
   const client = await db.connect();
 
   try {
     await client.query("BEGIN");
+    await client.query("SET LOCAL lock_timeout = '3s'");
 
     const validAuction = await getValidAuctionById({
       client,
@@ -144,11 +148,11 @@ export const placeBidService = async (
       throw new NotFoundError("Auction not found", "AUCTION_NOT_FOUND");
     }
 
-    const minimumBid = validAuction.current_price + 100;
-
     if (validAuction.status !== "ACTIVE") {
       throw new BadRequestError("Auction ended", "AUCTION_ENDED");
     }
+
+    const minimumBid = Number(validAuction.current_price) + 100;
 
     if (bidAmount < minimumBid) {
       throw new BadRequestError(
@@ -157,18 +161,18 @@ export const placeBidService = async (
       );
     }
 
-    if (validAuction.sellerId === userId) {
+    if (validAuction.owner_id === userId) {
       throw new BadRequestError(
         "You cannot bid on your own auction",
         "SELF_BIDDING_NOT_ALLOWED"
       );
     }
 
-    if (new Date() > validAuction.endTime) {
+    if (new Date() > validAuction.end_time) {
       throw new BadRequestError("Auction has ended", "AUCTION_ENDED");
     }
 
-    const newBid = await placeNewBid({
+    newBid = await placeNewBid({
       client,
       auctionInput: {
         auctionId,
@@ -186,27 +190,38 @@ export const placeBidService = async (
     });
 
     await client.query("COMMIT");
-
-    await publish("auction-events", {
-      auctionId,
-      payload: {
-        type: "NEW_BID",
-        ...newBid,
-        name: userName,
-      },
-    });
-
-    return {
-      id: newBid.id,
-      bidAmount,
-      userId,
-    };
   } catch (error) {
-    await client.query("ROLLBACK");
+    try {
+      await client.query("ROLLBACK");
+    } catch {}
+
+    if ((error as { code?: string }).code === "55P03") {
+      throw new ConflictError(
+        "Another bid is being processed, please try again",
+        "AUCTION_BUSY"
+      );
+    }
     throw error;
   } finally {
     client.release();
   }
+
+  publish("auction-events", {
+    auctionId,
+    payload: {
+      type: "NEW_BID",
+      ...newBid,
+      name: userName,
+    },
+  }).catch((err) =>
+    console.error("PUBLISH_FAILED", { auctionId, bidId: newBid.id, err })
+  );
+
+  return {
+    id: newBid.id,
+    bidAmount,
+    userId,
+  };
 };
 
 export const getBidsHistoryService = async (data: BidHistoryInput) => {

@@ -15,6 +15,8 @@ import {
   placeBidService,
 } from "./auctions.service";
 
+const HEARTBEAT_MS = 25_000;
+
 interface GetAuctionByIdParams {
   id: string;
 }
@@ -103,13 +105,18 @@ export const getBidRealTimeController = (
   reply.raw.setHeader("Content-Type", "text/event-stream");
 
   reply.raw.setHeader("Cache-Control", "no-cache");
-
   reply.raw.setHeader("Connection", "keep-alive");
+  reply.raw.setHeader("X-Accel-Buffering", "no");
   reply.raw.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL!);
 
   reply.raw.setHeader("Access-Control-Allow-Credentials", "true");
 
   reply.raw.flushHeaders();
+  reply.raw.write("retry: 3000\n\n");
+
+  const heartbeat = setInterval(() => {
+    reply.raw.write(": ping\n\n");
+  }, HEARTBEAT_MS);
 
   Subscribe({
     auctionId,
@@ -118,6 +125,7 @@ export const getBidRealTimeController = (
   });
 
   request.raw.on("close", () => {
+    clearInterval(heartbeat);
     unSubscribe({
       auctionId,
       connection: reply.raw,
@@ -134,13 +142,20 @@ export const getNotificationEvents = async (
   reply.raw.setHeader("Content-Type", "text/event-stream");
   reply.raw.setHeader("Cache-Control", "no-cache");
   reply.raw.setHeader("Connection", "keep-alive");
+  reply.raw.setHeader("X-Accel-Buffering", "no");
   reply.raw.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL!);
   reply.raw.setHeader("Access-Control-Allow-Credentials", "true");
   reply.raw.flushHeaders();
+  reply.raw.write("retry: 3000\n\n");
+
+  const heartbeat = setInterval(() => {
+    reply.raw.write(": ping\n\n");
+  }, HEARTBEAT_MS);
 
   subscribeNotification({ connection: reply.raw, userId });
 
   reply.raw.on("close", () => {
+    clearInterval(heartbeat);
     unSubscribeNotification({ connection: reply.raw, userId });
   });
 };

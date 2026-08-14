@@ -1,5 +1,3 @@
-import { Client, PoolClient } from "pg";
-import { db } from "../db";
 import {
   BidHistoryInput,
   CreateAuctionPayload,
@@ -7,6 +5,8 @@ import {
   NotificationPayload,
   PlaceBidServiceRequest,
 } from "@repo/types";
+import { PoolClient } from "pg";
+import { db } from "../db";
 
 type UpdateAuctionStatusInput = {
   client: PoolClient;

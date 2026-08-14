@@ -317,21 +317,24 @@ describe("auction.service", () => {
       });
 
       expect(mockClient.query).toHaveBeenNthCalledWith(1, "BEGIN");
+      expect(mockClient.query).toHaveBeenNthCalledWith(
+        2,
+        "SET LOCAL lock_timeout = '3s'"
+      );
 
       expect(placeNewBid).toHaveBeenCalled();
 
       expect(updateAuctionRepository).toHaveBeenCalled();
 
-      expect(mockClient.query).toHaveBeenNthCalledWith(2, "COMMIT");
+      expect(mockClient.query).toHaveBeenNthCalledWith(3, "COMMIT");
 
+      expect(mockClient.release).toHaveBeenCalled();
       expect(publish).toHaveBeenCalledWith(
         "auction-events",
         expect.objectContaining({
           auctionId: "auction-1",
         })
       );
-
-      expect(mockClient.release).toHaveBeenCalled();
 
       expect(result).toEqual({
         id: "bid-1",
@@ -423,7 +426,7 @@ describe("auction.service", () => {
     it("should throw when seller tries to bid", async () => {
       vi.mocked(getValidAuctionById).mockResolvedValue({
         ...mockAuction,
-        sellerId: "buyer-1",
+        owner_id: "buyer-1",
       } as any);
 
       await expect(
@@ -445,7 +448,7 @@ describe("auction.service", () => {
     it("should throw when auction has already expired", async () => {
       vi.mocked(getValidAuctionById).mockResolvedValue({
         ...mockAuction,
-        endTime: new Date(Date.now() - 1000),
+        end_time: new Date(Date.now() - 1000),
       } as any);
 
       await expect(
