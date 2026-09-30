@@ -22,7 +22,11 @@ import {
   placeNewBid,
   updateAuctionRepository,
 } from "@repo/db";
-import { auctionQueue } from "@repo/queue";
+import {
+  auctionQueue,
+  enqueueBidScoring,
+  enqueueEmbedding,
+} from "@repo/queue";
 import { publish } from "@repo/redis";
 import { PoolClient } from "pg";
 
@@ -35,6 +39,13 @@ export interface ValidAuctionById {
   client: PoolClient;
   auctionInput: Pick<PlaceBidServiceRequest, "auctionId">;
 }
+
+/** Side effects that must never fail or delay the request that triggered them. */
+const fireAndForget = (label: string, fn: () => Promise<unknown>) => {
+  Promise.resolve()
+    .then(fn)
+    .catch((err) => console.error(label, err));
+};
 
 export const createAuctionService = async (
   userId: string,
@@ -71,6 +82,9 @@ export const createAuctionService = async (
       delay: new Date(endDate).getTime() - Date.now(),
     }
   );
+
+  // Best-effort: the listing is already saved; the backfill picks up anything missed.
+  fireAndForget("EMBEDDING_ENQUEUE_FAILED", () => enqueueEmbedding(response.id));
 
   return {
     id: response.id,
@@ -205,6 +219,9 @@ export const placeBidService = async (
   } finally {
     client.release();
   }
+
+  // Fraud scoring is asynchronous and must never block or fail a bid.
+  fireAndForget("FRAUD_ENQUEUE_FAILED", () => enqueueBidScoring(newBid.id));
 
   publish("auction-events", {
     auctionId,

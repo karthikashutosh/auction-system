@@ -45,6 +45,8 @@ vi.mock("@repo/queue", () => ({
   auctionQueue: {
     add: vi.fn(),
   },
+  enqueueEmbedding: vi.fn(),
+  enqueueBidScoring: vi.fn(),
 }));
 
 vi.mock("../../config", () => ({

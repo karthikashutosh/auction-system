@@ -66,7 +66,9 @@ export const auctionExpiryJob = async (id: string) => {
     });
 
     let winnerNotification: NotificationResponse | null = null;
-    const isReserveMet = validAuction.is_reserve_met;
+    // NUMERIC columns arrive from pg as strings.
+    const isReserveMet =
+      Number(validAuction.current_price) >= Number(validAuction.reserve_price);
 
     if (isReserveMet && validAuction.highest_bidder_id) {
       winnerNotification = await createNotificationRepository({

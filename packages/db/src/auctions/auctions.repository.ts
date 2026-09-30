@@ -39,8 +39,14 @@ export interface CreateAuctionPayloadWithvalid extends Omit<
   endTime: Date;
 }
 
+// Explicit column list: never SELECT * (the embedding vector and search_tsv must not leak to API callers).
+export const AUCTION_COLUMNS = `id, owner_id, title, description, image_key, category, starting_price, current_price, reserve_price, start_time, end_time, status, highest_bidder_id, created_at, updated_at`;
+const AUCTION_COLUMNS_A = AUCTION_COLUMNS.split(", ")
+  .map((c) => `a.${c}`)
+  .join(", ");
+
 export const addAuction = async (data: CreateAuctionPayloadWithvalid) => {
-  const query = `INSERT INTO auctions(owner_id, title, description, image_key, starting_price, current_price, reserve_price, start_time, end_time) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`;
+  const query = `INSERT INTO auctions(owner_id, title, description, image_key, starting_price, current_price, reserve_price, start_time, end_time) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING ${AUCTION_COLUMNS}`;
   const values = [
     data.ownerId,
     data.title,
@@ -61,12 +67,12 @@ export const getAuctions = async (data: GetAuctionsInput) => {
   const { limit, cursor } = data;
 
   if (!cursor) {
-    const query = `SELECT * FROM auctions ORDER BY start_time DESC,id DESC LIMIT $1`;
+    const query = `SELECT ${AUCTION_COLUMNS} FROM auctions ORDER BY start_time DESC,id DESC LIMIT $1`;
     const response = await db.query(query, [limit]);
     return response.rows;
   }
 
-  const query = `SELECT *
+  const query = `SELECT ${AUCTION_COLUMNS}
 FROM auctions
 WHERE (
     start_time < $1
@@ -132,7 +138,7 @@ recent_bids AS (
   GROUP BY rb.auction_id
 )
 SELECT
-  a.*,
+  ${AUCTION_COLUMNS_A},
   COALESCE(bs.total_bids, 0) AS total_bids,
   COALESCE(bs.participated_users, 0) AS participated_users,
 
@@ -167,7 +173,7 @@ export const getValidAuctionById = async (data: ValidAuctionById) => {
     auctionInput: { auctionId },
   } = data;
 
-  const query = `SELECT * FROM auctions WHERE id =$1 FOR UPDATE`;
+  const query = `SELECT ${AUCTION_COLUMNS} FROM auctions WHERE id =$1 FOR UPDATE`;
 
   const result = await client.query(query, [auctionId]);
 

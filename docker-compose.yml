@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17
+    image: pgvector/pgvector:pg17-trixie
     container_name: auction-postgres
     restart: unless-stopped
 
@@ -43,6 +43,7 @@ services:
       DB_PORT: 5432
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      AI_SERVICE_URL: http://ai-service:8001
 
     ports:
       - "3001:3001"
@@ -67,6 +68,7 @@ services:
       DB_PORT: 5432
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      AI_SERVICE_URL: http://ai-service:8001
 
   web:
     build:
@@ -84,6 +86,40 @@ services:
 
     ports:
       - "3000:3000"
+
+  ai-service:
+    build:
+      context: ./services/ai-service
+
+    container_name: auction-ai-service
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+
+    env_file:
+      - path: ./services/ai-service/.env
+        required: false
+
+    environment:
+      ENVIRONMENT: development
+      # Read-only role created by migration 006.
+      DATABASE_URL: postgresql://ai_service:ai_service_dev@postgres:5432/auction_db
+
+    ports:
+      - "8001:8001"
+
+  # Optional tracing UI: docker compose --profile tracing up  (then set OTEL_ENABLED=true and
+  # OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318 on ai-service; UI at http://localhost:16686)
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    profiles: ["tracing"]
+    container_name: auction-jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
+      - "4318:4318"
 
 volumes:
   postgres_data:

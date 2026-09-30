@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { FileUpload } from "../../components/ui/file-upload";
+import { PriceGuidance } from "../../components/Auction/price-guidance";
 
 import {
   Badge,
@@ -258,11 +259,23 @@ export default function CreateAuctionPage() {
               </Card.Body>
             </Card.Root>
 
-            <Card.Root
+            <VStack
               w={{
                 base: "100%",
                 lg: "380px",
               }}
+              align="stretch"
+              gap={6}
+            >
+            <PriceGuidance
+              title={title}
+              description={description}
+              onUseSuggestion={(price) =>
+                setValue("startingPrice", price, { shouldValidate: true })
+              }
+            />
+            <Card.Root
+              w="100%"
               bg="surface"
               borderWidth="1px"
               borderColor="border"
@@ -322,6 +335,7 @@ export default function CreateAuctionPage() {
                 </VStack>
               </Card.Body>
             </Card.Root>
+            </VStack>
           </Flex>
         </form>
       </Container>

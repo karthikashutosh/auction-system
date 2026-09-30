@@ -1,0 +1,509 @@
+[
+ {
+  "provider": "gemini:gemini-embedding-001",
+  "mode": "vector",
+  "queries": 20,
+  "overall": {
+   "p@5": 0.88,
+   "p@10": 0.785,
+   "ndcg@10": 0.8364
+  },
+  "by_type": {
+   "exact": {
+    "p@5": 1.0,
+    "p@10": 0.7286,
+    "ndcg@10": 1.0
+   },
+   "semantic": {
+    "p@5": 0.95,
+    "p@10": 0.9375,
+    "ndcg@10": 0.8942
+   },
+   "vague": {
+    "p@5": 0.6,
+    "p@10": 0.62,
+    "ndcg@10": 0.5147
+   }
+  },
+  "per_query": [
+   {
+    "query": "Canon AE-1",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.8,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Technics SL-1200",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Rolex Submariner 5513",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Keychron Q1",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Leica M3",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.8,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "RTX 3080",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Marantz 2270",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "camera for film photography",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "listen to vinyl records",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "wireless headphones with noise cancelling",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "solid wood furniture for the dining room",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 0.9931059506292179
+   },
+   {
+    "query": "gold jewellery for a wedding",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 0.5963301562538527
+   },
+   {
+    "query": "dive watch",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "laptop for programming",
+    "type": "semantic",
+    "p@5": 0.6,
+    "p@10": 0.8,
+    "ndcg@10": 0.6410457898283652
+   },
+   {
+    "query": "mechanical keyboard for typing",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 0.9233846433583538
+   },
+   {
+    "query": "something for a gift",
+    "type": "vague",
+    "p@5": 0.0,
+    "p@10": 0.3,
+    "ndcg@10": 0.20904936749052638
+   },
+   {
+    "query": "old and rare things",
+    "type": "vague",
+    "p@5": 0.8,
+    "p@10": 0.8,
+    "ndcg@10": 0.7475368518867422
+   },
+   {
+    "query": "something to decorate my living room wall",
+    "type": "vague",
+    "p@5": 1.0,
+    "p@10": 0.9,
+    "ndcg@10": 0.9305687780632227
+   },
+   {
+    "query": "sound system for a party",
+    "type": "vague",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 0.46620415572674534
+   },
+   {
+    "query": "cheap starter gear",
+    "type": "vague",
+    "p@5": 0.2,
+    "p@10": 0.1,
+    "ndcg@10": 0.22009176629808017
+   }
+  ]
+ },
+ {
+  "provider": "gemini:gemini-embedding-001",
+  "mode": "lexical",
+  "queries": 20,
+  "overall": {
+   "p@5": 0.55,
+   "p@10": 0.425,
+   "ndcg@10": 0.5423
+  },
+  "by_type": {
+   "exact": {
+    "p@5": 1.0,
+    "p@10": 0.7286,
+    "ndcg@10": 1.0
+   },
+   "semantic": {
+    "p@5": 0.5,
+    "p@10": 0.425,
+    "ndcg@10": 0.4808
+   },
+   "vague": {
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   }
+  },
+  "per_query": [
+   {
+    "query": "Canon AE-1",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.8,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Technics SL-1200",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Rolex Submariner 5513",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Keychron Q1",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Leica M3",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.8,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "RTX 3080",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Marantz 2270",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "camera for film photography",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "listen to vinyl records",
+    "type": "semantic",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   },
+   {
+    "query": "wireless headphones with noise cancelling",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 0.9233846433583538
+   },
+   {
+    "query": "solid wood furniture for the dining room",
+    "type": "semantic",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   },
+   {
+    "query": "gold jewellery for a wedding",
+    "type": "semantic",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   },
+   {
+    "query": "dive watch",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "laptop for programming",
+    "type": "semantic",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   },
+   {
+    "query": "mechanical keyboard for typing",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 0.9233846433583538
+   },
+   {
+    "query": "something for a gift",
+    "type": "vague",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   },
+   {
+    "query": "old and rare things",
+    "type": "vague",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   },
+   {
+    "query": "something to decorate my living room wall",
+    "type": "vague",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   },
+   {
+    "query": "sound system for a party",
+    "type": "vague",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   },
+   {
+    "query": "cheap starter gear",
+    "type": "vague",
+    "p@5": 0.0,
+    "p@10": 0.0,
+    "ndcg@10": 0.0
+   }
+  ]
+ },
+ {
+  "provider": "gemini:gemini-embedding-001",
+  "mode": "hybrid",
+  "queries": 20,
+  "overall": {
+   "p@5": 0.88,
+   "p@10": 0.785,
+   "ndcg@10": 0.8364
+  },
+  "by_type": {
+   "exact": {
+    "p@5": 1.0,
+    "p@10": 0.7286,
+    "ndcg@10": 1.0
+   },
+   "semantic": {
+    "p@5": 0.95,
+    "p@10": 0.9375,
+    "ndcg@10": 0.8942
+   },
+   "vague": {
+    "p@5": 0.6,
+    "p@10": 0.62,
+    "ndcg@10": 0.5147
+   }
+  },
+  "per_query": [
+   {
+    "query": "Canon AE-1",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.8,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Technics SL-1200",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Rolex Submariner 5513",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Keychron Q1",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Leica M3",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.8,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "RTX 3080",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "Marantz 2270",
+    "type": "exact",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "camera for film photography",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "listen to vinyl records",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "wireless headphones with noise cancelling",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "solid wood furniture for the dining room",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 0.9931059506292179
+   },
+   {
+    "query": "gold jewellery for a wedding",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 0.5963301562538527
+   },
+   {
+    "query": "dive watch",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 1.0
+   },
+   {
+    "query": "laptop for programming",
+    "type": "semantic",
+    "p@5": 0.6,
+    "p@10": 0.8,
+    "ndcg@10": 0.6410457898283652
+   },
+   {
+    "query": "mechanical keyboard for typing",
+    "type": "semantic",
+    "p@5": 1.0,
+    "p@10": 0.7,
+    "ndcg@10": 0.9233846433583538
+   },
+   {
+    "query": "something for a gift",
+    "type": "vague",
+    "p@5": 0.0,
+    "p@10": 0.3,
+    "ndcg@10": 0.20904936749052638
+   },
+   {
+    "query": "old and rare things",
+    "type": "vague",
+    "p@5": 0.8,
+    "p@10": 0.8,
+    "ndcg@10": 0.7475368518867422
+   },
+   {
+    "query": "something to decorate my living room wall",
+    "type": "vague",
+    "p@5": 1.0,
+    "p@10": 0.9,
+    "ndcg@10": 0.9305687780632227
+   },
+   {
+    "query": "sound system for a party",
+    "type": "vague",
+    "p@5": 1.0,
+    "p@10": 1.0,
+    "ndcg@10": 0.46620415572674534
+   },
+   {
+    "query": "cheap starter gear",
+    "type": "vague",
+    "p@5": 0.2,
+    "p@10": 0.1,
+    "ndcg@10": 0.22009176629808017
+   }
+  ]
+ }
+]

@@ -18,6 +18,8 @@ import {
 import { notificationsRoutes } from "./notifications/notifications.routes";
 import { AppError } from "@repo/types";
 import fastifyRateLimit from "@fastify/rate-limit";
+import { ZodError } from "zod";
+import { adminRoutes } from "./admin/admin.routes";
 // {
 //   logger: {
 //     level: "info",
@@ -88,6 +90,13 @@ app.register(async (app) => {
   });
 });
 
+app.register(async (app) => {
+  app.addHook("preHandler", authenticate);
+  app.register(adminRoutes, {
+    prefix: "api/admin",
+  });
+});
+
 app.get("/health", async (_, reply) => {
   try {
     await db.query("SELECT 1");
@@ -106,6 +115,14 @@ app.get("/health", async (_, reply) => {
 
 app.setErrorHandler((error, request, reply) => {
   request.log.error(error);
+
+  if (error instanceof ZodError) {
+    return reply.status(400).send({
+      code: "VALIDATION_ERROR",
+      message: "Invalid request",
+      issues: error.issues.map((i) => ({ path: i.path, message: i.message })),
+    });
+  }
 
   if (error instanceof AppError) {
     return reply.status(error.statusCode).send({
