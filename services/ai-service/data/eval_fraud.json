@@ -1,0 +1,57 @@
+{
+  "baseline": {
+    "median": {
+      "velocity": 1.0,
+      "account_age": 9.004673547971716,
+      "concentration": 0.1111111111111111,
+      "proximity": 11.58201736550183
+    },
+    "scale": {
+      "velocity": 0.5,
+      "account_age": 1.5,
+      "concentration": 0.1,
+      "proximity": 1.5
+    }
+  },
+  "total_bids_scored": 4343,
+  "non_seed_dev_bids_flagged": 140,
+  "patterns": {
+    "rapid_bot": {
+      "bids": 40,
+      "flagged": 34,
+      "recall": 0.85,
+      "caught": true
+    },
+    "new_account_whale": {
+      "bids": 15,
+      "flagged": 10,
+      "recall": 0.667,
+      "caught": true
+    },
+    "seller_loyalist": {
+      "bids": 24,
+      "flagged": 17,
+      "recall": 0.708,
+      "caught": true
+    },
+    "sniper_burst": {
+      "bids": 30,
+      "flagged": 19,
+      "recall": 0.633,
+      "caught": true
+    },
+    "combo_new_account_single_seller": {
+      "bids": 18,
+      "flagged": 15,
+      "recall": 0.833,
+      "caught": true
+    }
+  },
+  "patterns_caught": "5/5",
+  "planted_bid_recall": 0.748,
+  "normal_bids": 4216,
+  "false_positives": 8,
+  "false_positive_rate": 0.0019,
+  "flags_per_day_incl_planted": 0.858,
+  "flags_per_day_normal_only": 0.067
+}

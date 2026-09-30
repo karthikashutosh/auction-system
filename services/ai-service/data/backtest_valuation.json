@@ -1,0 +1,10 @@
+{
+  "provider": "gemini:gemini-embedding-001",
+  "held_out": 388,
+  "with_range": 388,
+  "hit_rate_p25_p75": 0.3608,
+  "median_abs_pct_error": 0.1687,
+  "by_status": {
+    "ok": 388
+  }
+}
