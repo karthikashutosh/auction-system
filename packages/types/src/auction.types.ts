@@ -201,3 +201,21 @@ export type NotificationControlType = {
   notificationId: string;
   userId: string;
 };
+
+export interface SearchResponse {
+  items: Auction[];
+  pagination: { page: number; limit: number; hasNextPage: boolean };
+  query: string;
+}
+
+export interface ValuationResponse {
+  status: "ok" | "insufficient_data" | "no_comparables" | "single_seller";
+  category: string | null;
+  n: number;
+  p25: number | null;
+  median: number | null;
+  p75: number | null;
+  comparables: { id: string; title: string; price: number; distance: number }[];
+  explanation: string | null;
+  suggested_starting_price: number | null;
+}

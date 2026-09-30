@@ -122,3 +122,21 @@ export type CreateAuctionFormInput = z.input<typeof createAuctionSchema>;
 export type CreateAuctionApiInput = z.infer<typeof createAuctionApiSchema>;
 
 export type CreateAuctionFormOutput = z.output<typeof createAuctionSchema>;
+
+export const searchQuerySchema = z.object({
+  // Trim + cap instead of rejecting: pasted essays must not become a 4xx/5xx.
+  q: z
+    .string()
+    .default("")
+    // eslint-disable-next-line no-control-regex
+    .transform((s) => s.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 200)),
+  mode: z.enum(["vector", "lexical", "hybrid"]).default("hybrid"),
+  limit: z.coerce.number().int().min(1).max(50).default(12),
+  page: z.coerce.number().int().min(1).max(50).default(1),
+});
+
+export const valuationSchema = z.object({
+  title: z.string().trim().min(3).max(100),
+  description: z.string().trim().min(10).max(2000),
+  category: z.string().trim().max(50).optional(),
+});
