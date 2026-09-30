@@ -1,4 +1,5 @@
 import { FastifyPluginAsync } from "fastify";
+import { searchRoutes } from "../search/search.routes";
 import {
   createAuctionController,
   getAllAuctionsController,
@@ -9,6 +10,7 @@ import {
 } from "./auctions.controller";
 
 export const auctionsRoutes: FastifyPluginAsync = async (app) => {
+  await app.register(searchRoutes);
   app.post(
     "/",
     {
