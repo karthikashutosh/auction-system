@@ -11,6 +11,7 @@ import { AuctionMetrics } from "../../../components/Auction/auction-metrics";
 import { AuctionStatusCard } from "../../../components/Auction/auction-status-card";
 import { BidForm } from "../../../components/Auction/bid-form";
 import { BidFeed } from "../../../components/Auction/bit-feed";
+import { SimilarAuctions } from "../../../components/Auction/similar-auctions";
 
 export default function AuctionDetailPage() {
   const router = useParams();
@@ -52,6 +53,7 @@ export default function AuctionDetailPage() {
               bids={data.recent_bids_history}
               totalBids={data.total_bids}
             />
+            <SimilarAuctions auctionId={data.id} />
           </VStack>
 
           {/* RIGHT */}
